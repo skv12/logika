@@ -9,14 +9,10 @@ import {
   IonTabs,
   setupIonicReact,
 } from '@ionic/react';
-import { IonReactRouter } from '@ionic/react-router';
 
-import Tab1 from './pages/Tab1';
-import Tab2 from './pages/Tab2';
-import Tab3 from './pages/Tab3';
-import Tab4 from './pages/Tab4';
-import LoginActivity from './pages/loginActivity';
-import MainActivity from './pages/mainActivity';
+
+
+import TabNavigator from './routers/tabNavigator';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -36,35 +32,13 @@ import '@ionic/react/css/display.css';
 
 /* Theme variables */
 import './theme/variables.css';
+import RouterNavigator from './routers/router';
 
 function App() {
   return (
     <IonApp>
-      <IonReactRouter>
-        <IonRouterOutlet>
-          <Route exact path="/main">
-            <MainActivity />
-          </Route>
-          <Route exact path="/tab1">
-            <Tab1 />
-          </Route>
-          <Route exact path="/tab2">
-            <Tab2 />
-          </Route>
-          <Route exact path="/tab3">
-            <Tab3 />
-          </Route>
-          <Route exact path="/tab4">
-            <Tab4 />
-          </Route>
-          <Route exact path="/">
-            <Redirect to="/main" />
-          </Route>
-          <Route exact path="/login">
-            <LoginActivity />
-          </Route>
-        </IonRouterOutlet>
-      </IonReactRouter>
+      <RouterNavigator/>
+      <TabNavigator/>
     </IonApp>
   );
 }

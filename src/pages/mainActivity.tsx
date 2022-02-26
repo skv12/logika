@@ -18,7 +18,6 @@ import ExploreContainer from '../components/ExploreContainer';
 import './mainActivity.css';
 import LoginActivity from './loginActivity';
 import Tab1 from './Tab1';
-import TabNavigator from '../components/tabNavigator';
 
 const MainActivity: React.FC = () => {
     const [auth, setAuth] = useState(true);
@@ -26,7 +25,7 @@ const MainActivity: React.FC = () => {
         <LoginActivity/>
     )
     else return (
-      
+
     <Tab1/>
   );
 };

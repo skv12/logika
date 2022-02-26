@@ -21,7 +21,7 @@ const LoginActivity: React.FC = () => {
   const [login, setLogin] = useState<string>();
   const [password, setPassword] = useState<string>();
   const loginEvent = () => {
-    if (login == 'admin' && password == 'admin') {
+    if (login === 'admin' && password === 'admin') {
       setLogin('admin1');
     }
   };
