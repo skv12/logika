@@ -1,18 +1,10 @@
-import { Redirect, Route } from 'react-router-dom';
-import {
-  IonApp,
-  IonIcon,
-  IonLabel,
-  IonRouterOutlet,
-  IonTabBar,
-  IonTabButton,
-  IonTabs,
-  setupIonicReact,
-} from '@ionic/react';
+import { Route } from 'react-router-dom';
+import React, { useContext, useState } from 'react';
+import {IonApp} from '@ionic/react';
 
 
 
-import TabNavigator from './routers/tabNavigator';
+//import TabNavigator from './routers/tabNavigator';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -32,14 +24,39 @@ import '@ionic/react/css/display.css';
 
 /* Theme variables */
 import './theme/variables.css';
-import RouterNavigator from './routers/router';
+import { IonReactRouter } from '@ionic/react-router';
+import LoginActivity from './pages/loginActivity';
+import TabNavigator from './routers/tabNavigator';
 
-function App() {
+interface IUserManager {
+  setLogin: Function;
+}
+
+const user: IUserManager = {
+  setLogin: () => {}
+};
+
+export const UserContext = React.createContext<IUserManager>(user);
+const Start: React.FC = () =>{
+  const [login, setLogin] = useState(false);
+  const user = useContext(UserContext);
+  
+  user.setLogin = setLogin;
   return (
     <IonApp>
-      <RouterNavigator/>
-      <TabNavigator/>
+      <IonReactRouter>
+          <Route path="/login" component={LoginActivity} exact={true}/>
+          <Route path="/" component={login ? TabNavigator : LoginActivity}/>
+      </IonReactRouter>
     </IonApp>
+  );
+}
+
+const App: React.FC = () =>  {
+  return (
+    <UserContext.Provider value={user}>
+      <Start />
+    </UserContext.Provider>
   );
 }
 
