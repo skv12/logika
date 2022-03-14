@@ -1,6 +1,6 @@
 import { Route } from 'react-router-dom';
 import React, { useContext, useState } from 'react';
-import {IonApp} from '@ionic/react';
+import {IonApp, setupIonicReact} from '@ionic/react';
 
 
 
@@ -28,15 +28,22 @@ import { IonReactRouter } from '@ionic/react-router';
 import LoginActivity from './pages/loginActivity';
 import TabNavigator from './routers/tabNavigator';
 
+setupIonicReact();
+
 interface IUserManager {
   setLogin: Function;
 }
-
+const getToken = () => {
+  
+}
 const user: IUserManager = {
-  setLogin: () => {}
+  setLogin: () => {
+    return getToken;
+  }
 };
 
 export const UserContext = React.createContext<IUserManager>(user);
+
 const Start: React.FC = () =>{
   const [login, setLogin] = useState(false);
   const user = useContext(UserContext);
