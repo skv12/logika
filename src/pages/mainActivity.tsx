@@ -1,6 +1,6 @@
 import React from 'react';
 
-import './mainActivity.css';
+import './mainActivity.scss';
 import Tab1 from './Tab1';
 
 const MainActivity: React.FC = () => {
