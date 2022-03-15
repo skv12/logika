@@ -1,10 +1,6 @@
 import { Route } from 'react-router-dom';
-import React, { useContext, useState } from 'react';
-import {IonApp, setupIonicReact} from '@ionic/react';
-
-
-
-//import TabNavigator from './routers/tabNavigator';
+import React, { useContext, useEffect, useState } from 'react';
+import { IonApp, setupIonicReact } from '@ionic/react';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -27,43 +23,51 @@ import './theme/variables.css';
 import { IonReactRouter } from '@ionic/react-router';
 import LoginActivity from './pages/loginActivity';
 import TabNavigator from './routers/tabNavigator';
+import { loadUserData, setIsLoggedIn, setLogin } from './data/user.actions';
+import { connect } from './api/connect';
+import { AppContextProvider } from './api/AppContext';
 
 setupIonicReact();
 
-interface IUserManager {
-  setLogin: Function;
+interface StateProps {
+  darkMode: boolean;
+  isLoggedin: boolean;
 }
-const getToken = () => {
-  
+
+interface DispatchProps {
+  loadUserData: typeof loadUserData;
+  setIsLoggedIn: typeof setIsLoggedIn;
+  setLogin: typeof setLogin;      
 }
-const user: IUserManager = {
-  setLogin: () => {
-    return getToken;
-  }
-};
 
-export const UserContext = React.createContext<IUserManager>(user);
+interface IonicAppProps extends StateProps, DispatchProps { }
 
-const Start: React.FC = () =>{
-  const [login, setLogin] = useState(false);
-  const user = useContext(UserContext);
-  
-  user.setLogin = setLogin;
+const Start: React.FC<IonicAppProps> = ({ darkMode, isLoggedin, setIsLoggedIn, setLogin, loadUserData }) => {
+  useEffect(() => { 
+    loadUserData() 
+  }, []);
   return (
-    <IonApp>
+    <IonApp className={`${darkMode ? 'dark-theme' : ''}`}>
       <IonReactRouter>
-          <Route path="/login" component={LoginActivity} exact={true}/>
-          <Route path="/" component={login ? TabNavigator : LoginActivity}/>
+        <Route path="/login" component={LoginActivity} exact={true} />
+        <Route path="/" component={isLoggedin ? TabNavigator : LoginActivity} />
       </IonReactRouter>
     </IonApp>
   );
 }
-
-const App: React.FC = () =>  {
+const IonicAppConnected = connect<{}, StateProps, DispatchProps>({
+  mapStateToProps: (state) => ({
+    darkMode: state.user.darkMode,
+    isLoggedin: state.user.isLoggedin,
+  }),
+  mapDispatchToProps: { loadUserData, setIsLoggedIn, setLogin },
+  component: Start
+});
+const App: React.FC = () => {
   return (
-    <UserContext.Provider value={user}>
-      <Start />
-    </UserContext.Provider>
+    <AppContextProvider>
+      <IonicAppConnected />
+    </AppContextProvider>
   );
 }
 

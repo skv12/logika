@@ -16,7 +16,10 @@ export const getUserData = async () => {
     isLoggedin,
     loginToken,
     login
-  }
+  };
+  console.log(isLoggedin);
+  console.log(loginToken);
+  console.log(login);
   return data;
 }
 

@@ -9,6 +9,7 @@ import {
 import './loginActivity.scss';
 import { setIsLoggedIn, setLogin, setLoginToken } from '../data/user.actions';
 import { RouteComponentProps } from 'react-router';
+import { connect } from '../api/connect';
 
 interface OwnProps extends RouteComponentProps {}
 
@@ -25,6 +26,7 @@ const LoginActivity: React.FC<LoginProps> = ({ setIsLoggedIn, setLogin: setLogin
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [loginError, setLoginError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
+
   const loginEvent = async (e: React.FormEvent) => {
     e.preventDefault();
     setFormSubmitted(true);
@@ -64,4 +66,11 @@ const LoginActivity: React.FC<LoginProps> = ({ setIsLoggedIn, setLogin: setLogin
   );
 };
 
-export default LoginActivity;
+export default connect<OwnProps, {}, DispatchProps>({
+  mapDispatchToProps: {
+    setIsLoggedIn,
+    setLogin,
+    setLoginToken
+  },
+  component: LoginActivity
+})
