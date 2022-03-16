@@ -1,11 +1,26 @@
+import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent } from '@ionic/react';
 import React from 'react';
+import ExploreContainer from '../components/ExploreContainer';
 
 import './mainActivity.scss';
-import Tab1 from './Tab1';
 
 const MainActivity: React.FC = () => {
   return (
-    <Tab1 />
+    <IonPage>
+      <IonHeader>
+        <IonToolbar>
+          <IonTitle>Главное</IonTitle>
+        </IonToolbar>
+      </IonHeader>
+      <IonContent fullscreen>
+        <IonHeader collapse="condense">
+          <IonToolbar>
+            <IonTitle size="large">Главное</IonTitle>
+          </IonToolbar>
+        </IonHeader>
+        <ExploreContainer name="Главное" />
+      </IonContent>
+    </IonPage>
   );
 };
 
