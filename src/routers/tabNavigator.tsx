@@ -1,66 +1,69 @@
-
 import {
-    IonContent,
-    IonIcon,
-    IonLabel,
-    IonRouterOutlet,
-    IonTabBar,
-    IonTabButton,
-    IonTabs,
-} from '@ionic/react';
-import { Redirect, Route, } from 'react-router-dom';
-import Tab1 from '../pages/Tab1';
-import Tab2 from '../pages/Tab2';
-import Tab3 from '../pages/Tab3';
-import Tab4 from '../pages/Tab4';
-import MainActivity from '../pages/mainActivity';
-import { ellipse, square, triangle } from 'ionicons/icons';
-import './tabNavigator.css';
+  IonContent,
+  IonIcon,
+  IonLabel,
+  IonRouterOutlet,
+  IonTabBar,
+  IonTabButton,
+  IonTabs,
+} from "@ionic/react";
+import { Redirect, Route } from "react-router-dom";
+
+import MainActivity from "../pages/MainActivity";
+import StatsActivity from "../pages/StatsActivity";
+import SalesActivity from "../pages/SalesActivity";
+import ProfileActivity from "../pages/ProfileActivity";
+import {
+  personOutline,
+  statsChartOutline,
+  cartOutline,
+  storefrontOutline,
+} from "ionicons/icons";
+import "./TabNavigator.scss";
+import RedirectToLogin from "../components/RedirectToLogin";
+import { setIsLoggedIn } from "../data/user.actions";
 
 const TabNavigator: React.FC = () => {
-    return (
-        <IonContent>
-        <IonTabs>
-            <IonRouterOutlet>
-                <Route exact path="/main">
-                    <MainActivity />
-                </Route>
-                <Route exact path="/tab1">
-                    <Tab1 />
-                </Route>
-                <Route exact path="/tab2">
-                    <Tab2 />
-                </Route>
-                <Route exact path="/tab3">
-                    <Tab3 />
-                </Route>
-                <Route exact path="/tab4">
-                    <Tab4 />
-                </Route>
-                <Route exact path="/">
-                    <Redirect to="/main" />
-                </Route>
-            </IonRouterOutlet>
-            <IonTabBar slot="bottom">
-                <IonTabButton tab="tab1" href="/tab1">
-                    <IonIcon icon={triangle} />
-                    <IonLabel>Tab 1</IonLabel>
-                </IonTabButton>
-                <IonTabButton tab="tab2" href="/tab2">
-                    <IonIcon icon={ellipse} />
-                    <IonLabel>Tab 2</IonLabel>
-                </IonTabButton>
-                <IonTabButton tab="tab3" href="/tab3">
-                    <IonIcon icon={square} />
-                    <IonLabel>Tab 3</IonLabel>
-                </IonTabButton>
-                <IonTabButton tab="tab4" href="/tab4">
-                    <IonIcon icon={square} />
-                    <IonLabel>Tab 4</IonLabel>
-                </IonTabButton>
-            </IonTabBar>
-        </IonTabs>
-        </IonContent>
-    );
+  return (
+    <IonContent>
+      <IonTabs>
+        <IonRouterOutlet>
+          <Route exact path="/main">
+            <MainActivity />
+          </Route>
+          <Route exact path="/stats">
+            <StatsActivity />
+          </Route>
+          <Route exact path="/sales">
+            <SalesActivity />
+          </Route>
+          <Route exact path="/profile">
+            <ProfileActivity />
+          </Route>
+          <Route exact path="/">
+            <Redirect to="/main" />
+          </Route>
+        </IonRouterOutlet>
+        <IonTabBar slot="bottom">
+          <IonTabButton tab="main" href="/main">
+            <IonIcon icon={storefrontOutline} />
+            <IonLabel>Склад</IonLabel>
+          </IonTabButton>
+          <IonTabButton tab="sales" href="/sales">
+            <IonIcon icon={cartOutline} />
+            <IonLabel>Продажа</IonLabel>
+          </IonTabButton>
+          <IonTabButton tab="stats" href="/stats">
+            <IonIcon icon={statsChartOutline} />
+            <IonLabel>Статистика</IonLabel>
+          </IonTabButton>
+          <IonTabButton tab="profile" href="/profile">
+            <IonIcon icon={personOutline} />
+            <IonLabel>Профиль</IonLabel>
+          </IonTabButton>
+        </IonTabBar>
+      </IonTabs>
+    </IonContent>
+  );
 };
 export default TabNavigator;

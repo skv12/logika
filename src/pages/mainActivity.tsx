@@ -1,24 +1,27 @@
-import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent } from '@ionic/react';
-import React from 'react';
-import ExploreContainer from '../components/ExploreContainer';
+import {
+  IonPage,
+  IonHeader,
+  IonToolbar,
+  IonTitle,
+  IonContent,
+  IonButton,
+} from "@ionic/react";
+import React from "react";
+import { getCategories } from "../api/dataApi";
+import ExploreContainer from "../components/ExploreContainer";
 
-import './mainActivity.scss';
+import "./MainActivity.scss";
 
 const MainActivity: React.FC = () => {
   return (
     <IonPage>
       <IonHeader>
         <IonToolbar>
-          <IonTitle>Главное</IonTitle>
+          <IonTitle>Склад</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
-        <IonHeader collapse="condense">
-          <IonToolbar>
-            <IonTitle size="large">Главное</IonTitle>
-          </IonToolbar>
-        </IonHeader>
-        <ExploreContainer name="Главное" />
+        <IonButton type="submit" expand="block" onClick={() => getCategories("data/parseData", "ЛОФТ")}>Выйти</IonButton>
       </IonContent>
     </IonPage>
   );

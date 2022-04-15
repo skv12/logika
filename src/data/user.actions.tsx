@@ -43,7 +43,7 @@ export const setLogin = (login?: string) => async (dispatch: React.Dispatch<any>
   } as const);
 };
 
-export const setLoginToken = (loginToken?: string) => async (dispatch: React.Dispatch<any>) => {
+export const setLoginToken = (loginToken: string) => async (dispatch: React.Dispatch<any>) => {
   await setLoginTokenData(loginToken);
   return ({
     type: 'set-login-token',
