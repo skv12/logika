@@ -24,7 +24,7 @@ export const setData = (data: Partial<UserState>) => ({
 
 export const logoutUser = () => async (dispatch: React.Dispatch<any>) => {
   await setIsLoggedInData(false);
-  dispatch(setLogin());
+  dispatch(setLoginToken());
 };
 
 export const setIsLoggedIn = (loggedIn: boolean) => async (dispatch: React.Dispatch<any>) => {
@@ -43,7 +43,7 @@ export const setLogin = (login?: string) => async (dispatch: React.Dispatch<any>
   } as const);
 };
 
-export const setLoginToken = (loginToken: string) => async (dispatch: React.Dispatch<any>) => {
+export const setLoginToken = (loginToken?: string) => async (dispatch: React.Dispatch<any>) => {
   await setLoginTokenData(loginToken);
   return ({
     type: 'set-login-token',
@@ -56,6 +56,10 @@ export const setDarkMode = (darkMode: boolean) => ({
   darkMode
 } as const);
 
+export const setStartupFlag = (startupFlag: boolean) => ({
+  type: 'set-startup-flag',
+  startupFlag
+} as const);
 export type UserActions =
   | ActionType<typeof setLoading>
   | ActionType<typeof setData>
@@ -63,3 +67,4 @@ export type UserActions =
   | ActionType<typeof setLogin>
   | ActionType<typeof setLoginToken>
   | ActionType<typeof setDarkMode>
+  | ActionType<typeof setStartupFlag>

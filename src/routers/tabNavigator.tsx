@@ -20,17 +20,25 @@ import {
   storefrontOutline,
 } from "ionicons/icons";
 import "./TabNavigator.scss";
-import RedirectToLogin from "../components/RedirectToLogin";
-import { setIsLoggedIn } from "../data/user.actions";
-
+import { getCategories, getStores } from "../api/dataApi";
+let initDone = false;
 const TabNavigator: React.FC = () => {
+  if (!initDone) {
+    initDone = true;
+    getStores();
+    getCategories();
+  }
+  else{
+    getStores();
+    getCategories();
+  }
   return (
     <IonContent>
       <IonTabs>
         <IonRouterOutlet>
-          <Route exact path="/main">
-            <MainActivity />
+          <Route exact path="/main" component={MainActivity}>
           </Route>
+          <Route path="/main/:name" component={MainActivity}  />
           <Route exact path="/stats">
             <StatsActivity />
           </Route>
@@ -40,9 +48,7 @@ const TabNavigator: React.FC = () => {
           <Route exact path="/profile">
             <ProfileActivity />
           </Route>
-          <Route exact path="/">
-            <Redirect to="/main" />
-          </Route>
+          <Route exact path="/" render={() => <Redirect to="/main" />} />
         </IonRouterOutlet>
         <IonTabBar slot="bottom">
           <IonTabButton tab="main" href="/main">

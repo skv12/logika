@@ -1,5 +1,5 @@
 import { Redirect, Route } from "react-router-dom";
-import React, { Component, useContext, useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { IonApp, setupIonicReact } from "@ionic/react";
 
 /* Core CSS required for Ionic components to work properly */
@@ -21,12 +21,17 @@ import "@ionic/react/css/display.css";
 /* Theme variables */
 import "./theme/variables.css";
 import { IonReactRouter } from "@ionic/react-router";
-import { loadUserData, setIsLoggedIn, setLogin } from "./data/user.actions";
+import {
+  loadUserData,
+  setIsLoggedIn,
+  setLoginToken,
+} from "./data/user.actions";
 import { connect } from "./api/connect";
 import TabNavigator from "./routers/TabNavigator";
 import LoginActivity from "./pages/LoginActivity";
 import { AppContextProvider } from "./api/AppContext";
 import RedirectToLogin from "./components/RedirectToLogin";
+import { loginData } from "./api/dataApi";
 setupIonicReact();
 
 interface StateProps {
@@ -38,7 +43,7 @@ interface StateProps {
 interface DispatchProps {
   loadUserData: typeof loadUserData;
   setIsLoggedIn: typeof setIsLoggedIn;
-  setLogin: typeof setLogin;
+  setLoginToken: typeof setLoginToken;
 }
 
 interface IonicAppProps extends StateProps, DispatchProps {}
@@ -48,23 +53,35 @@ const Start: React.FC<IonicAppProps> = ({
   isLoggedin,
   loginToken,
   setIsLoggedIn,
-  setLogin,
+  setLoginToken,
   loadUserData,
 }) => {
   useEffect(() => {
     loadUserData();
-  }, []);
+  }, [loadUserData]);
+  
   return (
     <IonApp className={`${darkMode ? "dark-theme" : ""}`}>
       <IonReactRouter>
-        <Route path="/login" component={LoginActivity}>
-        </Route >
-        <Route path="/">
-          {isLoggedin ? TabNavigator : <Redirect to="/login" />}
-        </Route>
+        {isLoggedin && loginToken && loginData("auth", undefined, undefined, loginToken) ? (
+          <>
+            <Route path="/">
+              <TabNavigator/>
+            </Route>
+            <Route path="/login" render={() => <Redirect to="/"/>} />
+          </>
+        ) : (
+          <>
+            <Route path="/login" component={LoginActivity} />
+            <Route path="/" render={() => <Redirect to="/login"/>}/>
+          </>
+        )}
         <Route path="/logout">
-          <RedirectToLogin setIsLoggedIn={setIsLoggedIn} />
-          <Redirect to="/" />
+          <RedirectToLogin
+            setIsLoggedIn={setIsLoggedIn}
+            setLoginToken={setLoginToken}
+          />
+          <Route path="/" render={() => <Redirect to="/login"/>}/>
         </Route>
       </IonReactRouter>
     </IonApp>
@@ -76,7 +93,7 @@ const IonicAppConnected = connect<{}, StateProps, DispatchProps>({
     isLoggedin: state.user.isLoggedin,
     loginToken: state.user.loginToken,
   }),
-  mapDispatchToProps: { loadUserData, setIsLoggedIn, setLogin },
+  mapDispatchToProps: { loadUserData, setIsLoggedIn, setLoginToken },
   component: Start,
 });
 const App: React.FC = () => {

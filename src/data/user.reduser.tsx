@@ -15,5 +15,7 @@ export function userReducer(state: UserState, action: UserActions): UserState {
       return { ...state, darkMode: action.darkMode };
     case "set-is-loggedin":
       return { ...state, isLoggedin: action.loggedIn };
+      case "set-startup-flag":
+      return { ...state, startupFlag: action.startupFlag };
   }
 }

@@ -1,40 +1,172 @@
 import { Storage } from "@capacitor/storage";
 import axios from "axios";
 import { Buffer } from "buffer";
+import * as Constant from "../data/constants";
+import {
+  CategoriesStore,
+  CategoriesStoreType,
+  Category,
+  ItemsStore,
+  ItemsStoreType,
+  Stock,
+  StocksStore,
+  StocksStoreType,
+} from "../data/store.state";
 
-const HAS_LOGGED_IN = "hasLoggedIn";
-const LOGIN_TOKEN = "loginToken";
-const LOGIN = "login";
-const URL = "http://127.0.0.1/stockholm/hs/api/";
+//export const categoriesStore = new CategoriesStore();
+export interface IStoresContextValue {
+  categoriesStore: CategoriesStoreType;
+  stocksStore: StocksStoreType;
+  itemsStore: ItemsStoreType;
+}
+
+export function initContextsValues() {
+  const stores: IStoresContextValue = {
+    categoriesStore: new CategoriesStore(),
+    stocksStore: new StocksStore(),
+    itemsStore: new ItemsStore(),
+  };
+
+  return {
+    stores,
+  };
+}
+export const contexts = initContextsValues();
+
 export const getUserData = async () => {
   const response = await Promise.all([
-    Storage.get({ key: HAS_LOGGED_IN }),
-    Storage.get({ key: LOGIN_TOKEN }),
-    Storage.get({ key: LOGIN }),
+    Storage.get({ key: Constant.HAS_LOGGED_IN }),
+    Storage.get({ key: Constant.LOGIN_TOKEN }),
+    Storage.get({ key: Constant.STARTUP_FLAG }),
+    Storage.get({ key: Constant.CURRECT_CATEGORY})
   ]);
   const isLoggedin = (await response[0].value) === "true";
   const loginToken = (await response[1].value) || undefined;
-  const login = (await response[2].value) || undefined;
+  const startupFlag = (await response[2].value) === "true";
+  const currentCategory = (await response[3].value) === "0";
   const data = {
     isLoggedin,
     loginToken,
-    login,
+    startupFlag,
+    currentCategory
   };
-  // console.log(isLoggedin);
-  // console.log(loginToken);
-  // console.log(login);
   return data;
 };
 export const loginData = async (
   method: string,
-  login: string,
-  password: string
+  login?: string,
+  password?: string,
+  loginToken?: string
 ) => {
-  if (password)
-    setLoginTokenData(Buffer.from(login + ":" + password).toString("base64"));
+  var tempToken: string;
+  if (loginToken) {
+    tempToken = loginToken;
+  } else {
+    tempToken = Buffer.from(login + ":" + password).toString("base64");
+  }
   var res = await axios
     .post(
-      URL + method,
+      Constant.URL + method,
+      {},
+      {
+        headers: {
+          Authorization: "Basic " + tempToken,
+        },
+      }
+    )
+    .then((response) => {
+      var result = null;
+      try {
+        result = JSON.stringify(
+          JSON.parse(JSON.stringify(response.data), (key, value) => {
+            if (key === "accessToken")
+              sessionStorage.setItem(Constant.SESSION_TOKEN, value);
+            return true;
+          })
+        );
+        setIsLoggedInData(true);
+        setLoginTokenData(tempToken);
+        return true;
+      } catch (e) {
+        console.log(e);
+        return false;
+      }
+    })
+    .catch((response) => {
+      return false;
+    });
+  return res;
+};
+
+export const getCategories = async (category?: string) => {
+  var res = await axios
+    .post(
+      Constant.URL + Constant.GET_CATEGORIES,
+      category! ? { name: category } : {},
+      {
+        headers: {
+          Authorization: "Basic " + (await getUserData()).loginToken,
+        },
+      }
+    )
+    .then((response) => {
+      var result = null;
+      try {
+        result = response.data;
+        console.log(result);
+        result.categories.map((item: Category) => {
+          if (contexts.stores.categoriesStore.getCategory(item.code)) {
+            console.log(123);
+            return contexts.stores.categoriesStore.updateCategory(item);
+          } else {
+            console.log(456);
+            return contexts.stores.categoriesStore.addCategory(item);
+          }
+        });
+      } catch (e) {
+        result = response.data;
+      }
+      return result;
+    })
+    .catch((error) => {
+      return error;
+    });
+  return res;
+};
+
+export const getItems = async (category?: string, priceType?: string) => {
+  var res = await axios
+    .post(
+      Constant.URL + Constant.GET_ITEMS,
+      { getCat: category, getPrice: priceType },
+      {
+        headers: {
+          Authorization: "Basic " + (await getUserData()).loginToken,
+        },
+      }
+    )
+    .then((response) => {
+      var result = null;
+      try {
+        // result = response.data;
+        // result.map ((item: Category) => {
+        //   store.addCategory(item);
+        // });
+      } catch (e) {
+        result = response.data;
+      }
+      return result;
+    })
+    .catch((error) => {
+      return error;
+    });
+  return res;
+};
+
+export const getStores = async () => {
+  var res = await axios
+    .post(
+      Constant.URL + Constant.GET_STORES,
       {},
       {
         headers: {
@@ -42,23 +174,35 @@ export const loginData = async (
         },
       }
     )
-    .then(() => {
-      setIsLoggedInData(true);
-      return true;
+    .then((response) => {
+      var result = null;
+      try {
+        result = response.data;
+        result.map((item: Stock) => {
+          contexts.stores.stocksStore.addStock(item);
+        });
+      } catch (e) {
+        result = response.data;
+      }
+      return result;
     })
-    .catch(() => {
-      return false;
+    .catch((error) => {
+      return error;
     });
   return res;
 };
-export const getCategories = async (method: string, category?: string) => {
-  console.log(category);
+
+export const getServerIP = async () => {
   var res = await axios
-    .post(URL + method, category! ? {name: category,} : {}, {
-      headers: {
-        Authorization: "Basic " + (await getUserData()).loginToken,
-      },
-    })
+    .post(
+      Constant.URL + Constant.GET_SERVER_IP,
+      {},
+      {
+        headers: {
+          Authorization: "Basic " + (await getUserData()).loginToken,
+        },
+      }
+    )
     .then((response) => {
       var result = null;
       try {
@@ -69,28 +213,48 @@ export const getCategories = async (method: string, category?: string) => {
       return result;
     })
     .catch((error) => {
-      console.log(error);
       return error;
     });
-  console.log(res);
   return res;
 };
-export const logoutData = async () => {
-  setIsLoggedInData(false);
-  await Storage.remove({ key: LOGIN_TOKEN });
-};
+
 export const setIsLoggedInData = async (isLoggedIn: boolean) => {
-  await Storage.set({ key: HAS_LOGGED_IN, value: JSON.stringify(isLoggedIn) });
+  await Storage.set({
+    key: Constant.HAS_LOGGED_IN,
+    value: JSON.stringify(isLoggedIn),
+  });
 };
 
-export const setLoginTokenData = async (loginToken: string) => {
-  await Storage.set({ key: LOGIN_TOKEN, value: loginToken });
+export const setLoginTokenData = async (loginToken?: string) => {
+  if (!loginToken) {
+    await Storage.remove({ key: Constant.LOGIN_TOKEN });
+  } else {
+    await Storage.set({ key: Constant.LOGIN_TOKEN, value: loginToken });
+  }
 };
 
 export const setLoginData = async (login?: string) => {
   if (!login) {
-    await Storage.remove({ key: LOGIN });
+    await Storage.remove({ key: Constant.LOGIN });
   } else {
-    await Storage.set({ key: LOGIN, value: login });
+    await Storage.set({ key: Constant.LOGIN, value: login });
   }
 };
+export const setStartupFlag = async (startupFlag: boolean) => {
+  await Storage.set({
+    key: Constant.STARTUP_FLAG,
+    value: JSON.stringify(startupFlag),
+  });
+};
+export const setCurrectCategory = async (currentCategory: string) =>{
+  await Storage.set({
+    key: Constant.CURRECT_CATEGORY,
+    value: currentCategory,
+  });
+}
+export let getCurrectCategory = async (cat: string) =>{
+  let currentCategory = await Storage.get({
+    key: Constant.CURRECT_CATEGORY
+  });
+  return currentCategory;
+}

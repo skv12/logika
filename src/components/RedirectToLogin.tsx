@@ -1,13 +1,15 @@
-import React, { useEffect, useContext } from 'react';
+import React, { useEffect } from 'react';
 
 interface RedirectToLoginProps {
   setIsLoggedIn: Function;
+  setLoginToken: Function;
 }
 
-const RedirectToLogin: React.FC<RedirectToLoginProps> = ({ setIsLoggedIn }) => {
+const RedirectToLogin: React.FC<RedirectToLoginProps> = ({ setIsLoggedIn, setLoginToken }) => {
   useEffect(() => {
     setIsLoggedIn(false);
-  }, [setIsLoggedIn]);
+    setLoginToken();
+  }, [setIsLoggedIn, setLoginToken]);
   return null;
 };
 

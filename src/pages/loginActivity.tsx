@@ -9,9 +9,11 @@ import {
 } from '@ionic/react';
 import './LoginActivity.scss';
 import { setIsLoggedIn, setLogin, setLoginToken } from '../data/user.actions';
-import { RouteComponentProps } from 'react-router';
+import { RouteComponentProps, useHistory } from 'react-router';
 import { connect } from '../api/connect';
-import { loginData } from '../api/dataApi';
+import { getCategories, getStores, loginData } from '../api/dataApi';
+import TabNavigator from '../routers/TabNavigator';
+import { IonReactRouter } from '@ionic/react-router';
 
 interface OwnProps extends RouteComponentProps {}
 
@@ -21,15 +23,17 @@ interface DispatchProps {
   setLoginToken: typeof setLoginToken;
 }
 interface LoginProps extends OwnProps,  DispatchProps { }
-
-const LoginActivity: React.FC<LoginProps> = ({ setIsLoggedIn, history, setLogin: setLoginAction, setLoginToken: setLoginTokenAction}) => {
+function refreshPage(){ 
+  window.location.reload(); 
+}
+const LoginActivity: React.FC<LoginProps> = () => {
   const [login, setLogin] = useState('');
   const [password, setPassword] = useState('');
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [loginError, setLoginError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
   const [loginFailed,setLoginFailed] = useState(false);
-
+  let history = useHistory();
   const loginEvent = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -43,34 +47,30 @@ const LoginActivity: React.FC<LoginProps> = ({ setIsLoggedIn, history, setLogin:
     if (login && password) {
       if(await loginData("auth", login, password)){
         setLoginFailed(true ? false : false);
-        setIsLoggedIn(true);
-        history.push('/main', {direction: 'none'});
+        refreshPage();
       }
       else{
         setLoginFailed(true);
       };
-      //await setIsLoggedIn(true);
-      //await setLoginAction(login);
-      //await setLoginTokenAction(login+password)
     }
   };
   return (
-    <IonPage class="loginPage">
+    <IonPage className="loginPage">
       <form noValidate onSubmit={loginEvent}>
         {formSubmitted && loginFailed && <IonText color='danger'>
           <p className="ion-padding-start">Неправильный логин/пароль</p>
         </IonText>
 
         }
-        <IonTitle class="loginPage__title" size="large" >Вход</IonTitle>
+        <IonTitle className="loginPage__title" size="large" >Вход</IonTitle>
         
-        <IonInput class="loginPage__input" placeholder="Логин" type="text" value={login} onIonChange={(e) => setLogin(e.detail.value!)} />
+        <IonInput className="loginPage__input" placeholder="Логин" type="text" value={login} onIonChange={(e) => setLogin(e.detail.value!)} />
         {formSubmitted && loginError && <IonText color="danger">
               <p className="ion-padding-start">
                 Заполните поле
               </p>
             </IonText>}
-        <IonInput class="loginPage__input" placeholder="Пароль" type="password" value={password} onIonChange={(e) => setPassword(e.detail.value!)} />
+        <IonInput className="loginPage__input" placeholder="Пароль" type="password" value={password} onIonChange={(e) => setPassword(e.detail.value!)} />
         {formSubmitted && passwordError && <IonText color="danger">
               <p className="ion-padding-start">
                 Заполните поле

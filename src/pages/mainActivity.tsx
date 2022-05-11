@@ -5,23 +5,45 @@ import {
   IonTitle,
   IonContent,
   IonButton,
+  IonSelectOption,
+  IonSelect,
 } from "@ionic/react";
-import React from "react";
-import { getCategories } from "../api/dataApi";
-import ExploreContainer from "../components/ExploreContainer";
+import React, { useEffect, useState } from "react";
+import { useRouteMatch } from "react-router";
+import { getCategories, getItems, getServerIP, getStores, contexts, getCurrectCategory } from "../api/dataApi";
+import CCategory from "../components/Category";
 
 import "./MainActivity.scss";
 
 const MainActivity: React.FC = () => {
+  const [store, setStore] = useState<string>("Все");
+  let { url } = useRouteMatch();
+ // let { cat } = getCurrectCategory();
   return (
     <IonPage>
       <IonHeader>
         <IonToolbar>
-          <IonTitle>Склад</IonTitle>
+          {/* {<IonSelect value={store} onIonChange={(e) => setStore(e.detail.value)} interface="popover">
+          </IonSelect>} */}
+            <IonTitle >{}</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
-        <IonButton type="submit" expand="block" onClick={() => getCategories("data/parseData", "ЛОФТ")}>Выйти</IonButton>
+        {
+        
+        contexts.stores.categoriesStore.list.map(elem => {
+          console.log(elem);
+          // if(elem.parent == parent)
+          return(
+          <CCategory category={elem}/>)
+        })
+        }
+        <IonButton type="submit" expand="block" onClick={() => console.log(contexts.stores.categoriesStore.list)}>
+          Получить категории
+        </IonButton>
+        <IonButton type="submit" expand="block" onClick={() => getItems("Стулья", "Розничная")}>
+          Получить товары
+        </IonButton>
       </IonContent>
     </IonPage>
   );

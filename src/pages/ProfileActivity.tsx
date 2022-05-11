@@ -6,8 +6,8 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import { logoutData } from "../api/dataApi";
 import ExploreContainer from "../components/ExploreContainer";
+import { logoutUser } from "../data/user.actions";
 import "./ProfileActivity.scss";
 
 const ProfileActivity: React.FC = () => {
@@ -25,7 +25,7 @@ const ProfileActivity: React.FC = () => {
           </IonToolbar>
         </IonHeader>
         <ExploreContainer name="Профиль" />
-        <IonButton type="submit" expand="block" onClick={() => logoutData()} routerLink="/logout" routerDirection="none">Выйти</IonButton>
+        <IonButton type="submit" expand="block" onClick={() => logoutUser()} routerLink="/logout" routerDirection="none">Выйти</IonButton>
       </IonContent>
     </IonPage>
   );

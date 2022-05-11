@@ -4,4 +4,5 @@ export interface UserState {
   darkMode: boolean;
   loginToken?: string;
   loading: boolean;
+  startupFlag: boolean;
 }
