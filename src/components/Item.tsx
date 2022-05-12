@@ -1,16 +1,23 @@
 import { IonItem, IonLabel } from "@ionic/react";
+import { Item } from "../data/store.state";
 
 interface ContainerProps {
-  name: string;
+  item: Item;
 }
 
-const Item: React.FC<ContainerProps> = ({ name }) => {
+const CItem: React.FC<ContainerProps> = ({ item }) => {
   return (
-      <IonItem>
-          <IonLabel>
-          </IonLabel>
-      </IonItem>
+    <IonItem
+      onClick={() => {
+
+      }}
+      href=""
+    >
+      <IonLabel>{item.name}</IonLabel>
+      <IonLabel>{item.price}</IonLabel>
+      <IonLabel>{item.quantity}</IonLabel>
+    </IonItem>
   );
 };
 
-export default Item;
+export default CItem;
