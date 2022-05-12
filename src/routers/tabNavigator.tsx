@@ -21,6 +21,7 @@ import {
 } from "ionicons/icons";
 import "./TabNavigator.scss";
 import { getCategories, getStores } from "../api/dataApi";
+import CategoryList from "../components/CategoryList";
 let initDone = false;
 const TabNavigator: React.FC = () => {
   if (!initDone) {
@@ -38,7 +39,7 @@ const TabNavigator: React.FC = () => {
         <IonRouterOutlet>
           <Route exact path="/main" component={MainActivity}>
           </Route>
-          <Route path="/main/:name" component={MainActivity}  />
+          <Route path="/main/:code" component={CategoryList} exact={true}/>
           <Route exact path="/stats">
             <StatsActivity />
           </Route>

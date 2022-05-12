@@ -9,11 +9,9 @@ import {
 } from '@ionic/react';
 import './LoginActivity.scss';
 import { setIsLoggedIn, setLogin, setLoginToken } from '../data/user.actions';
-import { RouteComponentProps, useHistory } from 'react-router';
+import { RouteComponentProps } from 'react-router';
 import { connect } from '../api/connect';
-import { getCategories, getStores, loginData } from '../api/dataApi';
-import TabNavigator from '../routers/TabNavigator';
-import { IonReactRouter } from '@ionic/react-router';
+import { loginData } from '../api/dataApi';
 
 interface OwnProps extends RouteComponentProps {}
 
@@ -33,7 +31,6 @@ const LoginActivity: React.FC<LoginProps> = () => {
   const [loginError, setLoginError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
   const [loginFailed,setLoginFailed] = useState(false);
-  let history = useHistory();
   const loginEvent = async (e: React.FormEvent) => {
     e.preventDefault();
     
