@@ -10,12 +10,13 @@ import {
   }
   const CCategoryList: React.FC<ContainerProps> = ({url}) => {
    // let { cat } = getCurrectCategory();
+   console.log(contexts.stores.categoriesStore.list);
     return (
         <IonContent fullscreen>
           <IonList>
           {
           contexts.stores.categoriesStore.list.map(elem => {
-            console.log(elem);
+            //console.log(elem);
             if(url)
                 if(elem.parent === url)
                     return(<CCategory category={elem}/>)

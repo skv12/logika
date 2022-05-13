@@ -6,10 +6,14 @@ export interface Stock {
   name: string;
   priceType: string;
 }
+export interface Childrens{
+  categories?: Category[];
+  items?: Item[];
+}
 export interface Category extends ICode {
   name: string;
   parent: string;
-  //items: Item[];
+  childrens?: Childrens[];
 }
 export interface Item extends ICode {
   name: string;
@@ -66,9 +70,9 @@ export class CategoriesStore<CategoriesList extends Category> {
   }
   @action
   updateCategory(item: Category) {
-    const foundTodo = this.list.find((element) => item && element.code === item.code);
+    const foundTodo = this.list.find((element) => item && element.code === item.parent);
     if (foundTodo && item) {
-      Object.assign(foundTodo, item);
+      Object.assign(foundTodo.childrens, item);
     }
   }
 }

@@ -38,12 +38,12 @@ export const getUserData = async () => {
     Storage.get({ key: Constant.HAS_LOGGED_IN }),
     Storage.get({ key: Constant.LOGIN_TOKEN }),
     Storage.get({ key: Constant.STARTUP_FLAG }),
-    Storage.get({ key: Constant.CURRECT_CATEGORY})
+    Storage.get({ key: Constant.CURRENT_CATEGORY})
   ]);
   const isLoggedin = (await response[0].value) === "true";
   const loginToken = (await response[1].value) || undefined;
   const startupFlag = (await response[2].value) === "true";
-  const currentCategory = (await response[3].value) === "0";
+  const currentCategory = (await response[3].value) || undefined;
   const data = {
     isLoggedin,
     loginToken,
@@ -116,10 +116,9 @@ export const getCategories = async (category?: string) => {
         console.log(result);
         result.categories.map((item: Category) => {
           if (contexts.stores.categoriesStore.getCategory(item.code)) {
-            console.log(123);
             return contexts.stores.categoriesStore.updateCategory(item);
-          } else {
-            console.log(456);
+          } 
+          else {
             return contexts.stores.categoriesStore.addCategory(item);
           }
         });
@@ -246,15 +245,13 @@ export const setStartupFlag = async (startupFlag: boolean) => {
     value: JSON.stringify(startupFlag),
   });
 };
-export const setCurrectCategory = async (currentCategory: string) =>{
+export const setCurrentCategory = async (currentCategory: string) =>{
   await Storage.set({
-    key: Constant.CURRECT_CATEGORY,
+    key: Constant.CURRENT_CATEGORY,
     value: currentCategory,
   });
 }
-export let getCurrectCategory = async (cat: string) =>{
-  let currentCategory = await Storage.get({
-    key: Constant.CURRECT_CATEGORY
-  });
-  return currentCategory;
+export let getCurrentCategory = async () =>{
+  let curCat = (await getUserData()).currentCategory;
+  return curCat;
 }

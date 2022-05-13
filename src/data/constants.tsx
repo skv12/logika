@@ -3,7 +3,7 @@ export const LOGIN_TOKEN = "loginToken";
 export const LOGIN = "login";
 export const STARTUP_FLAG = "startupFlag";
 export const SESSION_TOKEN = "sessionToken";
-export const CURRECT_CATEGORY ="currentCategory";
+export const CURRENT_CATEGORY ="currentCategory";
 
 export const URL = "http://127.0.0.1/stockholm/hs/api/";
 export const GET_CATEGORIES = "data/parseData";

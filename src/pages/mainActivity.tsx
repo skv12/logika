@@ -4,6 +4,7 @@ import {
   IonToolbar,
   IonTitle,
 } from "@ionic/react";
+import { getCurrentCategory } from "../api/dataApi";
 // import React, { useState } from "react";
 // import { useRouteMatch } from "react-router";
 import CCategoryList from "../components/CategoryList";
@@ -14,6 +15,8 @@ const MainActivity: React.FC = () => {
   // const [store, setStore] = useState<string>("Все");
   // let { url } = useRouteMatch();
  // let { cat } = getCurrectCategory();
+  let curCat = getCurrentCategory();
+  console.log(curCat);
   return (
     <IonPage>
       <IonHeader>
@@ -22,8 +25,10 @@ const MainActivity: React.FC = () => {
           </IonSelect>} */}
             <IonTitle >{}</IonTitle>
         </IonToolbar>
-      </IonHeader>
-      <CCategoryList/>
+      </IonHeader> 
+      {
+        curCat !== undefined ? <CCategoryList/> : <CCategoryList url={JSON.stringify(curCat)}/>
+      }
       {/* <IonContent fullscreen>
         <IonList>
         {
