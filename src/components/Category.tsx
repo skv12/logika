@@ -1,5 +1,5 @@
 import { IonItem, IonLabel } from "@ionic/react";
-import { getCategories, setCurrentCategory } from "../api/dataApi";
+import { contexts, getCategories, setCurrentCategory } from "../api/dataApi";
 import { Category } from "../data/store.state";
 import { useHistory } from "react-router-dom";
 // import { Route } from "workbox-routing";
@@ -20,6 +20,7 @@ const CCategory: React.FC<ContainerProps> = ({ category }) => {
     <IonItem
       onClick={() => {
         getCategories(category.name);
+        contexts.data.appState.setCategory(category.code);
         //setCurrentCategory(category.code);
         history.push(href);
       }}

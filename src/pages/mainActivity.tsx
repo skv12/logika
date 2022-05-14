@@ -3,34 +3,76 @@ import {
   IonHeader,
   IonToolbar,
   IonTitle,
+  IonSelect,
+  IonSelectOption,
+  IonGrid,
+  IonRow,
+  IonCol,
+  IonText,
+  IonContent,
+  IonButton,
+  IonRouterLink,
+  IonButtons,
+  IonBackButton,
 } from "@ionic/react";
-import { getCurrentCategory } from "../api/dataApi";
+import { useState } from "react";
+import { contexts, getCurrentCategory } from "../api/dataApi";
 // import React, { useState } from "react";
 // import { useRouteMatch } from "react-router";
 import CCategoryList from "../components/CategoryList";
-
+import { useHistory } from "react-router-dom";
 import "./MainActivity.scss";
+import { Category } from "../data/store.state";
 
-const MainActivity: React.FC = () => {
-  // const [store, setStore] = useState<string>("Все");
+interface ContainerProps{
+  category?: string;
+}
+
+const MainActivity: React.FC<ContainerProps> = ({category}) => {
+  const [store, setStore] = useState<string>("Все");
   // let { url } = useRouteMatch();
- // let { cat } = getCurrectCategory();
+  // let { cat } = getCurrectCategory();
   let curCat = getCurrentCategory();
   console.log(curCat);
+  let history =useHistory();
   return (
     <IonPage>
       <IonHeader>
         <IonToolbar>
-          {/* {<IonSelect value={store} onIonChange={(e) => setStore(e.detail.value)} interface="popover">
-          </IonSelect>} */}
-            <IonTitle >{}</IonTitle>
+        <IonButtons slot="start">
+          <IonBackButton />
+        </IonButtons>
+                <IonText slot="primary">Склад</IonText>
+                <IonSelect
+                  value={store}
+                  onIonChange={(e) => setStore(e.detail.value)}
+                  interface="action-sheet"
+                  slot="end"
+                >
+                  <IonSelectOption value={"Все"}>Все</IonSelectOption>
+                  {contexts.stores.stocksStore.list.map((elem) => {
+                    console.log(elem.stores);
+                    return (
+                      <IonSelectOption value={elem.stores} key={elem.stores}>
+                        {elem.stores} ({elem.priceType})
+                      </IonSelectOption>
+                    );
+                  })}
+                </IonSelect>
+
         </IonToolbar>
-      </IonHeader> 
-      {
-        curCat !== undefined ? <CCategoryList/> : <CCategoryList url={JSON.stringify(curCat)}/>
-      }
-      {/* <IonContent fullscreen>
-        <IonList>
+      </IonHeader>
+      <IonContent fullscreen>
+      <IonButton onClick={() =>{
+        history.push("/item");
+      }}>Пример товара</IonButton>
+        {category === undefined ? (
+          <CCategoryList />
+        ) : (
+          <CCategoryList parent={category} />
+        )}
+
+        {/* <IonList>
         {
         contexts.stores.categoriesStore.list.map(elem => {
           console.log(elem);
@@ -39,8 +81,9 @@ const MainActivity: React.FC = () => {
           <CCategory category={elem}/>)
         })
         }
-        </IonList>
-      </IonContent> */}
+        </IonList> */}
+        
+      </IonContent>
     </IonPage>
   );
 };

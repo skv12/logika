@@ -20,26 +20,35 @@ import {
   storefrontOutline,
 } from "ionicons/icons";
 import "./TabNavigator.scss";
-import { getCategories, getStores } from "../api/dataApi";
+import { contexts, getCategories, getItems, getStores } from "../api/dataApi";
 import CategoryList from "../components/CategoryList";
+import { useEffect } from "react";
+import ItemCard from "../components/ItemCard";
 let initDone = false;
 const TabNavigator: React.FC = () => {
-  if (!initDone) {
-    initDone = true;
-    getStores();
-    getCategories();
-  }
-  else{
-    getStores();
-    getCategories();
-  }
+  useEffect(() =>{
+    if (!initDone) {
+      initDone = true;
+      console.log(123);
+      getStores();
+      getCategories();
+      getItems("МаркетХолл", "Розничная");
+    }
+    else{
+      getStores();
+      getCategories();
+    }
+  });
+  
   return (
     <IonContent>
       <IonTabs>
         <IonRouterOutlet>
           <Route exact path="/main" component={MainActivity}>
           </Route>
-          <Route path="/main/:code" component={CategoryList} exact={true}/>
+          <Route path="/item" render={() => <ItemCard item={contexts.stores.itemsStore.getItem("ЦБ-00008095")}></ItemCard>}>
+          </Route>
+          <Route exact path="/main/:code" render={() => <MainActivity category={(contexts.data.appState.currentCategory)}></MainActivity>}/>
           <Route exact path="/stats">
             <StatsActivity />
           </Route>

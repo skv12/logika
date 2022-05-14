@@ -31,7 +31,9 @@ import TabNavigator from "./routers/TabNavigator";
 import LoginActivity from "./pages/LoginActivity";
 import { AppContextProvider } from "./api/AppContext";
 import RedirectToLogin from "./components/RedirectToLogin";
-import { loginData } from "./api/dataApi";
+import { contexts, loginData } from "./api/dataApi";
+import ItemCard from "./components/ItemCard";
+import CategoryList from "./components/CategoryList";
 setupIonicReact();
 
 interface StateProps {
@@ -65,10 +67,10 @@ const Start: React.FC<IonicAppProps> = ({
       <IonReactRouter>
         {isLoggedin && loginToken && loginData("auth", undefined, undefined, loginToken) ? (
           <>
-            <Route path="/">
-              <TabNavigator/>
+            <Route path="/" component={TabNavigator}>
             </Route>
             <Route path="/login" render={() => <Redirect to="/"/>} />
+            
           </>
         ) : (
           <>

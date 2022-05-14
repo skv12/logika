@@ -1,14 +1,20 @@
 import { persist } from "mobx-persist";
-import { observable, computed, action, makeObservable } from "mobx";
+import { observable, computed, action, makeObservable, autorun } from "mobx";
 import { ErrorType, ICode } from "../api/types";
+import React, {Component} from 'react';
+
 
 export interface Stock {
-  name: string;
+  stores: string;
   priceType: string;
 }
 export interface Childrens{
   categories?: Category[];
   items?: Item[];
+}
+export interface StockQuantity{
+  stock: Stock;
+  quantity: number;
 }
 export interface Category extends ICode {
   name: string;
@@ -22,7 +28,7 @@ export interface Item extends ICode {
   price: number;
   priceType: string;
   quantity: number;
-  stockQuantity: Stock[];
+  stockQuantity: StockQuantity[];
 }
 
 export interface CListState<CategoriesList extends Category> {
@@ -52,6 +58,7 @@ export class CategoriesStore<CategoriesList extends Category> {
   constructor() {
     makeObservable<CategoriesStore<CategoriesList>>(this);
   }
+
   get list(): Category[] {
     return Array.isArray(this.categories.results)
       ? this.categories.results
@@ -96,12 +103,12 @@ export class StocksStore<StockList extends Stock> {
     @action
     getStock(name: string){
         return this.list.find((element) =>{
-            return element.name === name;
+            return element.stores === name;
         });
     }
     @action
     updateStock(item: Stock) {
-      const foundTodo = this.list.find((element) => {return element.name === item.name});
+      const foundTodo = this.list.find((element) => {return element.stores === item.stores});
       if (foundTodo) {
         Object.assign(foundTodo, item);
       }

@@ -2,10 +2,12 @@ import { Storage } from "@capacitor/storage";
 import axios from "axios";
 import { Buffer } from "buffer";
 import * as Constant from "../data/constants";
+import { AppState, AppStateType } from "../data/data.state";
 import {
   CategoriesStore,
   CategoriesStoreType,
   Category,
+  Item,
   ItemsStore,
   ItemsStoreType,
   Stock,
@@ -19,16 +21,22 @@ export interface IStoresContextValue {
   stocksStore: StocksStoreType;
   itemsStore: ItemsStoreType;
 }
-
+export interface IDataContextValue{
+  appState: AppStateType;
+}
 export function initContextsValues() {
   const stores: IStoresContextValue = {
     categoriesStore: new CategoriesStore(),
     stocksStore: new StocksStore(),
     itemsStore: new ItemsStore(),
   };
+  const data: IDataContextValue ={
+    appState: new AppState()
+  }
 
   return {
     stores,
+    data
   };
 }
 export const contexts = initContextsValues();
@@ -147,10 +155,14 @@ export const getItems = async (category?: string, priceType?: string) => {
     .then((response) => {
       var result = null;
       try {
-        // result = response.data;
-        // result.map ((item: Category) => {
-        //   store.addCategory(item);
-        // });
+        result = response.data;
+        console.log(result);
+        result.map ((item: Item) => {
+          if(contexts.stores.itemsStore.getItem(item.code))
+            return contexts.stores.itemsStore.updateItem(item);
+          else
+            return contexts.stores.itemsStore.addItem(item);
+        });
       } catch (e) {
         result = response.data;
       }
@@ -178,7 +190,12 @@ export const getStores = async () => {
       try {
         result = response.data;
         result.map((item: Stock) => {
-          contexts.stores.stocksStore.addStock(item);
+          if (contexts.stores.stocksStore.getStock(item.stores)) {
+            return contexts.stores.stocksStore.updateStock(item);
+          } 
+          else {
+            return contexts.stores.stocksStore.addStock(item);
+          }
         });
       } catch (e) {
         result = response.data;
