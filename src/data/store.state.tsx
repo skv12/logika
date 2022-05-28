@@ -1,21 +1,37 @@
-import { persist } from "mobx-persist";
-import { observable, computed, action, makeObservable, autorun } from "mobx";
 import { ErrorType, ICode } from "../api/types";
-import React, {Component} from 'react';
-
 
 export interface Stock {
   stores: string;
   priceType: string;
 }
-export interface Childrens{
+export interface Childrens {
   categories?: Category[];
   items?: Item[];
 }
-export interface StockQuantity{
+export interface StockQuantity {
   stock: Stock;
   quantity: number;
 }
+
+export interface Order {
+  id: string;
+  name: string;
+  date: Date;
+  completed: boolean;
+  confirm: boolean;
+  sumOrder: number;
+  customer: string;
+  seller: string;
+  stock: Stock;
+  manager: string;
+  cashier: string;
+  bankAccount: string;
+  purposer: string;
+  deliveryMethod: string;
+  deliveryComment: string;
+  orderItems: Item[];
+}
+
 export interface Category extends ICode {
   name: string;
   parent: string;
@@ -50,103 +66,9 @@ export interface IListState<ItemList extends Item> {
   error?: ErrorType;
 }
 
-export class CategoriesStore<CategoriesList extends Category> {
-  @observable
-  protected categories: CListState<CategoriesList> = {
-    results: [],
-  };
-  constructor() {
-    makeObservable<CategoriesStore<CategoriesList>>(this);
-  }
-
-  get list(): Category[] {
-    return Array.isArray(this.categories.results)
-      ? this.categories.results
-      : [];
-  }
-  @action
-  addCategory(item: Category) {
-    this.list.push(item);
-  }
-  @action
-  getCategory(code: string){
-      var item = this.list.find((element) =>{
-          return element.code === code;
-      });
-      return item;
-  }
-  @action
-  updateCategory(item: Category) {
-    const foundTodo = this.list.find((element) => item && element.code === item.parent);
-    if (foundTodo && item) {
-      Object.assign(foundTodo.childrens, item);
-    }
-  }
+export interface OListState<OrderList extends Order> {
+  results: OrderList[];
+  count?: number;
+  isLoading?: boolean;
+  error?: ErrorType;
 }
-export class StocksStore<StockList extends Stock> {
-    @observable
-    protected stocks: SListState<StockList> = {
-      results: [],
-    };
-    constructor() {
-      makeObservable<StocksStore<StockList>>(this);
-    }
-    get list(): Stock[] {
-      return Array.isArray(this.stocks.results)
-        ? this.stocks.results
-        : [];
-    }
-    @action
-    addStock(item: Stock) {
-      this.list.push(item);
-    }
-    @action
-    getStock(name: string){
-        return this.list.find((element) =>{
-            return element.stores === name;
-        });
-    }
-    @action
-    updateStock(item: Stock) {
-      const foundTodo = this.list.find((element) => {return element.stores === item.stores});
-      if (foundTodo) {
-        Object.assign(foundTodo, item);
-      }
-    }
-  }
-
-export class ItemsStore<ItemList extends Item> {
-    @observable
-    protected items: IListState<ItemList> = {
-      results: [],
-    };
-    constructor() {
-      makeObservable<ItemsStore<ItemList>>(this);
-    }
-    get list(): Item[] {
-      return Array.isArray(this.items.results)
-        ? this.items.results
-        : [];
-    }
-    @action
-    addItem(item: Item) {
-      this.list.push(item);
-    }
-    @action
-    getItem(code: string){
-        return this.list.find((element) =>{
-            return element.code === code;
-        });
-    }
-    @action
-    updateItem(item: Item) {
-      const foundTodo = this.list.find((element) => {return element.code === item.code});
-      if (foundTodo) {
-        Object.assign(foundTodo, item);
-      }
-    }
-  }
-
-export type CategoriesStoreType = CategoriesStore<Category>;
-export type ItemsStoreType = ItemsStore<Item>;
-export type StocksStoreType = StocksStore<Stock>;

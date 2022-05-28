@@ -9,18 +9,16 @@ import {
 } from '@ionic/react';
 import './LoginActivity.scss';
 import { setIsLoggedIn, setLogin, setLoginToken } from '../data/user.actions';
-import { RouteComponentProps } from 'react-router';
+import { useParams } from 'react-router-dom';
 import { connect } from '../api/connect';
 import { loginData } from '../api/dataApi';
-
-interface OwnProps extends RouteComponentProps {}
 
 interface DispatchProps {
   setIsLoggedIn: typeof setIsLoggedIn;
   setLogin: typeof setLogin;
   setLoginToken: typeof setLoginToken;
 }
-interface LoginProps extends OwnProps,  DispatchProps { }
+interface LoginProps extends DispatchProps { }
 function refreshPage(){ 
   window.location.reload(); 
 }
@@ -80,7 +78,7 @@ const LoginActivity: React.FC<LoginProps> = () => {
   );
 };
 
-export default connect<OwnProps, {}, DispatchProps>({
+export default connect<{}, DispatchProps>({
   mapDispatchToProps: {
     setIsLoggedIn,
     setLogin,

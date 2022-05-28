@@ -1,11 +1,9 @@
-import { persist } from "mobx-persist";
-import { observable, computed, action, makeObservable, autorun } from "mobx";
-import { ErrorType, ICode } from "../api/types";
-import React, { Component } from "react";
+
+import { observable, action, makeObservable } from "mobx";
 
 export class AppState {
   @observable
-  currentCategory = "";
+  currentCategory = "0";
 
   @observable
   previousCategories: string[] = [];
@@ -13,10 +11,21 @@ export class AppState {
   @observable
   currentItem = "";
 
+  @observable
+  currentOrder = "";
+  
+  @observable
+  firstInit = false;
+
+  @observable
+  url = "";
   constructor() {
     makeObservable<AppState>(this);
   }
-
+  @action
+  setFirstInit(){
+    this.firstInit = true;
+  }
   @action
   setCategory(category: string) {
     this.previousCategories.push(this.currentCategory);
@@ -27,23 +36,25 @@ export class AppState {
   setItem(item: string) {
     this.currentItem = item;
   }
-//   @action
-//   getCategory() {
-//     return this.currentCategory;
-//   }
-//   @action
-//   getItem() {
-//     return this.currentItem;
-//   }
+
+  @action
+  setOrder(order: string) {
+    this.currentOrder = order;
+  }
   @action
   purgeCategory() {
-    let popped = this.previousCategories.pop();
-    if (popped === undefined) this.currentCategory = "main";
+    const popped = this.previousCategories[this.previousCategories.length-1];
+    this.previousCategories.splice(-1);
+    if (popped === undefined) this.currentCategory = "0";
     else this.currentCategory = popped;
   }
   @action
   purgeItem() {
     this.currentItem = "";
+  }
+  @action
+  purgeOrder() {
+    this.currentOrder = "";
   }
 }
 

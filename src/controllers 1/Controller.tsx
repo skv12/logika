@@ -1,7 +1,7 @@
-import { CategoriesStoreType } from '../data/store.state';
-import { BaseApiType } from '../api/storeApi';
-import { ICode, ObjectType } from '../api/types';
-import { isIResponseError } from '../api/types';
+import { CategoriesStoreType } from "../data/store.actions";
+import { BaseApiType } from "../api/storeApi";
+import { ICode, ObjectType } from "../api/types";
+import { isIResponseError } from "../api/types";
 
 /**
  * Base class for controllers.
@@ -10,7 +10,7 @@ import { isIResponseError } from '../api/types';
 export default class BaseController {
   constructor(
     private readonly _listStore: CategoriesStoreType,
-    private readonly _api: BaseApiType,
+    private readonly _api: BaseApiType
   ) {}
 
   get listStore(): CategoriesStoreType {

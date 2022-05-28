@@ -1,5 +1,5 @@
 import { IonItem, IonLabel } from "@ionic/react";
-import { contexts, getCategories, setCurrentCategory } from "../api/dataApi";
+import { contexts, getCategories, getItems, setCurrentCategory } from "../api/dataApi";
 import { Category } from "../data/store.state";
 import { useHistory } from "react-router-dom";
 // import { Route } from "workbox-routing";
@@ -17,9 +17,8 @@ const CCategory: React.FC<ContainerProps> = ({ category }) => {
   // let url = useRouteMatch();
   const href = `/main/${category.code}`;
   return (
-    <IonItem
+    <IonItem className="folder"
       onClick={() => {
-        getCategories(category.name);
         contexts.data.appState.setCategory(category.code);
         //setCurrentCategory(category.code);
         history.push(href);

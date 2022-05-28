@@ -1,5 +1,3 @@
-import { Category } from "../data/store.state";
-
 export interface DispatchObject {
   [key: string]: any;
   type: string;

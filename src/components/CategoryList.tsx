@@ -1,24 +1,34 @@
-import { IonContent, IonList } from "@ionic/react";
+import { IonList, useIonViewWillLeave } from "@ionic/react";
 import React from "react";
 import { contexts } from "../api/dataApi";
 import CCategory from "../components/Category";
+import CItemElement from "./ItemElement";
 interface ContainerProps {
-  parent?: string;
+  parent: string;
 }
+
 const CCategoryList: React.FC<ContainerProps> = ({ parent }) => {
-  // let { cat } = getCurrectCategory();
-  console.log(contexts.stores.categoriesStore.list);
+  console.log("current category: " + parent);
+  useIonViewWillLeave(() =>{
+    console.log(123);
+    if(contexts.data.appState.currentItem === "")
+        contexts.data.appState.purgeCategory();
+    else
+        contexts.data.appState.purgeItem();
+  }); 
   return (
-      <IonList>
-        {contexts.stores.categoriesStore.list.map((elem, index) => {
-          console.log(parent);
-          if (parent)
-            if (elem.parent === parent) 
-              return <CCategory category={elem} key={index}/>;
-            else return 0;
-          else return <CCategory category={elem} key={elem.code}/>;
-        })}
-      </IonList>
+    <IonList>
+      {contexts.stores.categoriesStore.list.map((elem, index) => {
+          if (elem.parent === parent)
+            return <CCategory category={elem} key={index} />;
+          else return false;
+      })}
+      {contexts.stores.itemsStore.list.map((elem, index) => {
+        if (elem.category === parent)
+        return <CItemElement item={elem} key={index} />;
+        else return false;
+      })}
+    </IonList>
   );
 };
 

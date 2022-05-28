@@ -7,7 +7,7 @@ import {
   IonTabButton,
   IonTabs,
 } from "@ionic/react";
-import { Redirect, Route } from "react-router-dom";
+import { Redirect, Route} from "react-router-dom";
 
 import MainActivity from "../pages/MainActivity";
 import StatsActivity from "../pages/StatsActivity";
@@ -20,41 +20,35 @@ import {
   storefrontOutline,
 } from "ionicons/icons";
 import "./TabNavigator.scss";
-import { contexts, getCategories, getItems, getStores } from "../api/dataApi";
-import CategoryList from "../components/CategoryList";
+import { contexts, getCategories, getItems, getOrders, getStores } from "../api/dataApi";
 import { useEffect } from "react";
 import ItemCard from "../components/ItemCard";
-let initDone = false;
+import OrderCard from "../components/OrderCard";
 const TabNavigator: React.FC = () => {
   useEffect(() =>{
-    if (!initDone) {
-      initDone = true;
-      console.log(123);
+    if (!contexts.data.appState.firstInit) {
+      contexts.data.appState.setFirstInit();
       getStores();
       getCategories();
-      getItems("МаркетХолл", "Розничная");
-    }
-    else{
-      getStores();
-      getCategories();
+      getItems();
+      getOrders();
     }
   });
-  
   return (
     <IonContent>
       <IonTabs>
         <IonRouterOutlet>
-          <Route exact path="/main" component={MainActivity}>
+          <Route exact path="/main" render={() => <MainActivity category={"0"}></MainActivity>}>
           </Route>
-          <Route path="/item" render={() => <ItemCard item={contexts.stores.itemsStore.getItem("ЦБ-00008095")}></ItemCard>}>
+          <Route path="/item/:code" render={() => <ItemCard item={contexts.stores.itemsStore.getItem(contexts.data.appState.currentItem)}></ItemCard>}>
           </Route>
-          <Route exact path="/main/:code" render={() => <MainActivity category={(contexts.data.appState.currentCategory)}></MainActivity>}/>
+          <Route exact path={`/main/:code`} render={() => <MainActivity category={(contexts.data.appState.currentCategory)}></MainActivity>}/>
           <Route exact path="/stats">
             <StatsActivity />
           </Route>
-          <Route exact path="/sales">
-            <SalesActivity />
+          <Route exact path="/sales" render={() => <SalesActivity></SalesActivity>}>
           </Route>
+          <Route exact path="/sales/:id" render={() => <OrderCard order={contexts.stores.ordersStore.getOrder(contexts.data.appState.currentOrder)}></OrderCard>}/>
           <Route exact path="/profile">
             <ProfileActivity />
           </Route>

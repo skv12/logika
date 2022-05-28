@@ -6,22 +6,23 @@ import { AppState, AppStateType } from "../data/data.state";
 import {
   CategoriesStore,
   CategoriesStoreType,
-  Category,
-  Item,
   ItemsStore,
   ItemsStoreType,
-  Stock,
+  OrdersStore,
+  OrdersStoreType,
   StocksStore,
   StocksStoreType,
-} from "../data/store.state";
+} from "../data/store.actions";
+import { Category, Item, Order, Stock } from "../data/store.state";
 
 //export const categoriesStore = new CategoriesStore();
 export interface IStoresContextValue {
   categoriesStore: CategoriesStoreType;
   stocksStore: StocksStoreType;
   itemsStore: ItemsStoreType;
+  ordersStore: OrdersStoreType;
 }
-export interface IDataContextValue{
+export interface IDataContextValue {
   appState: AppStateType;
 }
 export function initContextsValues() {
@@ -29,14 +30,15 @@ export function initContextsValues() {
     categoriesStore: new CategoriesStore(),
     stocksStore: new StocksStore(),
     itemsStore: new ItemsStore(),
+    ordersStore: new OrdersStore()
   };
-  const data: IDataContextValue ={
-    appState: new AppState()
-  }
+  const data: IDataContextValue = {
+    appState: new AppState(),
+  };
 
   return {
     stores,
-    data
+    data,
   };
 }
 export const contexts = initContextsValues();
@@ -46,7 +48,7 @@ export const getUserData = async () => {
     Storage.get({ key: Constant.HAS_LOGGED_IN }),
     Storage.get({ key: Constant.LOGIN_TOKEN }),
     Storage.get({ key: Constant.STARTUP_FLAG }),
-    Storage.get({ key: Constant.CURRENT_CATEGORY})
+    Storage.get({ key: Constant.CURRENT_CATEGORY }),
   ]);
   const isLoggedin = (await response[0].value) === "true";
   const loginToken = (await response[1].value) || undefined;
@@ -56,7 +58,7 @@ export const getUserData = async () => {
     isLoggedin,
     loginToken,
     startupFlag,
-    currentCategory
+    currentCategory,
   };
   return data;
 };
@@ -121,12 +123,10 @@ export const getCategories = async (category?: string) => {
       var result = null;
       try {
         result = response.data;
-        console.log(result);
         result.categories.map((item: Category) => {
           if (contexts.stores.categoriesStore.getCategory(item.code)) {
             return contexts.stores.categoriesStore.updateCategory(item);
-          } 
-          else {
+          } else {
             return contexts.stores.categoriesStore.addCategory(item);
           }
         });
@@ -156,12 +156,10 @@ export const getItems = async (category?: string, priceType?: string) => {
       var result = null;
       try {
         result = response.data;
-        console.log(result);
-        result.map ((item: Item) => {
-          if(contexts.stores.itemsStore.getItem(item.code))
+        result.map((item: Item) => {
+          if (contexts.stores.itemsStore.getItem(item.code))
             return contexts.stores.itemsStore.updateItem(item);
-          else
-            return contexts.stores.itemsStore.addItem(item);
+          else return contexts.stores.itemsStore.addItem(item);
         });
       } catch (e) {
         result = response.data;
@@ -192,8 +190,7 @@ export const getStores = async () => {
         result.map((item: Stock) => {
           if (contexts.stores.stocksStore.getStock(item.stores)) {
             return contexts.stores.stocksStore.updateStock(item);
-          } 
-          else {
+          } else {
             return contexts.stores.stocksStore.addStock(item);
           }
         });
@@ -201,6 +198,40 @@ export const getStores = async () => {
         result = response.data;
       }
       return result;
+    })
+    .catch((error) => {
+      return error;
+    });
+  return res;
+};
+
+export const getOrders = async (category?: string) => {
+  var res = await axios
+    .post(
+      Constant.URL + Constant.GET_ORDERS,
+      category! ? { name: category } : {},
+      {
+        headers: {
+          Authorization: "Basic " + (await getUserData()).loginToken,
+        },
+      }
+    )
+    .then((response) => {
+      var result = null;
+      try {
+        result = response.data;
+        result.map((order: Order) => {
+          if (contexts.stores.ordersStore.getOrder(order.id)) {
+            return contexts.stores.ordersStore.updateOrder(order);
+          }
+          else {
+            return contexts.stores.ordersStore.addOrder(order);
+          }
+        });
+      } catch (e) {
+        result = response.data;
+      }
+      return response;
     })
     .catch((error) => {
       return error;
@@ -262,13 +293,13 @@ export const setStartupFlag = async (startupFlag: boolean) => {
     value: JSON.stringify(startupFlag),
   });
 };
-export const setCurrentCategory = async (currentCategory: string) =>{
+export const setCurrentCategory = async (currentCategory: string) => {
   await Storage.set({
     key: Constant.CURRENT_CATEGORY,
     value: currentCategory,
   });
-}
-export let getCurrentCategory = async () =>{
+};
+export let getCurrentCategory = async () => {
   let curCat = (await getUserData()).currentCategory;
   return curCat;
-}
+};

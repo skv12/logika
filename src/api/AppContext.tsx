@@ -5,13 +5,15 @@ export interface AppContextState {
   state: AppState;
   dispatch: React.Dispatch<any>;
 }
-
+type AppContextProps = {
+  children: React.ReactNode;
+}
 export const AppContext = createContext<AppContextState>({
   state: initialState,
   dispatch: () => undefined
 });
 
-export const AppContextProvider: React.FC = (props => {
+export const AppContextProvider: React.FC<AppContextProps> = (props => {
 
   const [store, dispatch] = useReducer(reducers, initialState);
 

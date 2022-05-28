@@ -31,9 +31,7 @@ import TabNavigator from "./routers/TabNavigator";
 import LoginActivity from "./pages/LoginActivity";
 import { AppContextProvider } from "./api/AppContext";
 import RedirectToLogin from "./components/RedirectToLogin";
-import { contexts, loginData } from "./api/dataApi";
-import ItemCard from "./components/ItemCard";
-import CategoryList from "./components/CategoryList";
+import { loginData } from "./api/dataApi";
 setupIonicReact();
 
 interface StateProps {

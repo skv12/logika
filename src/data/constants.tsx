@@ -9,4 +9,5 @@ export const URL = "http://127.0.0.1/stockholm/hs/api/";
 export const GET_CATEGORIES = "data/parseData";
 export const GET_ITEMS = "data/getItems";
 export const GET_STORES = "data/getStores";
+export const GET_ORDERS = "data/getOrders";
 export const GET_SERVER_IP = "service/getServerIP";
