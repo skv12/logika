@@ -12,6 +12,7 @@ import { setIsLoggedIn, setLogin, setLoginToken } from '../data/user.actions';
 import { useParams } from 'react-router-dom';
 import { connect } from '../api/connect';
 import { loginData } from '../api/dataApi';
+import { Buffer } from "buffer";
 
 interface DispatchProps {
   setIsLoggedIn: typeof setIsLoggedIn;
@@ -25,6 +26,7 @@ function refreshPage(){
 const LoginActivity: React.FC<LoginProps> = () => {
   const [login, setLogin] = useState('');
   const [password, setPassword] = useState('');
+  const [str, setStr] = useState('');
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [loginError, setLoginError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
@@ -33,6 +35,7 @@ const LoginActivity: React.FC<LoginProps> = () => {
     e.preventDefault();
     
     setFormSubmitted(true);
+    setStr(Buffer.from(login + ":" + password).toString("base64"));
     if (!login) {
       setLoginError(true);
     }
@@ -42,6 +45,7 @@ const LoginActivity: React.FC<LoginProps> = () => {
     if (login && password) {
       if(await loginData("auth", login, password)){
         setLoginFailed(true ? false : false);
+        
         refreshPage();
       }
       else{
@@ -73,7 +77,7 @@ const LoginActivity: React.FC<LoginProps> = () => {
             </IonText>}
         <IonButton type="submit" expand="block">Войти</IonButton>
       </form>
-
+        <IonText>{str}</IonText>
     </IonPage>
   );
 };

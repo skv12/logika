@@ -12,11 +12,15 @@ export interface StockQuantity {
   stock: Stock;
   quantity: number;
 }
-
+export interface OrderItems {
+  name: string;
+  quantity: number;
+}
 export interface Order {
   id: string;
   name: string;
   date: Date;
+  number: string;
   completed: boolean;
   confirm: boolean;
   sumOrder: number;
@@ -29,7 +33,7 @@ export interface Order {
   purposer: string;
   deliveryMethod: string;
   deliveryComment: string;
-  orderItems: Item[];
+  orderItems: OrderItems[];
 }
 
 export interface Category extends ICode {

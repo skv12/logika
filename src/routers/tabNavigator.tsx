@@ -21,23 +21,21 @@ import {
 } from "ionicons/icons";
 import "./TabNavigator.scss";
 import { contexts, getCategories, getItems, getOrders, getStores } from "../api/dataApi";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import ItemCard from "../components/ItemCard";
 import OrderCard from "../components/OrderCard";
 const TabNavigator: React.FC = () => {
+  const routerRef = useRef<HTMLIonRouterOutletElement | null>(null);
   useEffect(() =>{
     if (!contexts.data.appState.firstInit) {
-      contexts.data.appState.setFirstInit();
-      getStores();
-      getCategories();
-      getItems();
       getOrders();
+      contexts.data.appState.setFirstInit();
     }
   });
   return (
     <IonContent>
       <IonTabs>
-        <IonRouterOutlet>
+        <IonRouterOutlet ref={routerRef}>
           <Route exact path="/main" render={() => <MainActivity category={"0"}></MainActivity>}>
           </Route>
           <Route path="/item/:code" render={() => <ItemCard item={contexts.stores.itemsStore.getItem(contexts.data.appState.currentItem)}></ItemCard>}>
@@ -46,9 +44,8 @@ const TabNavigator: React.FC = () => {
           <Route exact path="/stats">
             <StatsActivity />
           </Route>
-          <Route exact path="/sales" render={() => <SalesActivity></SalesActivity>}>
-          </Route>
-          <Route exact path="/sales/:id" render={() => <OrderCard order={contexts.stores.ordersStore.getOrder(contexts.data.appState.currentOrder)}></OrderCard>}/>
+          <Route exact path="/stats/:id" render={() => <OrderCard order={contexts.stores.ordersStore.getOrder(contexts.data.appState.currentOrder)}></OrderCard>}/>
+          <Route exact path="/sales" render={() => <SalesActivity router={null}></SalesActivity>}/>
           <Route exact path="/profile">
             <ProfileActivity />
           </Route>

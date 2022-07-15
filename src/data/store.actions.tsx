@@ -94,10 +94,27 @@ export class ItemsStore<ItemList extends Item> {
   }
   @action
   getItem(code: string) {
-    return this.list.find((element) => {
+    const r = this.list.find((element) => {
       return element.code === code;
     });
+    if(r)
+      return r;
+    else {      
+      const empty: Item = {
+        name: "",
+        category: "",
+        currency: "",
+        price: 0,
+        priceType: "",
+        quantity: 0,
+        stockQuantity: [],
+        code: ""
+      }
+      return empty;
+     } 
   }
+
+  
   @action
   updateItem(item: Item) {
     const foundTodo = this.list.find((element) => {

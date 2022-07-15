@@ -3,32 +3,45 @@ import {
   IonHeader,
   IonToolbar,
   IonTitle,
-  IonSelect,
-  IonSelectOption,
   IonGrid,
   IonRow,
   IonCol,
   IonText,
   IonContent,
   IonButton,
-  IonRouterLink,
   IonImg,
   IonButtons,
   IonBackButton,
+  IonIcon,
+  IonInput,
 } from "@ionic/react";
+import { addCircle, removeCircle } from "ionicons/icons";
 import { useState } from "react";
-import { contexts, getCurrentCategory } from "../api/dataApi";
+import { contexts } from "../api/dataApi";
 import { Item } from "../data/store.state";
-// import React, { useState } from "react";
-// import { useRouteMatch } from "react-router";
 
 interface ContainerProps {
-  item?: Item;
-}
-
-const ItemCard: React.FC<ContainerProps> = ({ item }) => {
-  if (item === undefined) return <IonText>Ничего</IonText>;
-  else
+  item: Item;
+} 
+const ItemCard: React.FC<ContainerProps> = ( {item} ) => {
+  console.log(contexts.data.cartStore.getItem(item.code));
+  const [amount, setAmount] = useState(contexts.data.cartStore.getItem(item.code));
+  const increment = async () => {
+    setAmount((c: number) => {
+      if(c === item.quantity)
+        return c;
+      else
+        return ++c;
+    });
+  };
+  const decrement = async () => {
+    setAmount((c: number) => {
+      if (c > 1) 
+        return --c;
+      else
+        return 1;
+    });
+  };
     return (
       <IonPage>
         <IonHeader>
@@ -75,6 +88,36 @@ const ItemCard: React.FC<ContainerProps> = ({ item }) => {
               <IonCol>
                 <IonText>{item.quantity}</IonText>
               </IonCol>
+            </IonRow>
+            <IonRow></IonRow>
+            <IonRow>
+            <IonButton
+                onClick={(e) => {
+                  e.preventDefault();
+                  decrement();
+                }}
+              >
+                <IonIcon icon={removeCircle}></IonIcon>
+              </IonButton>
+              <IonInput>{amount}</IonInput>
+              <IonButton
+                onClick={(e) => {
+                  e.preventDefault();
+                  increment();
+                }}
+              >
+                <IonIcon icon={addCircle}></IonIcon>
+              </IonButton>
+              
+              
+              <IonButton
+                onClick={(e) => {
+                  e.preventDefault();
+                  contexts.data.cartStore.addItem(item.code, amount);
+                }}
+              >
+                Добавить в корзину
+              </IonButton>
             </IonRow>
           </IonGrid>
         </IonContent>

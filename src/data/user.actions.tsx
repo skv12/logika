@@ -11,7 +11,6 @@ export const loadUserData = () => async (dispatch: React.Dispatch<any>) => {
   dispatch(setData(data));
   dispatch(setLoading(false));
 }
-
 export const setLoading = (isLoading: boolean) => ({
   type: 'set-user-loading',
   isLoading

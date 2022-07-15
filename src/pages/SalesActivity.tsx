@@ -1,9 +1,27 @@
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
-import ExploreContainer from '../components/ExploreContainer';
-import COrderList from '../components/OrderList';
-import './Tab3.css';
+import {
+  IonContent,
+  IonFab,
+  IonFabButton,
+  IonHeader,
+  IonIcon,
+  IonModal,
+  IonPage,
+  IonTitle,
+  IonToolbar,
+} from "@ionic/react";
+import { arrowForwardCircle, cartOutline } from "ionicons/icons";
+import { useState } from "react";
+import { addOrder, contexts } from "../api/dataApi";
+import CCartList from "../components/CartList";
+import "./Tab3.css";
 
-const SalesActivity: React.FC = () => {
+interface HomePageProps {
+  router: HTMLIonRouterOutletElement | null;
+}
+
+
+const SalesActivity: React.FC<HomePageProps> = ({ router }) => {
+  const [showModal, setShowModal] = useState(false);
   return (
     <IonPage>
       <IonHeader>
@@ -17,7 +35,26 @@ const SalesActivity: React.FC = () => {
             <IonTitle size="large">Продажи</IonTitle>
           </IonToolbar>
         </IonHeader>
-        <COrderList/>
+        <CCartList />
+        {!contexts.data.cartStore.cartIsEmpty && (
+          <IonFab vertical="bottom" horizontal="end" slot="fixed">
+            <IonFabButton
+              onClick={(e) => {
+                e.preventDefault();
+                addOrder();
+              }}
+            >
+              <IonIcon icon={cartOutline} />
+            </IonFabButton>
+          </IonFab>
+        )}
+        <IonModal
+          isOpen={showModal}
+          swipeToClose={true}
+          presentingElement={router || undefined}
+          onDidDismiss={() => setShowModal(false)}>
+          <p>This is modal content</p>
+        </IonModal>
       </IonContent>
     </IonPage>
   );

@@ -2,7 +2,12 @@ import { Storage } from "@capacitor/storage";
 import axios from "axios";
 import { Buffer } from "buffer";
 import * as Constant from "../data/constants";
-import { AppState, AppStateType } from "../data/data.state";
+import {
+  AppState,
+  AppStateType,
+  CartStore,
+  CartStoreType,
+} from "../data/data.state";
 import {
   CategoriesStore,
   CategoriesStoreType,
@@ -24,16 +29,18 @@ export interface IStoresContextValue {
 }
 export interface IDataContextValue {
   appState: AppStateType;
+  cartStore: CartStoreType;
 }
 export function initContextsValues() {
   const stores: IStoresContextValue = {
     categoriesStore: new CategoriesStore(),
     stocksStore: new StocksStore(),
     itemsStore: new ItemsStore(),
-    ordersStore: new OrdersStore()
+    ordersStore: new OrdersStore(),
   };
   const data: IDataContextValue = {
     appState: new AppState(),
+    cartStore: new CartStore(),
   };
 
   return {
@@ -42,7 +49,6 @@ export function initContextsValues() {
   };
 }
 export const contexts = initContextsValues();
-
 export const getUserData = async () => {
   const response = await Promise.all([
     Storage.get({ key: Constant.HAS_LOGGED_IN }),
@@ -96,15 +102,17 @@ export const loginData = async (
         );
         setIsLoggedInData(true);
         setLoginTokenData(tempToken);
+        
         return true;
       } catch (e) {
-        console.log(e);
         return false;
       }
     })
     .catch((response) => {
       return false;
     });
+  
+
   return res;
 };
 
@@ -157,10 +165,13 @@ export const getItems = async (category?: string, priceType?: string) => {
       try {
         result = response.data;
         result.map((item: Item) => {
-          if (contexts.stores.itemsStore.getItem(item.code))
-            return contexts.stores.itemsStore.updateItem(item);
-          else return contexts.stores.itemsStore.addItem(item);
+          if (contexts.data.appState.firstItemInit)
+            return contexts.stores.itemsStore.addItem(item);
+          else return contexts.stores.itemsStore.updateItem(item);
         });
+        contexts.data.appState.setFirstItemInit();
+        contexts.data.appState.setIsLoading(false);
+        console.log(contexts.data.appState.isLoading);
       } catch (e) {
         result = response.data;
       }
@@ -169,6 +180,7 @@ export const getItems = async (category?: string, priceType?: string) => {
     .catch((error) => {
       return error;
     });
+
   return res;
 };
 
@@ -197,6 +209,7 @@ export const getStores = async () => {
       } catch (e) {
         result = response.data;
       }
+      
       return result;
     })
     .catch((error) => {
@@ -209,7 +222,7 @@ export const getOrders = async (category?: string) => {
   var res = await axios
     .post(
       Constant.URL + Constant.GET_ORDERS,
-      category! ? { name: category } : {},
+      category! ? { author: "Администратор" } : { author: "Администратор" },
       {
         headers: {
           Authorization: "Basic " + (await getUserData()).loginToken,
@@ -223,8 +236,7 @@ export const getOrders = async (category?: string) => {
         result.map((order: Order) => {
           if (contexts.stores.ordersStore.getOrder(order.id)) {
             return contexts.stores.ordersStore.updateOrder(order);
-          }
-          else {
+          } else {
             return contexts.stores.ordersStore.addOrder(order);
           }
         });
@@ -258,6 +270,26 @@ export const getServerIP = async () => {
         result = response.data;
       }
       return result;
+    })
+    .catch((error) => {
+      return error;
+    });
+  return res;
+};
+
+export const addOrder = async () => {
+  var res = await axios
+    .post(
+      Constant.URL + Constant.ADD_ORDERS,
+      { result: contexts.data.cartStore.list },
+      {
+        headers: {
+          Authorization: "Basic " + (await getUserData()).loginToken,
+        },
+      }
+    )
+    .then((response) => {
+      return response;
     })
     .catch((error) => {
       return error;

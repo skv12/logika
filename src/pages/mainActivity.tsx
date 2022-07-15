@@ -7,22 +7,48 @@ import {
   IonText,
   IonContent,
   IonButtons,
-  IonBackButton
+  IonBackButton,
+  IonRefresher,
+  IonRefresherContent,
+  RefresherEventDetail,
+  useIonLoading,
+  IonLoading,
 } from "@ionic/react";
-import { useState } from "react";
-import { contexts } from "../api/dataApi";
+import { useEffect, useState } from "react";
+import { contexts, getCategories, getItems, getStores } from "../api/dataApi";
 import BackButton from "../components/BackButton";
 // import React, { useState } from "react";
 // import { useRouteMatch } from "react-router";
 import CCategoryList from "../components/CategoryList";
+import { setLoading } from "../data/user.actions";
 import "./MainActivity.scss";
 interface ContainerProps {
   category: string;
 }
+function doRefresh(event: CustomEvent<RefresherEventDetail>) {
+  getStores();
+  getCategories();
+  getItems();
+  setCategory("0");
+  setTimeout(() => {
+    console.log("Async operation has ended");
+    event.detail.complete();
+  }, 2000);
+}
+function setCategory(category: string) {
+  return <CCategoryList parent={category} />;
+}
+
 const MainActivity: React.FC<ContainerProps> = ({ category }) => {
   const [store, setStore] = useState<string>("Все");
+  const [showLoading, setShowLoading] = useState(contexts.data.appState.isLoading);
   console.log(contexts.data.appState.previousCategories);
-  
+  useEffect(() => {
+    getStores();
+    getCategories();
+    getItems();
+   // setShowLoading(false);
+  }, []);
   return (
     <IonPage>
       <IonHeader>
@@ -48,8 +74,28 @@ const MainActivity: React.FC<ContainerProps> = ({ category }) => {
           </IonSelect>
         </IonToolbar>
       </IonHeader>
-      <IonContent fullscreen>
-        <CCategoryList parent={category} />
+      <IonContent fullscreen id="root" scrollY={false}>
+        { showLoading ? (
+          <>
+            <IonLoading
+              isOpen={contexts.data.appState.isLoading}
+              message={"Загрузка..."}
+            />
+          </>
+        ) : (
+          <>
+            <IonRefresher
+              slot="fixed"
+              onIonRefresh={doRefresh}
+              pullFactor={0.5}
+              pullMin={100}
+              pullMax={200}
+            >
+              <IonRefresherContent></IonRefresherContent>
+            </IonRefresher>
+            {setCategory(category)}
+          </>
+        )}
       </IonContent>
     </IonPage>
   );

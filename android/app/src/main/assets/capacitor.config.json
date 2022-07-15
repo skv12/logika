@@ -1,0 +1,6 @@
+{
+	"appId": "io.ionic.starter",
+	"appName": "Logika",
+	"webDir": "build",
+	"bundledWebRuntime": false
+}
