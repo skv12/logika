@@ -8,7 +8,6 @@ import {
 import React, { useState } from "react";
 import { contexts } from "../api/dataApi";
 import { CartItem } from "../data/data.state";
-import { Order } from "../data/store.state";
 import CCartElement from "./CartElement";
 interface ContainerProps {}
 

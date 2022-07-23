@@ -31,7 +31,6 @@ import TabNavigator from "./routers/TabNavigator";
 import LoginActivity from "./pages/LoginActivity";
 import { AppContextProvider } from "./api/AppContext";
 import RedirectToLogin from "./components/RedirectToLogin";
-import { loginData } from "./api/dataApi";
 setupIonicReact();
 
 interface StateProps {
@@ -61,9 +60,9 @@ const Start: React.FC<IonicAppProps> = ({
   }, [loadUserData]);
   
   return (
-    <IonApp className={`${darkMode ? "dark-theme" : ""}`}>
+    <IonApp className={`${!darkMode ? "dark-theme" : ""}`}>
       <IonReactRouter>
-        {isLoggedin && loginToken && loginData("auth", undefined, undefined, loginToken) ? (
+        {isLoggedin && loginToken ? (
           <>
             <Route path="/" component={TabNavigator}>
             </Route>

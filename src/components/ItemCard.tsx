@@ -14,6 +14,7 @@ import {
   IonBackButton,
   IonIcon,
   IonInput,
+  useIonViewWillLeave,
 } from "@ionic/react";
 import { addCircle, removeCircle } from "ionicons/icons";
 import { useState } from "react";
@@ -24,7 +25,10 @@ interface ContainerProps {
   item: Item;
 } 
 const ItemCard: React.FC<ContainerProps> = ( {item} ) => {
-  console.log(contexts.data.cartStore.getItem(item.code));
+  useIonViewWillLeave(() => {
+    contexts.data.appState.purgeItem();
+    contexts.data.appState.purgeScannedItem();
+  });
   const [amount, setAmount] = useState(contexts.data.cartStore.getItem(item.code));
   const increment = async () => {
     setAmount((c: number) => {
@@ -87,6 +91,14 @@ const ItemCard: React.FC<ContainerProps> = ( {item} ) => {
               </IonCol>
               <IonCol>
                 <IonText>{item.quantity}</IonText>
+              </IonCol>
+            </IonRow>
+            <IonRow>
+              <IonCol>
+                <IonText>Штрихкод</IonText>
+              </IonCol>
+              <IonCol>
+                <IonText>{item.barcode}</IonText>
               </IonCol>
             </IonRow>
             <IonRow></IonRow>

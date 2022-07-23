@@ -34,11 +34,11 @@ export const setIsLoggedIn = (loggedIn: boolean) => async (dispatch: React.Dispa
   } as const)
 };
 
-export const setLogin = (login?: string) => async (dispatch: React.Dispatch<any>) => {
-  await setLoginData(login);
+export const setLogin = (user?: string) => async (dispatch: React.Dispatch<any>) => {
+  await setLoginData(user);
   return ({
     type: 'set-login',
-    login
+    user
   } as const);
 };
 

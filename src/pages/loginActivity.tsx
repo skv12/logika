@@ -6,13 +6,12 @@ import {
   IonInput,
   IonButton,
   IonText,
+  IonLoading,
 } from '@ionic/react';
 import './LoginActivity.scss';
-import { setIsLoggedIn, setLogin, setLoginToken } from '../data/user.actions';
-import { useParams } from 'react-router-dom';
+import { setIsLoggedIn, setLoading, setLogin, setLoginToken } from '../data/user.actions';
 import { connect } from '../api/connect';
-import { loginData } from '../api/dataApi';
-import { Buffer } from "buffer";
+import { contexts, loginData } from '../api/dataApi';
 
 interface DispatchProps {
   setIsLoggedIn: typeof setIsLoggedIn;
@@ -26,35 +25,40 @@ function refreshPage(){
 const LoginActivity: React.FC<LoginProps> = () => {
   const [login, setLogin] = useState('');
   const [password, setPassword] = useState('');
-  const [str, setStr] = useState('');
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [loginError, setLoginError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
   const [loginFailed,setLoginFailed] = useState(false);
   const loginEvent = async (e: React.FormEvent) => {
+    setLoading(true);
     e.preventDefault();
-    
     setFormSubmitted(true);
-    setStr(Buffer.from(login + ":" + password).toString("base64"));
     if (!login) {
+      setLoading(false);
       setLoginError(true);
     }
     if (!password) {
+      setLoading(false);
       setPasswordError(true);
     }
     if (login && password) {
       if(await loginData("auth", login, password)){
         setLoginFailed(true ? false : false);
-        
+        setLoading(false);
         refreshPage();
       }
       else{
+        setLoading(false);
         setLoginFailed(true);
       };
     }
   };
   return (
     <IonPage className="loginPage">
+      <IonLoading
+        isOpen={contexts.data.appState.isLoading}
+        message={"Загрузка..."}
+      />
       <form noValidate onSubmit={loginEvent}>
         {formSubmitted && loginFailed && <IonText color='danger'>
           <p className="ion-padding-start">Неправильный логин/пароль</p>
@@ -77,7 +81,6 @@ const LoginActivity: React.FC<LoginProps> = () => {
             </IonText>}
         <IonButton type="submit" expand="block">Войти</IonButton>
       </form>
-        <IonText>{str}</IonText>
     </IonPage>
   );
 };

@@ -1,5 +1,5 @@
-import { IonButton, IonIcon, IonItem, IonLabel } from "@ionic/react";
-import { contexts, getCategories, setCurrentCategory } from "../api/dataApi";
+import { IonIcon, IonItem, IonLabel } from "@ionic/react";
+import { contexts } from "../api/dataApi";
 import { useHistory } from "react-router-dom";
 import { CartItem } from "../data/data.state";
 import { removeCircle } from "ionicons/icons";

@@ -1,6 +1,6 @@
 export interface UserState {
   isLoggedin: boolean;
-  login?: string;
+  user?: string;
   darkMode: boolean;
   loginToken?: string;
   loading: boolean;

@@ -1,6 +1,6 @@
 import { IonItem, IonLabel } from "@ionic/react";
-import { contexts, getCategories, setCurrentCategory } from "../api/dataApi";
-import { Category, Item } from "../data/store.state";
+import { contexts } from "../api/dataApi";
+import { Item } from "../data/store.state";
 import { useHistory } from "react-router-dom";
 // import { Route } from "workbox-routing";
 

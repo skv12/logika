@@ -9,8 +9,11 @@
 .action-sheet-selected .action-sheet-button-inner{
     color: blue;
 }
-.folder ion-label{
+.folder>.item-native{
     background-color: yellow;
+}
+.dark-theme .folder .item-native{
+    color: black;
 }
 .back_button{
     color: black;

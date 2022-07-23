@@ -1,9 +1,14 @@
 import { observable, action, makeObservable, computed } from "mobx";
+import { contexts } from "../api/dataApi";
 import { ErrorType } from "../api/types";
 
 export interface CartItem {
   code: string;
   amount: number;
+  name: string;
+  price: number;
+  priceType: string;
+  sum: number;
 }
 export interface CListState<CartList extends CartItem> {
   results: CartList[];
@@ -42,7 +47,13 @@ export class CartStore<StockList extends CartItem> {
     if (isItemInCart) {
       this.updateItem(item);
     } else {
-      var i: CartItem = { code: item, amount: amount };
+      var i: CartItem = { 
+        code: item, 
+        amount: amount, 
+        name: contexts.stores.itemsStore.getItem(item).name, 
+        price: contexts.stores.itemsStore.getItem(item).price, 
+        priceType: contexts.stores.itemsStore.getItem(item).priceType, 
+        sum: contexts.stores.itemsStore.getItem(item).price*amount};
       this.list.push(i);
     }
     this.cartIsEmptyChecker();
@@ -81,12 +92,16 @@ export class CartStore<StockList extends CartItem> {
 export class AppState {
   @observable
   currentCategory = "0";
+
   @observable
   cartIsEmpty = true;
+
   @observable
   previousCategories: string[] = [];
+
   @observable
-  isLoading = true;
+  isLoading = false;
+
   @observable
   currentItem = "";
 
@@ -98,6 +113,9 @@ export class AppState {
 
   @observable
   firstItemInit = true;
+
+  @observable
+  scannedItem = "";
 
   @observable
   url = "";
@@ -122,16 +140,19 @@ export class AppState {
   setCategory(category: string) {
     this.previousCategories.push(this.currentCategory);
     this.currentCategory = category;
+    console.log(this.currentCategory);
   }
 
   @action
   setItem(item: string) {
     this.currentItem = item;
+    console.log(this.currentItem);
   }
 
   @action
   setOrder(order: string) {
     this.currentOrder = order;
+    console.log(this.currentOrder);
   }
   @action
   purgeCategory() {
@@ -143,10 +164,19 @@ export class AppState {
   @action
   purgeItem() {
     this.currentItem = "";
+    console.log(this.currentItem);
   }
   @action
   purgeOrder() {
     this.currentOrder = "";
+    console.log(this.currentOrder);
+  }
+  setScannedItem(item: string){
+    this.scannedItem = item;
+  }
+  purgeScannedItem(){
+    this.scannedItem = "";
+    console.log(this.scannedItem);
   }
 }
 

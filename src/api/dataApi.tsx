@@ -55,16 +55,19 @@ export const getUserData = async () => {
     Storage.get({ key: Constant.LOGIN_TOKEN }),
     Storage.get({ key: Constant.STARTUP_FLAG }),
     Storage.get({ key: Constant.CURRENT_CATEGORY }),
+    Storage.get({ key: Constant.USER }),
   ]);
   const isLoggedin = (await response[0].value) === "true";
   const loginToken = (await response[1].value) || undefined;
   const startupFlag = (await response[2].value) === "true";
   const currentCategory = (await response[3].value) || undefined;
+  const user = (await response[4].value) || undefined;
   const data = {
     isLoggedin,
     loginToken,
     startupFlag,
     currentCategory,
+    user,
   };
   return data;
 };
@@ -90,28 +93,24 @@ export const loginData = async (
         },
       }
     )
-    .then((response) => {
-      var result = null;
+    .then(async (response) => {
       try {
-        result = JSON.stringify(
-          JSON.parse(JSON.stringify(response.data), (key, value) => {
-            if (key === "accessToken")
-              sessionStorage.setItem(Constant.SESSION_TOKEN, value);
-            return true;
-          })
-        );
+        JSON.parse(JSON.stringify(response.data), (key, value) => {
+          if (key === "accessToken")
+            sessionStorage.setItem(Constant.SESSION_TOKEN, value);
+          return true;
+        });
         setIsLoggedInData(true);
         setLoginTokenData(tempToken);
-        
+        setLoginData(login);
         return true;
       } catch (e) {
         return false;
       }
     })
-    .catch((response) => {
-      return false;
+    .catch((error) => {
+      return error;
     });
-  
 
   return res;
 };
@@ -209,7 +208,7 @@ export const getStores = async () => {
       } catch (e) {
         result = response.data;
       }
-      
+
       return result;
     })
     .catch((error) => {
@@ -281,7 +280,7 @@ export const addOrder = async () => {
   var res = await axios
     .post(
       Constant.URL + Constant.ADD_ORDERS,
-      { result: contexts.data.cartStore.list },
+      { manager: "Администратор", items: contexts.data.cartStore.list },
       {
         headers: {
           Authorization: "Basic " + (await getUserData()).loginToken,
@@ -296,7 +295,36 @@ export const addOrder = async () => {
     });
   return res;
 };
+export const getItemCode = async (item: string) => {
+  var res = await axios
+    .post(
+      Constant.URL + Constant.GET_ITEMCODE,
+      {
+        scannedBarcode: item,
+      },
+      {
+        headers: {
+          Authorization: "Basic " + (await getUserData()).loginToken,
+        },
+      }
+    )
+    .then((response) => {
+      var result = null;
+      try {
+        result = JSON.parse(response.data);
+      } catch (e) {
+        result = response.data;
+      }
+      contexts.data.appState.setScannedItem(result[0].item);
+      //console.log(result[0].item);
+      return result;
+    })
+    .catch((error) => {
+      return error;
+    });
 
+  return res;
+};
 export const setIsLoggedInData = async (isLoggedIn: boolean) => {
   await Storage.set({
     key: Constant.HAS_LOGGED_IN,
@@ -312,11 +340,11 @@ export const setLoginTokenData = async (loginToken?: string) => {
   }
 };
 
-export const setLoginData = async (login?: string) => {
-  if (!login) {
-    await Storage.remove({ key: Constant.LOGIN });
+export const setLoginData = async (user?: string) => {
+  if (!user) {
+    await Storage.remove({ key: Constant.USER });
   } else {
-    await Storage.set({ key: Constant.LOGIN, value: login });
+    await Storage.set({ key: Constant.USER, value: user });
   }
 };
 export const setStartupFlag = async (startupFlag: boolean) => {

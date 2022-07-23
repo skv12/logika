@@ -9,7 +9,7 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import { arrowForwardCircle, cartOutline } from "ionicons/icons";
+import { cartOutline } from "ionicons/icons";
 import { useState } from "react";
 import { addOrder, contexts } from "../api/dataApi";
 import CCartList from "../components/CartList";

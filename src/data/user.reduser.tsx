@@ -8,7 +8,7 @@ export function userReducer(state: UserState, action: UserActions): UserState {
     case "set-user-data":
       return { ...state, ...action.data };
     case "set-login":
-      return { ...state, login: action.login };
+      return { ...state, user: action.user };
     case "set-login-token":
       return { ...state, loginToken: action.loginToken };
     case "set-dark-mode":

@@ -48,6 +48,7 @@ export interface Item extends ICode {
   price: number;
   priceType: string;
   quantity: number;
+  barcode: number;
   stockQuantity: StockQuantity[];
 }
 

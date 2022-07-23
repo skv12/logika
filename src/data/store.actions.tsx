@@ -37,11 +37,11 @@ export class CategoriesStore<CategoriesList extends Category> {
   }
   @action
   updateCategory(item: Category) {
-    const foundTodo = this.list.find(
+    const found = this.list.find(
       (element) => item && element.code === item.parent
     );
-    if (foundTodo && item) {
-      Object.assign(foundTodo.childrens, item);
+    if (found && item) {
+      Object.assign(found.code, item);
     }
   }
 }
@@ -104,11 +104,12 @@ export class ItemsStore<ItemList extends Item> {
         name: "",
         category: "",
         currency: "",
-        price: 0,
+        price: -1,
         priceType: "",
-        quantity: 0,
+        quantity: -1,
         stockQuantity: [],
-        code: ""
+        code: "",
+        barcode: -1
       }
       return empty;
      } 
