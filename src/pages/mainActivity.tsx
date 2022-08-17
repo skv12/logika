@@ -13,6 +13,7 @@ import {
   IonLoading,
   IonButton,
   IonIcon,
+  IonBackButton,
 } from "@ionic/react";
 import {
   searchOutline,
@@ -24,9 +25,6 @@ import {
   getItems,
   getStores,
 } from "../api/dataApi";
-import BackButton from "../components/BackButton";
-// import React, { useState } from "react";
-// import { useRouteMatch } from "react-router";
 import CCategoryList from "../components/CategoryList";
 import { setLoading } from "../data/user.actions";
 import "./MainActivity.scss";
@@ -67,10 +65,10 @@ const MainActivity: React.FC<ContainerProps> = ({ category }) => {
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
-            <BackButton />
+            <IonBackButton/>
           </IonButtons>
 
-          <IonButtons>
+          <IonButtons slot="primary">
             <IonText>Склад</IonText>
             <IonSelect
               value={store}
@@ -89,7 +87,7 @@ const MainActivity: React.FC<ContainerProps> = ({ category }) => {
             </IonSelect>
           </IonButtons>
           <IonButtons slot="end">
-            <IonButton slot="icon-only">
+            <IonButton slot="icon-only" routerLink="/search" routerDirection={"forward"}>
               <IonIcon icon={searchOutline}></IonIcon>
             </IonButton>
           </IonButtons>

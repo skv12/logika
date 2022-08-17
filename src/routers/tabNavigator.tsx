@@ -28,25 +28,19 @@ import OrderCard from "../components/OrderCard";
 //import { BarcodeScanner } from '@awesome-cordova-plugins/barcode-scanner';
 import { setLoading } from "../data/user.actions";
 import ScannerActivity from "../pages/ScannerActivity";
+import SearchActivity from "../pages/SearchActivity";
 const TabNavigator: React.FC = () => {
   const routerRef = useRef<HTMLIonRouterOutletElement | null>(null);
-  useEffect(() =>{
-    if (!contexts.data.appState.firstInit) {
-      setLoading(true);
-      getOrders();
-      contexts.data.appState.setFirstInit();
-      setLoading(false);
-    }
-  });
+
   return (
     <IonContent>
       <IonTabs className="hideBg">
         <IonRouterOutlet ref={routerRef}>
           <Route exact path="/main" render={() => <MainActivity category={"0"}></MainActivity>}>
           </Route>
-          <Route path="/item/:code" render={() => <ItemCard item={contexts.stores.itemsStore.getItem(contexts.data.appState.currentItem)}></ItemCard>}>
+          <Route exact path={`/item/:code`} render={() => <ItemCard item={contexts.stores.itemsStore.getItem(contexts.data.appState.currentItem)}></ItemCard>}>
           </Route>
-          <Route exact path={`/main/:code`} render={() => <MainActivity category={(contexts.data.appState.currentCategory)}></MainActivity>}/>
+          <Route exact path={`/main/:code`} render={() => <MainActivity category={contexts.data.appState.currentCategory}></MainActivity>}/>
           <Route exact path="/stats">
             <StatsActivity />
           </Route>
@@ -57,6 +51,9 @@ const TabNavigator: React.FC = () => {
           <Route exact path="/sales" render={() => <SalesActivity router={null}></SalesActivity>}/>
           <Route exact path="/profile">
             <ProfileActivity />
+          </Route>
+          <Route exact path="/search">
+            <SearchActivity/>
           </Route>
           <Route exact path="/" render={() => <Redirect to="/main" />} />
         </IonRouterOutlet>

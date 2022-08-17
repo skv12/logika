@@ -57,6 +57,7 @@ const Start: React.FC<IonicAppProps> = ({
 }) => {
   useEffect(() => {
     loadUserData();
+    console.log(loadUserData);
   }, [loadUserData]);
   
   return (

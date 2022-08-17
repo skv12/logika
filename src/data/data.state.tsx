@@ -156,10 +156,12 @@ export class AppState {
   }
   @action
   purgeCategory() {
+    console.log(this.previousCategories);
     const popped = this.previousCategories[this.previousCategories.length - 1];
     this.previousCategories.splice(-1);
     if (popped === undefined) this.currentCategory = "0";
     else this.currentCategory = popped;
+    console.log(this.previousCategories);
   }
   @action
   purgeItem() {

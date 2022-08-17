@@ -1,4 +1,4 @@
-import { observable, action, makeObservable } from "mobx";
+import { observable, action, makeObservable, computed } from "mobx";
 import {
   Category,
   CListState,
@@ -88,6 +88,14 @@ export class ItemsStore<ItemList extends Item> {
   get list(): Item[] {
     return Array.isArray(this.items.results) ? this.items.results : [];
   }
+  @observable filter = "";
+  @computed
+  get filterName() {
+    let matchesFilter = new RegExp(this.filter, "i");
+    return this.list.filter(e => {
+      return matchesFilter.test(e.name);
+    });
+  }
   @action
   addItem(item: Item) {
     this.list.push(item);
@@ -104,6 +112,8 @@ export class ItemsStore<ItemList extends Item> {
         name: "",
         category: "",
         currency: "",
+        brand: "",
+        articul: "",
         price: -1,
         priceType: "",
         quantity: -1,

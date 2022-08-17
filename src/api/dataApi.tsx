@@ -1,4 +1,4 @@
-import { Storage } from "@capacitor/storage";
+import { Preferences } from "@capacitor/preferences";
 import axios from "axios";
 import { Buffer } from "buffer";
 import * as Constant from "../data/constants";
@@ -51,11 +51,11 @@ export function initContextsValues() {
 export const contexts = initContextsValues();
 export const getUserData = async () => {
   const response = await Promise.all([
-    Storage.get({ key: Constant.HAS_LOGGED_IN }),
-    Storage.get({ key: Constant.LOGIN_TOKEN }),
-    Storage.get({ key: Constant.STARTUP_FLAG }),
-    Storage.get({ key: Constant.CURRENT_CATEGORY }),
-    Storage.get({ key: Constant.USER }),
+    Preferences.get({ key: Constant.HAS_LOGGED_IN }),
+    Preferences.get({ key: Constant.LOGIN_TOKEN }),
+    Preferences.get({ key: Constant.STARTUP_FLAG }),
+    Preferences.get({ key: Constant.CURRENT_CATEGORY }),
+    Preferences.get({ key: Constant.USER }),
   ]);
   const isLoggedin = (await response[0].value) === "true";
   const loginToken = (await response[1].value) || undefined;
@@ -326,7 +326,7 @@ export const getItemCode = async (item: string) => {
   return res;
 };
 export const setIsLoggedInData = async (isLoggedIn: boolean) => {
-  await Storage.set({
+  await Preferences.set({
     key: Constant.HAS_LOGGED_IN,
     value: JSON.stringify(isLoggedIn),
   });
@@ -334,27 +334,27 @@ export const setIsLoggedInData = async (isLoggedIn: boolean) => {
 
 export const setLoginTokenData = async (loginToken?: string) => {
   if (!loginToken) {
-    await Storage.remove({ key: Constant.LOGIN_TOKEN });
+    await Preferences.remove({ key: Constant.LOGIN_TOKEN });
   } else {
-    await Storage.set({ key: Constant.LOGIN_TOKEN, value: loginToken });
+    await Preferences.set({ key: Constant.LOGIN_TOKEN, value: loginToken });
   }
 };
 
 export const setLoginData = async (user?: string) => {
   if (!user) {
-    await Storage.remove({ key: Constant.USER });
+    await Preferences.remove({ key: Constant.USER });
   } else {
-    await Storage.set({ key: Constant.USER, value: user });
+    await Preferences.set({ key: Constant.USER, value: user });
   }
 };
 export const setStartupFlag = async (startupFlag: boolean) => {
-  await Storage.set({
+  await Preferences.set({
     key: Constant.STARTUP_FLAG,
     value: JSON.stringify(startupFlag),
   });
 };
 export const setCurrentCategory = async (currentCategory: string) => {
-  await Storage.set({
+  await Preferences.set({
     key: Constant.CURRENT_CATEGORY,
     value: currentCategory,
   });

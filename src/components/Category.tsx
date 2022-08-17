@@ -1,31 +1,30 @@
-import { IonItem, IonLabel } from "@ionic/react";
+import { IonCol, IonIcon, IonItem, IonLabel, IonRow } from "@ionic/react";
+import { folderOpenOutline } from "ionicons/icons";
 import { contexts } from "../api/dataApi";
 import { Category } from "../data/store.state";
-import { useHistory } from "react-router-dom";
-// import { Route } from "workbox-routing";
 
 interface ContainerProps {
   category: Category;
 }
 
 const CCategory: React.FC<ContainerProps> = ({ category }) => {
-  let history = useHistory();
-  // // const routeChange = async (code: string) =>{
-  // //   let path = "/main/" + code;
-  // //   history.push(path);
-  // // }
-  // let url = useRouteMatch();
-  const href = `/main/${category.code}`;
   return (
-    <IonItem className="folder"
-      onClick={() => {
+    <IonItem
+      className="folder"
+      onClick={(e) => {
         contexts.data.appState.setCategory(category.code);
-        //setCurrentCategory(category.code);
-        history.push(href);
       }}
+      routerDirection={"forward"}
+      routerLink={`/main/${category.code}`}
     >
-      <IonLabel>{category.name}</IonLabel>
-      <IonLabel>{category.code}</IonLabel>
+      <IonRow>
+        <IonCol>
+          <IonIcon icon={folderOpenOutline} />
+        </IonCol>
+        <IonCol>
+          <IonLabel>{category.name}</IonLabel>
+        </IonCol>
+      </IonRow>
     </IonItem>
   );
 };

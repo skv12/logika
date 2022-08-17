@@ -1,4 +1,4 @@
-package io.ionic.starter;
+package ru.logika.app;
 
 import com.getcapacitor.BridgeActivity;
 

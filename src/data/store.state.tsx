@@ -44,6 +44,8 @@ export interface Category extends ICode {
 export interface Item extends ICode {
   name: string;
   category: string;
+  articul: string;
+  brand: string;
   currency: string;
   price: number;
   priceType: string;
