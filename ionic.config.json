@@ -1,0 +1,7 @@
+{
+  "name": "logika",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react"
+}
