@@ -1,0 +1,25 @@
+.a-center{
+    text-align: center;
+}
+
+.card-1 {
+    margin: auto;
+    margin-bottom: 5px;
+    width: 100%;
+    min-height: 200px
+}
+
+ion-slides{
+    height: 100%;
+}
+
+.hidden{
+    display: none;
+}
+
+.red-1{
+    color: red;
+    position: relative;
+      top: -13px;
+      left: -15px;
+}

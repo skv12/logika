@@ -1,0 +1,23 @@
+.f-1{
+    font-size: small;
+}
+
+.f-2{
+    font-size: medium;
+}
+
+#t-line{
+    border-top: 3x solid black; 
+}
+
+.b-1{
+    border: 1px solid black;
+}
+
+.a-margin{
+    margin: auto;
+}
+
+.red-2{
+    color: red
+}
