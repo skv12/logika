@@ -373,7 +373,7 @@ async function  setOrder(){
 
       <IonModal
         isOpen={ basket }
-        cssClass='my-custom-class'
+        className='my-custom-class'
         swipeToClose={true}
         onDidDismiss={() => setBasket( false )}>
 

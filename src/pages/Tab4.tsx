@@ -204,7 +204,7 @@ const Tab4: React.FC = () => {
         </IonHeader>
         <IonItem>
           <IonLabel position="stacked">Поиск</IonLabel>
-          <IonDatetime displayFormat="YYYY-MM-DD" placeholder="Дата" value = {value}
+          <IonDatetime placeholder="Дата" value = {value}
               onIonChange={e => {
                 let st = (e.detail.value as string);
                 setValue(st)      

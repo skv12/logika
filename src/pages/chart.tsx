@@ -99,11 +99,9 @@ const LineChart: React.FC<ContainerProps> = ({ period, upd }) => {
           },
           options: {
               scales: {
-                  yAxes: [{
-                      ticks: {
-                          beginAtZero: true
-                      },
-                  }]
+                  y: {
+                    beginAtZero: true
+                  }
               }
           }
         })

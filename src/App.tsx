@@ -7,7 +7,8 @@ import {
   IonRouterOutlet,
   IonTabBar,
   IonTabButton,
-  IonTabs
+  IonTabs,
+  setupIonicReact
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import { barChartOutline, listOutline, serverOutline, bicycleOutline } from 'ionicons/icons';
@@ -36,7 +37,7 @@ import '@ionic/react/css/display.css';
 /* Theme variables */
 import './theme/variables.css';
 import { getStores, Store } from './pages/Store';
-
+setupIonicReact();
 const App: React.FC = () =>  {
 
   const [cl1, setCl1] = useState("");

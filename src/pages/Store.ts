@@ -463,7 +463,7 @@ export function SERV(){
     if((ip as string).length < 13)     ip = "91.185.236.216"
     if((port as string).length  < 5)   port = "29080"
 
-    let url = " http://" + ip + ":" + port + "/trade/hs/API/V1/"
+    let url = " http://" + ip + ":" + port + "/trade_test/hs/API/V1/"
 
     return url
 
