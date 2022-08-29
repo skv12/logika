@@ -1,29 +1,27 @@
-.f-1{
-    font-size: small;
+.f-1 {
+  font-size: small;
 }
-
 
 .i-content {
-    margin-left: auto;
-    margin-right: auto;
-    margin-top: 2em;
-    width: 80%;
-    height: 80%;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 2em;
+  width: 80%;
+  height: 80%;
 }
 
-.r-underline{
-    border-bottom: 1px solid gray
+.r-underline {
+  border-bottom: 1px solid gray;
 }
 
-
-.t-right{
-    text-align: right;
+.t-right {
+  text-align: right;
 }
 
-.i-col{
-    padding: 0;
+.i-col {
+  padding: 0;
 }
 
-.i-but{
-    margin: 0;
+.i-but {
+  margin: 0;
 }
