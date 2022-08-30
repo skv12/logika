@@ -336,22 +336,23 @@ async function  setOrder(){
             onDidDismiss={() => setQuery(false)}
             header={'Корзина'}
             message={good.Наименование}
-            // inputs={[
-            //   {
-            //     name: 'Количество',
-            //     type: 'number',
-            //     min: -10,
-            //     max: 10,
-            //   },             
-            // ]}
+             inputs={[
+               {
+                 name: 'Количество',
+                 placeholder: 'Количество',
+                 type: 'number',
+                 min: -10,
+                 max: 10,
+               },             
+             ]}
             buttons={[
               {
-                text: 'Cancel',
+                text: 'Отмена',
                 role: 'cancel',
                 handler: () => {}
               },           
               {
-                text: 'Ok',
+                text: 'Добавить в корзину',
                 handler: (data) => {
                   addBasket(1);
                 }
