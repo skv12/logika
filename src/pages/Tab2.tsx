@@ -419,7 +419,7 @@ const Tab2: React.FC = () => {
 
       <IonModal
         isOpen={query}
-        className="my-custom-class"
+        
         swipeToClose={true}
         onDidDismiss={() => setQuery(false)}
       >
@@ -441,9 +441,10 @@ const Tab2: React.FC = () => {
 
         <IonContent>
           <IonGrid class="i-content">
-            <IonRow class="ion-padding-bottom">Наименование: {good.Наименование},</IonRow>
-            <IonRow class="ion-padding-bottom">Артикул: {good.Артикул},</IonRow>
-            <IonRow class="ion-padding-bottom">Цена: {good.Цена}</IonRow>
+            <IonRow class="ion-padding-vertical r-underline">Наименование: {good.Наименование}</IonRow>
+            
+            <IonRow class="ion-padding-vertical r-underline">Артикул: {good.Артикул}</IonRow>
+            <IonRow class="ion-padding-vertical r-underline">Цена: {good.Цена}</IonRow>
           </IonGrid>
         </IonContent>
 
