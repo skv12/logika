@@ -52,6 +52,8 @@ const g_state: t_good = {
   Склад: "",
   Остаток: 0,
   Группа: "",
+  Вес: 0,
+  Объем: 0
 };
 
 
@@ -215,6 +217,8 @@ const Tab2: React.FC = () => {
                     Склад: goods[i].Склад,
                     Остаток: goods[i].Остаток,
                     Группа: goods[i].Группа,
+                    Вес: goods[i].Вес,
+                    Объем: goods[i].Объем
 
                   });
                   setQuery(true);
@@ -396,6 +400,7 @@ const Tab2: React.FC = () => {
         }}
       />
       <IonContent>
+      <IonButton onClick={() => {console.log(Store.getState().goods)}}>sadsad</IonButton>
         <Goods goods={Store.getState().goods} />
       </IonContent>
 
@@ -448,8 +453,9 @@ const Tab2: React.FC = () => {
             <IonTitle> Корзина </IonTitle>
           </IonToolbar>
         </IonHeader>
-
+        
         <IonContent>
+        
           <IonGrid class="i-content">
             <IonRow class="ion-padding-vertical r-underline">Наименование: {good.Наименование}</IonRow>
             <IonRow class="ion-padding-vertical r-underline">Группа товара: {good.Группа}</IonRow>
@@ -457,7 +463,8 @@ const Tab2: React.FC = () => {
             <IonRow class="ion-padding-vertical r-underline">Цена: {good.Цена}</IonRow>
             <IonRow class="ion-padding-vertical r-underline">Склад: {good.Склад}</IonRow>
             <IonRow class="ion-padding-vertical r-underline">Остаток: {good.Остаток} шт</IonRow>
-            
+            <IonRow class="ion-padding-vertical r-underline">Вес: {good.Вес} кг</IonRow>
+            <IonRow class="ion-padding-vertical r-underline">Объем: {good.Объем} м3</IonRow>
           </IonGrid>
         </IonContent>
 
