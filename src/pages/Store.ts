@@ -200,6 +200,9 @@ export interface t_good{
     Количество:     number,
     Цена:           number,
     Сумма:          number,
+    Склад:          string,
+    Остаток:        number,
+    Группа:         string,
 }
 
 interface t_search {

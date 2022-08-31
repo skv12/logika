@@ -49,7 +49,12 @@ const g_state: t_good = {
   Цена: 0,
   Количество: 0,
   Сумма: 0,
+  Склад: "",
+  Остаток: 0,
+  Группа: "",
 };
+
+
 
 interface t_detail {
   Номенклатура: string;
@@ -63,6 +68,7 @@ const Tab2: React.FC = () => {
   const [basket, setBasket] = useState(false);
   const [b_length, setBLength] = useState(0);
   const [good, setGood] = useState<t_good>(g_state);
+  
   const [query, setQuery] = useState(false);
   const [doc, setDoc] = useState(false);
   const [docnum, setDocnum] = useState("");
@@ -206,6 +212,10 @@ const Tab2: React.FC = () => {
                     Цена: goods[i].Цена,
                     Количество: 1,
                     Сумма: goods[1].Цена,
+                    Склад: goods[i].Склад,
+                    Остаток: goods[i].Остаток,
+                    Группа: goods[i].Группа,
+
                   });
                   setQuery(true);
                 }}
@@ -442,9 +452,12 @@ const Tab2: React.FC = () => {
         <IonContent>
           <IonGrid class="i-content">
             <IonRow class="ion-padding-vertical r-underline">Наименование: {good.Наименование}</IonRow>
-            
+            <IonRow class="ion-padding-vertical r-underline">Группа товара: {good.Группа}</IonRow>
             <IonRow class="ion-padding-vertical r-underline">Артикул: {good.Артикул}</IonRow>
             <IonRow class="ion-padding-vertical r-underline">Цена: {good.Цена}</IonRow>
+            <IonRow class="ion-padding-vertical r-underline">Склад: {good.Склад}</IonRow>
+            <IonRow class="ion-padding-vertical r-underline">Остаток: {good.Остаток} шт</IonRow>
+            
           </IonGrid>
         </IonContent>
 
