@@ -151,8 +151,10 @@ export interface o_type{
     Цена:           number,
     Остаток:        number,
     ЭтоГруппа:      boolean,
-    Вес: number,
-    Объем: number
+    Вес:            number,
+    Объем:          number
+    Производитель:  string,
+    ИмпортерКонтрагент:        string,
 }
 
 export interface h_type{
@@ -206,7 +208,9 @@ export interface t_good{
     Остаток:        number,
     Группа:         string,
     Вес: number,
-    Объем: number
+    Объем: number,
+    Производитель:  string,
+    ИмпортерКонтрагент:        string,
 }
 
 interface t_search {

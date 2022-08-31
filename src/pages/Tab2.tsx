@@ -53,7 +53,9 @@ const g_state: t_good = {
   Остаток: 0,
   Группа: "",
   Вес: 0,
-  Объем: 0
+  Объем: 0,
+  Производитель: "",
+  ИмпортерКонтрагент: "",
 };
 
 
@@ -218,7 +220,9 @@ const Tab2: React.FC = () => {
                     Остаток: goods[i].Остаток,
                     Группа: goods[i].Группа,
                     Вес: goods[i].Вес,
-                    Объем: goods[i].Объем
+                    Объем: goods[i].Объем,
+                    Производитель:  goods[i].Производитель,
+                    ИмпортерКонтрагент:  goods[i].ИмпортерКонтрагент,
 
                   });
                   setQuery(true);
@@ -462,6 +466,8 @@ const Tab2: React.FC = () => {
             <IonRow class="ion-padding-vertical r-underline">Артикул: {good.Артикул}</IonRow>
             <IonRow class="ion-padding-vertical r-underline">Цена: {good.Цена}</IonRow>
             <IonRow class="ion-padding-vertical r-underline">Склад: {good.Склад}</IonRow>
+            <IonRow class="ion-padding-vertical r-underline">Производитель: {good.Производитель}</IonRow>
+            <IonRow class="ion-padding-vertical r-underline">Импортер: {good.ИмпортерКонтрагент}</IonRow>
             <IonRow class="ion-padding-vertical r-underline">Остаток: {good.Остаток} шт</IonRow>
             <IonRow class="ion-padding-vertical r-underline">Вес: {good.Вес} кг</IonRow>
             <IonRow class="ion-padding-vertical r-underline">Объем: {good.Объем} м3</IonRow>
