@@ -20,6 +20,8 @@ import {
   IonCardSubtitle,
   IonCardTitle,
   IonFooter,
+  IonToast,
+  IonItemDivider,
 } from "@ionic/react";
 import "./Tab2.css";
 import update from "immutability-helper";
@@ -58,8 +60,6 @@ const g_state: t_good = {
   ИмпортерКонтрагент: "",
 };
 
-
-
 interface t_detail {
   Номенклатура: string;
   Количество: number;
@@ -72,10 +72,11 @@ const Tab2: React.FC = () => {
   const [basket, setBasket] = useState(false);
   const [b_length, setBLength] = useState(0);
   const [good, setGood] = useState<t_good>(g_state);
-  
+
   const [query, setQuery] = useState(false);
   const [doc, setDoc] = useState(false);
   const [docnum, setDocnum] = useState("");
+  const [showToast1, setShowToast1] = useState(false);
 
   Store.subscribe_basket(() => {
     let basket = Store.getState().basket;
@@ -215,15 +216,14 @@ const Tab2: React.FC = () => {
                     Наименование: goods[i].Номенклатура,
                     Цена: goods[i].Цена,
                     Количество: 1,
-                    Сумма: goods[1].Цена,
+                    Сумма: goods[i].Цена,
                     Склад: goods[i].Склад,
                     Остаток: goods[i].Остаток,
                     Группа: goods[i].Группа,
                     Вес: goods[i].Вес,
                     Объем: goods[i].Объем,
-                    Производитель:  goods[i].Производитель,
-                    ИмпортерКонтрагент:  goods[i].ИмпортерКонтрагент,
-
+                    Производитель: goods[i].Производитель,
+                    ИмпортерКонтрагент: goods[i].ИмпортерКонтрагент,
                   });
                   setQuery(true);
                 }}
@@ -404,7 +404,13 @@ const Tab2: React.FC = () => {
         }}
       />
       <IonContent>
-      <IonButton onClick={() => {console.log(Store.getState().goods)}}>sadsad</IonButton>
+        <IonButton
+          onClick={() => {
+            console.log(Store.getState().goods);
+          }}
+        >
+          sadsad
+        </IonButton>
         <Goods goods={Store.getState().goods} />
       </IonContent>
 
@@ -438,7 +444,6 @@ const Tab2: React.FC = () => {
 
       <IonModal
         isOpen={query}
-        
         swipeToClose={true}
         onDidDismiss={() => setQuery(false)}
       >
@@ -457,28 +462,86 @@ const Tab2: React.FC = () => {
             <IonTitle> Корзина </IonTitle>
           </IonToolbar>
         </IonHeader>
-        
+
         <IonContent>
-        
-          <IonGrid class="i-content">
-            <IonRow class="ion-padding-vertical r-underline">Наименование: {good.Наименование}</IonRow>
-            <IonRow class="ion-padding-vertical r-underline">Группа товара: {good.Группа}</IonRow>
-            <IonRow class="ion-padding-vertical r-underline">Артикул: {good.Артикул}</IonRow>
-            <IonRow class="ion-padding-vertical r-underline">Цена: {good.Цена}</IonRow>
-            <IonRow class="ion-padding-vertical r-underline">Склад: {good.Склад}</IonRow>
-            <IonRow class="ion-padding-vertical r-underline">Производитель: {good.Производитель}</IonRow>
-            <IonRow class="ion-padding-vertical r-underline">Импортер: {good.ИмпортерКонтрагент}</IonRow>
-            <IonRow class="ion-padding-vertical r-underline">Остаток: {good.Остаток} шт</IonRow>
-            <IonRow class="ion-padding-vertical r-underline">Вес: {good.Вес} кг</IonRow>
-            <IonRow class="ion-padding-vertical r-underline">Объем: {good.Объем} м3</IonRow>
+          <IonGrid class="i-item-modal">
+            <IonRow>
+              <IonItemDivider>
+                <IonLabel>Наименование</IonLabel>
+              </IonItemDivider>
+              <IonItem lines="none">{good.Наименование}</IonItem>
+            </IonRow>
+            <IonRow>
+              <IonCol>
+                <IonItemDivider>
+                  <IonLabel>Группа товара</IonLabel>
+                </IonItemDivider>
+                <IonItem lines="none">{good.Группа}</IonItem>
+              </IonCol>
+              <IonCol>
+                <IonItemDivider>
+                  <IonLabel>Артикул</IonLabel>
+                </IonItemDivider>
+                <IonItem lines="none">{good.Артикул}</IonItem>
+              </IonCol>
+            </IonRow>
+            <IonRow>
+              <IonCol>
+                <IonItemDivider>
+                  <IonLabel>Склад</IonLabel>
+                </IonItemDivider>
+                <IonItem lines="none">{good.Склад}</IonItem>
+              </IonCol>
+              <IonCol>
+                <IonItemDivider>
+                  <IonLabel>Цена</IonLabel>
+                </IonItemDivider>
+                <IonItem lines="none">{good.Цена}</IonItem>
+              </IonCol>
+            </IonRow>
+            <IonRow>
+              <IonCol>
+                <IonItemDivider>
+                  <IonLabel>Производитель</IonLabel>
+                </IonItemDivider>
+                <IonItem lines="none">{good.Производитель}</IonItem>
+              </IonCol>
+              <IonCol>
+                <IonItemDivider>
+                  <IonLabel>Импортер</IonLabel>
+                </IonItemDivider>
+                <IonItem lines="none">{good.ИмпортерКонтрагент}</IonItem>
+              </IonCol>
+            </IonRow>
+            <IonRow>
+              <IonCol>
+                <IonItemDivider>
+                  <IonLabel>Остаток</IonLabel>
+                </IonItemDivider>
+                <IonItem lines="none">{good.Остаток} шт</IonItem>
+              </IonCol>
+              <IonCol>
+                <IonItemDivider>
+                  <IonLabel>Вес</IonLabel>
+                </IonItemDivider>
+                <IonItem lines="none">{good.Вес} кг</IonItem>
+              </IonCol>
+              <IonCol>
+                <IonItemDivider>
+                  <IonLabel>Объем</IonLabel>
+                </IonItemDivider>
+                <IonItem lines="none">{good.Объем} м³</IonItem>
+              </IonCol>
+            </IonRow>
           </IonGrid>
         </IonContent>
 
-        <IonFooter>
+        <IonFooter >
           <IonToolbar>
             <IonButton
               slot="end"
               onClick={() => {
+                setShowToast1(true);
                 addBasket(1);
               }}
             >
@@ -497,6 +560,14 @@ const Tab2: React.FC = () => {
           </IonToolbar>
         </IonFooter>
       </IonModal>
+
+      <IonToast
+        isOpen={showToast1}
+        onDidDismiss={() => setShowToast1(false)}
+        message="Товар добавлен в корзину"
+        position="middle"
+        duration={200}
+      />
 
       <IonAlert
         isOpen={doc}

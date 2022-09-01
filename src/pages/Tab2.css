@@ -11,6 +11,10 @@
     height: 80%;
 }
 
+.i-item-modal {
+    width: 90%;
+}
+
 .r-underline{
     border-bottom: 1px solid gray
 }
