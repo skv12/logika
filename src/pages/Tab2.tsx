@@ -58,6 +58,7 @@ const g_state: t_good = {
   Объем: 0,
   Производитель: "",
   ИмпортерКонтрагент: "",
+  ДопРеквизиты: [],
 };
 
 interface t_detail {
@@ -224,6 +225,7 @@ const Tab2: React.FC = () => {
                     Объем: goods[i].Объем,
                     Производитель: goods[i].Производитель,
                     ИмпортерКонтрагент: goods[i].ИмпортерКонтрагент,
+                    ДопРеквизиты: goods[i].ДопРеквизиты,
                   });
                   setQuery(true);
                 }}
@@ -504,13 +506,19 @@ const Tab2: React.FC = () => {
                 <IonItemDivider>
                   <IonLabel>Производитель</IonLabel>
                 </IonItemDivider>
-                <IonItem lines="none">{good.Производитель}</IonItem>
+                <IonItem lines="none">
+                  {good.Производитель === "" ? "~" : good.Производитель}
+                </IonItem>
               </IonCol>
               <IonCol>
                 <IonItemDivider>
                   <IonLabel>Импортер</IonLabel>
                 </IonItemDivider>
-                <IonItem lines="none">{good.ИмпортерКонтрагент}</IonItem>
+                <IonItem lines="none">
+                  {good.ИмпортерКонтрагент === ""
+                    ? "~"
+                    : good.ИмпортерКонтрагент}
+                </IonItem>
               </IonCol>
             </IonRow>
             <IonRow>
@@ -524,20 +532,45 @@ const Tab2: React.FC = () => {
                 <IonItemDivider>
                   <IonLabel>Вес</IonLabel>
                 </IonItemDivider>
-                <IonItem lines="none">{good.Вес} кг</IonItem>
+                <IonItem lines="none">
+                  {good.Вес === 0 ? "~" : good.Вес} кг
+                </IonItem>
               </IonCol>
               <IonCol>
                 <IonItemDivider>
                   <IonLabel>Объем</IonLabel>
                 </IonItemDivider>
-                <IonItem lines="none">{good.Объем} м³</IonItem>
+                <IonItem lines="none">
+                  {good.Объем === 0 ? "~" : good.Объем} м³{" "}
+                </IonItem>
               </IonCol>
             </IonRow>
+            <IonCol>
+              <IonItemDivider>
+                <IonLabel>Дополнительные реквизиты</IonLabel>
+              </IonItemDivider>
+              {Object.keys(good.ДопРеквизиты).map((e) => {
+                return (
+                  <IonItem lines="none" key={e}>
+                    {e}: {good.ДопРеквизиты[e]}
+                  </IonItem>
+                );
+              })}
+            </IonCol>
           </IonGrid>
         </IonContent>
 
-        <IonFooter >
+        <IonFooter>
           <IonToolbar>
+            <IonButton
+              slot="start"
+              onClick={() => {
+                setQuery(false);
+              }}
+            >
+              {" "}
+              Отменить
+            </IonButton>
             <IonButton
               slot="end"
               onClick={() => {
@@ -547,15 +580,6 @@ const Tab2: React.FC = () => {
             >
               {" "}
               Добавить в корзину
-            </IonButton>
-            <IonButton
-              slot="start"
-              onClick={() => {
-                setQuery(false);
-              }}
-            >
-              {" "}
-              Отменить
             </IonButton>
           </IonToolbar>
         </IonFooter>
@@ -613,16 +637,6 @@ const Tab2: React.FC = () => {
         <IonFooter>
           <IonToolbar>
             <IonButton
-              slot="end"
-              onClick={() => {
-                setBasket(false);
-                setOrder();
-              }}
-            >
-              {" "}
-              Чек
-            </IonButton>
-            <IonButton
               slot="start"
               onClick={() => {
                 Store.dispatch({ type: "cl_basket" });
@@ -631,6 +645,16 @@ const Tab2: React.FC = () => {
             >
               {" "}
               Отменить
+            </IonButton>
+            <IonButton
+              slot="end"
+              onClick={() => {
+                setBasket(false);
+                setOrder();
+              }}
+            >
+              {" "}
+              Чек
             </IonButton>
           </IonToolbar>
         </IonFooter>
