@@ -394,7 +394,7 @@ const Tab2: React.FC = () => {
       <IonHeader>
         <IonToolbar>
           <IonTitle class="a-center">Остатки</IonTitle>
-          <IButton />
+          <IButton /> 
         </IonToolbar>
       </IonHeader>
 
@@ -552,7 +552,7 @@ const Tab2: React.FC = () => {
               {Object.keys(good.ДопРеквизиты).map((e) => {
                 return (
                   <IonItem lines="none" key={e}>
-                    {e}: {good.ДопРеквизиты[e]}
+                    {(e).replace(/_/g, " ")}: {String(good.ДопРеквизиты[e]) === "true" ? "Да" : good.ДопРеквизиты[e] === "false" ? "Нет" : good.ДопРеквизиты[e] }
                   </IonItem>
                 );
               })}

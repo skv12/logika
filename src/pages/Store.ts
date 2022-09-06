@@ -169,7 +169,7 @@ export interface g_type {
 export interface dr_type {
 
   Наименование: string;
-  Значение: this;
+  Значение: string;
 }
 
 export interface d_type {
