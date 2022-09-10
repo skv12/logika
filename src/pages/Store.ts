@@ -29,6 +29,30 @@ export async function getData(url, params) {
   return res;
 }
 
+export async function getImg(params) {
+  let user = Store.getState().user;
+  console.log(params);
+  let res = await axios
+    .post(SERV() + "МП_Фото", {ГУИД : params}, {
+      auth: {
+        username: unescape(encodeURIComponent(user.user)),
+        password: unescape(encodeURIComponent(user.password)),
+      },
+    })
+    .then((response) => response.data)
+    .then((data) => {
+      Store.dispatch({ type: "img", data: data });
+      return true;
+    })
+    .catch((error) => {
+      console.log(error);
+      return false;
+    });
+    
+  return res;
+}
+
+
 export async function getGoods(params) {
   let user = Store.getState().user;
   console.log(user);
@@ -137,6 +161,7 @@ export function StoreToString(): Array<string> {
 }
 
 export interface o_type {
+  ГУИД: string;
   Склад: string;
   Группа: string;
   Код: string;
@@ -150,6 +175,7 @@ export interface o_type {
   Производитель: string;
   ИмпортерКонтрагент: string;
   ДопРеквизиты: Array<dr_type>;
+  
 }
 
 export interface h_type {
@@ -197,6 +223,12 @@ export interface t_param1 {
   Группа: Array<string>;
 }
 
+export interface t_image {
+  ГУИД: string;
+  Картинка: string;
+
+}
+
 export interface t_good {
   ГУИД: string;
   Артикул: string;
@@ -212,6 +244,7 @@ export interface t_good {
   Производитель: string;
   ИмпортерКонтрагент: string;
   ДопРеквизиты: Array<dr_type>;
+  
 }
 
 interface t_search {
@@ -241,6 +274,10 @@ interface s_type {
   basket: Array<t_good>;
 
   search: t_search;
+
+  gimages: t_image;
+
+
 }
 
 const i_state: s_type | any = {
@@ -268,6 +305,11 @@ const i_state: s_type | any = {
   basket: [],
 
   search: { Дата: i_data(), Номенклатура: "", Пользователь: false },
+
+  gimages: {
+    ГУИД: "",
+    Картинка: "",
+  }
 };
 
 function usReducer(state = i_state.user, action) {
@@ -295,6 +337,18 @@ function gdReducer(state = i_state.goods, action) {
     }
     case "del_goods":
       return [];
+    default:
+      return state;
+  }
+}
+
+function imgReducer(state = i_state.gimages, action) {
+  switch (action.type) {
+    case "img": {
+      return action.data;
+    }
+    case "del_img":
+      return {};
     default:
       return state;
   }
@@ -450,6 +504,7 @@ function srReducer(state = i_state.search, action) {
 const rootReducer = combineReducers({
   user: usReducer,
   goods: gdReducer,
+  gimages: imgReducer,
   docs: dcReducer,
   dist: dsReducer,
   stores: stReducer,
@@ -520,7 +575,7 @@ export function SERV() {
   return url;
 }
 
-export const Store = create_Store(rootReducer, i_state);
+export const Store = create_Store(rootReducer, i_state,);
 
 export async function getDatas() {}
 

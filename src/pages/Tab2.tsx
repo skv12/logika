@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   IonContent,
   IonHeader,
@@ -22,10 +22,19 @@ import {
   IonFooter,
   IonToast,
   IonItemDivider,
+  IonImg,
 } from "@ionic/react";
 import "./Tab2.css";
 import update from "immutability-helper";
-import { Store, o_type, getGoods, t_good, getData } from "./Store";
+import {
+  Store,
+  o_type,
+  getGoods,
+  t_good,
+  getData,
+  getImg,
+  t_image,
+} from "./Store";
 import {
   listOutline,
   ellipsisHorizontalOutline,
@@ -61,6 +70,11 @@ const g_state: t_good = {
   ДопРеквизиты: [],
 };
 
+const gimages_state: t_image = {
+  ГУИД: "",
+  Картинка: "",
+};
+
 interface t_detail {
   Номенклатура: string;
   Количество: number;
@@ -71,9 +85,10 @@ const Tab2: React.FC = () => {
   // const [loading, setLoading]   = useState(false)
   const [upd, setUpd] = useState(0);
   const [basket, setBasket] = useState(false);
+  const [imgOpen, setImgOpen] = useState(false);
   const [b_length, setBLength] = useState(0);
   const [good, setGood] = useState<t_good>(g_state);
-
+  const [gimage, setGimage] = useState<t_image>(gimages_state);
   const [query, setQuery] = useState(false);
   const [doc, setDoc] = useState(false);
   const [docnum, setDocnum] = useState("");
@@ -210,9 +225,9 @@ const Tab2: React.FC = () => {
             <>
               {elem}
               <IonItem
-                onClick={() => {
+                onClick={async () => {
                   setGood({
-                    ГУИД: "",
+                    ГУИД: goods[i].ГУИД,
                     Артикул: goods[i].Артикул,
                     Наименование: goods[i].Номенклатура,
                     Цена: goods[i].Цена,
@@ -227,7 +242,15 @@ const Tab2: React.FC = () => {
                     ИмпортерКонтрагент: goods[i].ИмпортерКонтрагент,
                     ДопРеквизиты: goods[i].ДопРеквизиты,
                   });
+                  await getImg(good.ГУИД);
+                  console.log(Store.getState().gimages);
+                  
+                  setGimage(Store.getState().gimages);
+                
+                  if (gimage.ГУИД === good.ГУИД) setImgOpen(true);
+                  
                   setQuery(true);
+                  
                 }}
               >
                 <IonLabel position="stacked"> {goods[i].Склад} </IonLabel>
@@ -394,7 +417,7 @@ const Tab2: React.FC = () => {
       <IonHeader>
         <IonToolbar>
           <IonTitle class="a-center">Остатки</IonTitle>
-          <IButton /> 
+          <IButton />
         </IonToolbar>
       </IonHeader>
 
@@ -454,19 +477,32 @@ const Tab2: React.FC = () => {
             <IonButton
               fill="clear"
               slot="start"
-              onClick={() => setQuery(false)}
+              onClick={() => {setQuery(false);
+                Store.dispatch({ type: "del_img" })}}
             >
               <IonIcon slot="icon-only" icon={arrowBackOutline}></IonIcon>
             </IonButton>
             <IonButton fill="clear" slot="end" onClick={() => setQuery(false)}>
               <IonIcon slot="icon-only" icon={closeOutline}></IonIcon>
             </IonButton>
-            <IonTitle> Корзина </IonTitle>
+            <IonTitle> Информация о товаре </IonTitle>
           </IonToolbar>
         </IonHeader>
 
         <IonContent>
           <IonGrid class="i-item-modal">
+            <IonRow>
+              {imgOpen ? (
+                <IonImg src={gimage.Картинка} />
+              ) : (
+                <>
+                  <IonItemDivider>
+                    <IonLabel>Нет изображения</IonLabel>
+                  </IonItemDivider>
+                  ;
+                </>
+              )}
+            </IonRow>
             <IonRow>
               <IonItemDivider>
                 <IonLabel>Наименование</IonLabel>
@@ -552,11 +588,23 @@ const Tab2: React.FC = () => {
               {Object.keys(good.ДопРеквизиты).map((e) => {
                 return (
                   <IonItem lines="none" key={e}>
-                    {(e).replace(/_/g, " ")}: {String(good.ДопРеквизиты[e]) === "true" ? "Да" : good.ДопРеквизиты[e] === "false" ? "Нет" : good.ДопРеквизиты[e] }
+                    {e.replace(/_/g, " ")}:{" "}
+                    {String(good.ДопРеквизиты[e]) === "true"
+                      ? "Да"
+                      : good.ДопРеквизиты[e] === "false"
+                      ? "Нет"
+                      : good.ДопРеквизиты[e]}
                   </IonItem>
                 );
               })}
             </IonCol>
+            <IonButton
+              onClick={() => {
+                console.log(imgOpen);
+              }}
+            >
+              ryjgrf
+            </IonButton>
           </IonGrid>
         </IonContent>
 
