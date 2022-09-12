@@ -32,6 +32,7 @@ export async function getData(url, params) {
 export async function getImg(params) {
   let user = Store.getState().user;
   console.log(params);
+  
   let res = await axios
     .post(SERV() + "МП_Фото", {ГУИД : params}, {
       auth: {

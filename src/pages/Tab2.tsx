@@ -213,6 +213,7 @@ const Tab2: React.FC = () => {
                   onClick={() => {
                     Store.dispatch({ type: "gr_add", Группа: goods[i].Код });
                     Search();
+                    
                   }}
                 >
                   <IonIcon slot="icon-only" icon={listOutline}></IonIcon>
@@ -242,15 +243,15 @@ const Tab2: React.FC = () => {
                     ИмпортерКонтрагент: goods[i].ИмпортерКонтрагент,
                     ДопРеквизиты: goods[i].ДопРеквизиты,
                   });
+
                   await getImg(good.ГУИД);
                   console.log(Store.getState().gimages);
-                  
+
                   setGimage(Store.getState().gimages);
-                
+
                   if (gimage.ГУИД === good.ГУИД) setImgOpen(true);
-                  
+
                   setQuery(true);
-                  
                 }}
               >
                 <IonLabel position="stacked"> {goods[i].Склад} </IonLabel>
@@ -431,7 +432,7 @@ const Tab2: React.FC = () => {
       <IonContent>
         <IonButton
           onClick={() => {
-            console.log(Store.getState().goods);
+            console.log(Store.getState());
           }}
         >
           sadsad
@@ -477,8 +478,10 @@ const Tab2: React.FC = () => {
             <IonButton
               fill="clear"
               slot="start"
-              onClick={() => {setQuery(false);
-                Store.dispatch({ type: "del_img" })}}
+              onClick={() => {
+                setQuery(false);
+                Store.dispatch({ type: "del_img" });
+              }}
             >
               <IonIcon slot="icon-only" icon={arrowBackOutline}></IonIcon>
             </IonButton>
@@ -491,7 +494,7 @@ const Tab2: React.FC = () => {
 
         <IonContent>
           <IonGrid class="i-item-modal">
-            <IonRow>
+            <IonRow class="ion-justify-content-center">
               {imgOpen ? (
                 <IonImg src={gimage.Картинка} />
               ) : (
