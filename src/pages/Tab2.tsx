@@ -244,7 +244,7 @@ const Tab2: React.FC = () => {
                     ДопРеквизиты: goods[i].ДопРеквизиты,
                   });
 
-                  await getImg(good.ГУИД);
+                  await getImg(goods[i].ГУИД);
                   console.log(Store.getState().gimages);
 
                   setGimage(Store.getState().gimages);
@@ -603,6 +603,7 @@ const Tab2: React.FC = () => {
             </IonCol>
             <IonButton
               onClick={() => {
+                console.log(Store.getState());
                 console.log(imgOpen);
               }}
             >
