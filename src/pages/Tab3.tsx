@@ -39,7 +39,7 @@ const Tab3: React.FC = () => {
   const [search, setSearch] = useState(false);
   const [loading, setLoading] = useState(false);
   const [detail, setDetail] = useState<Array<t_detail>>([]);
-  const [index, setIndex] = useState(0)
+  const [index, setIndex] = useState(0);
 
   function getDetail(date: Date, num: string) {
     let user = Store.getState().user;
@@ -70,9 +70,7 @@ const Tab3: React.FC = () => {
   function Detail(props: { info }): JSX.Element {
     let i = index;
     let info = props.info;
-    console.log(info);
-    let info1=Store.getState().docs
-    console.log(info1)
+    let info1 = Store.getState().docs;
     let elem = (
       <>
         <IonButton
@@ -84,43 +82,40 @@ const Tab3: React.FC = () => {
           <IonIcon icon={ellipsisHorizontalOutline} slot="icon-only"></IonIcon>
         </IonButton>
         <IonItem>
-          <IonText class="f-1">СУММА</IonText>
-          
+          <IonText class="f-1">Вид оплаты</IonText>
+
           <IonCol size="3" slot="end" class="f-1">
-          {info1[i].Наличные === 0 ? (
-                  ""
-                ) : (
-                  <IonRow class="">
-                    <IonRow>Наличные</IonRow>
-                      {" "}
-                    
-                    {info1[i].Наличные} руб{" "}
-                  </IonRow>
-                )}
-                {info1[i].Карта === 0 ? (
-                  ""
-                ) : (
-                  <IonRow class="">
-                    <IonRow>Банковская карта</IonRow>
-                    {info1[i].Карта} руб 
-                  </IonRow>
-                )}
-                {info1[i].Сертификат === 0 ? (
-                  ""
-                ) : (
-                  <IonRow class="">
-                    <IonRow>Сертификат</IonRow>
-                    {info1[i].Сертификат} руб
-                  </IonRow>
-                )}
-                {info1[i].Банк === 0 ? (
-                  ""
-                ) : (
-                  <IonRow class="">
-                    <IonRow>Банк</IonRow>
-                    {info1[i].Банк} руб{" "}
-                  </IonRow>
-                )}
+            {info1[i].Наличные === 0 ? (
+              ""
+            ) : (
+              <IonRow class="">
+                <IonRow>Наличные</IonRow> {info1[i].Наличные} руб{" "}
+              </IonRow>
+            )}
+            {info1[i].Карта === 0 ? (
+              ""
+            ) : (
+              <IonRow class="">
+                <IonRow>Банковская карта</IonRow>
+                {info1[i].Карта} руб
+              </IonRow>
+            )}
+            {info1[i].Сертификат === 0 ? (
+              ""
+            ) : (
+              <IonRow class="">
+                <IonRow>Сертификат</IonRow>
+                {info1[i].Сертификат} руб
+              </IonRow>
+            )}
+            {info1[i].Банк === 0 ? (
+              ""
+            ) : (
+              <IonRow class="">
+                <IonRow>Банк</IonRow>
+                {info1[i].Банк} руб{" "}
+              </IonRow>
+            )}
           </IonCol>
         </IonItem>
       </>
@@ -162,12 +157,49 @@ const Tab3: React.FC = () => {
             <IonItem
               onClick={() => {
                 getDetail(info[i].Дата, info[i].Номер);
-                setIndex(i)
+                setIndex(i);
               }}
             >
               <IonText class="f-1">{info[i].Документ}</IonText>
-              <IonCol size="3.5" slot="end" class="f-1">
-                {info[i].Наличные === 0 ? (
+              <IonCol size="3" slot="end" class="f-1">
+                <IonRow>
+                  {info[i].Наличные +
+                    info[i].Карта +
+                    info[i].Сертификат +
+                    info[i].Банк}{" "}
+                  руб{" "}
+                </IonRow>
+                <IonRow>
+                  {info[i].Наличные === 0 ? (
+                    ""
+                  ) : (
+                    <IonIcon icon={cashOutline} class="ionIcon">
+                      {" "}
+                    </IonIcon>
+                  )}
+                  {info[i].Карта === 0 ? (
+                    ""
+                  ) : (
+                    <IonIcon icon={cardOutline} class="ionIcon">
+                      {" "}
+                    </IonIcon>
+                  )}
+                  {info[i].Сертификат === 0 ? (
+                    ""
+                  ) : (
+                    <IonIcon icon={readerOutline} class="ionIcon">
+                      {" "}
+                    </IonIcon>
+                  )}
+                  {info[i].Банк === 0 ? (
+                    ""
+                  ) : (
+                    <IonIcon icon={businessOutline} class="ionIcon">
+                      {" "}
+                    </IonIcon>
+                  )}
+                </IonRow>
+                {/* {info[i].Наличные === 0 ? (
                   ""
                 ) : (
                   <IonRow class="ion-align-items-center">
@@ -202,7 +234,7 @@ const Tab3: React.FC = () => {
                     <IonIcon icon={businessOutline} class="ionIcon"></IonIcon>{" "}
                     {info[i].Банк} руб{" "}
                   </IonRow>
-                )}
+                )} */}
               </IonCol>
             </IonItem>
           </>
@@ -249,8 +281,8 @@ const Tab3: React.FC = () => {
       </IonHeader>
       <IonItem class="f-1">
         <IonText> Документ</IonText>
-        <IonCol slot="end" size="3.5">
-          <IonRow>Вид оплаты</IonRow>
+        <IonCol slot="end" size="3">
+          <IonRow>Сумма</IonRow>
         </IonCol>
       </IonItem>
 
