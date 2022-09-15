@@ -34,6 +34,7 @@ import {
   getData,
   getImg,
   t_image,
+  getCategory,
 } from "./Store";
 import {
   listOutline,
@@ -436,6 +437,14 @@ const Tab2: React.FC = () => {
           }}
         >
           sadsad
+        </IonButton>
+        <IonButton
+          onClick={() => {
+            getCategory()
+            console.log(Store.getState());
+          }}
+        >
+          cat
         </IonButton>
         <Goods goods={Store.getState().goods} />
       </IonContent>

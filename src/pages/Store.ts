@@ -153,6 +153,30 @@ export async function getStores() {
   return res;
 }
 
+export async function getCategory() {
+  let user = Store.getState().user;
+  console.log(user);
+  let res = false;
+  res = await axios
+    .get(SERV() + "Категории", {
+      auth: {
+        username: unescape(encodeURIComponent(user.user)),
+        password: unescape(encodeURIComponent(user.password)),
+      },
+    })
+    .then((response) => response.data)
+    .then((data) => {
+      Store.dispatch({ type: "cate", data: data });
+      return true;
+    })
+    .catch((error) => {
+      console.log(error);
+      return false;
+    });
+
+  return res;
+}
+
 export function StoreToString(): Array<string> {
   let stor = Store.getState().stores;
   return stor.map(function (st) {
@@ -254,6 +278,12 @@ interface t_search {
   Пользователь: boolean;
 }
 
+interface t_categories {
+  Код: string;
+  Наименование: string;
+  Родитель: string;
+}
+
 interface s_type {
   user: {
     auth: boolean;
@@ -261,6 +291,8 @@ interface s_type {
     password: string;
     role: string;
   };
+
+  
 
   goods: Array<o_type>;
 
@@ -278,6 +310,7 @@ interface s_type {
 
   gimages: t_image;
 
+  categories: Array<t_categories>;
 
 }
 
@@ -310,8 +343,12 @@ const i_state: s_type | any = {
   gimages: {
     ГУИД: "",
     Картинка: "",
-  }
+  },
+
+  categories: []
 };
+
+
 
 function usReducer(state = i_state.user, action) {
   switch (action.type) {
@@ -350,6 +387,18 @@ function imgReducer(state = i_state.gimages, action) {
     }
     case "del_img":
       return {};
+    default:
+      return state;
+  }
+}
+
+function cateReducer(state = i_state.categories, action) {
+  switch (action.type) {
+    case "cate": {
+      return action.data;
+    }
+    case "del_cate":
+      return [];
     default:
       return state;
   }
@@ -512,6 +561,7 @@ const rootReducer = combineReducers({
   param1: p1Reducer,
   basket: bsReducer,
   search: srReducer,
+  categories: cateReducer
 });
 
 function create_Store(reducer, initialState) {
