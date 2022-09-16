@@ -21,6 +21,10 @@ import {
   searchOutline,
   ellipsisHorizontalOutline,
   personCircleOutline,
+  cashOutline,
+  cardOutline,
+  businessOutline,
+  readerOutline,
 } from "ionicons/icons";
 import axios from "axios";
 
@@ -35,6 +39,7 @@ const Tab3: React.FC = () => {
   const [search, setSearch] = useState(false);
   const [loading, setLoading] = useState(false);
   const [detail, setDetail] = useState<Array<t_detail>>([]);
+  const [index, setIndex] = useState(0);
 
   function getDetail(date: Date, num: string) {
     let user = Store.getState().user;
@@ -63,7 +68,9 @@ const Tab3: React.FC = () => {
   }
 
   function Detail(props: { info }): JSX.Element {
+    let i = index;
     let info = props.info;
+    let info1 = Store.getState().docs;
     let elem = (
       <>
         <IonButton
@@ -74,6 +81,43 @@ const Tab3: React.FC = () => {
         >
           <IonIcon icon={ellipsisHorizontalOutline} slot="icon-only"></IonIcon>
         </IonButton>
+        <IonItem>
+          <IonText class="f-1">Вид оплаты</IonText>
+
+          <IonCol size="3" slot="end" class="f-1">
+            {info1[i].Наличные === 0 ? (
+              ""
+            ) : (
+              <IonRow class="">
+                <IonRow>Наличные</IonRow> {info1[i].Наличные} руб{" "}
+              </IonRow>
+            )}
+            {info1[i].Карта === 0 ? (
+              ""
+            ) : (
+              <IonRow class="">
+                <IonRow>Банковская карта</IonRow>
+                {info1[i].Карта} руб
+              </IonRow>
+            )}
+            {info1[i].Сертификат === 0 ? (
+              ""
+            ) : (
+              <IonRow class="">
+                <IonRow>Сертификат</IonRow>
+                {info1[i].Сертификат} руб
+              </IonRow>
+            )}
+            {info1[i].Банк === 0 ? (
+              ""
+            ) : (
+              <IonRow class="">
+                <IonRow>Банк</IonRow>
+                {info1[i].Банк} руб{" "}
+              </IonRow>
+            )}
+          </IonCol>
+        </IonItem>
       </>
     );
 
@@ -102,6 +146,7 @@ const Tab3: React.FC = () => {
   function History(props: { info: Array<h_type> }): JSX.Element {
     let elem = <></>;
     let info = props.info;
+
     if (detail.length !== 0) {
       elem = <Detail info={detail} />;
     } else if (info.length > 0) {
@@ -112,14 +157,84 @@ const Tab3: React.FC = () => {
             <IonItem
               onClick={() => {
                 getDetail(info[i].Дата, info[i].Номер);
+                setIndex(i);
               }}
             >
               <IonText class="f-1">{info[i].Документ}</IonText>
               <IonCol size="3" slot="end" class="f-1">
-                <IonRow> {info[i].Наличные} руб </IonRow>
-                <IonRow> {info[i].Карта} руб </IonRow>
-                <IonRow> {info[i].Сертификат} руб </IonRow>
-                <IonRow> {info[i].Банк} руб </IonRow>
+                <IonRow>
+                  {info[i].Наличные +
+                    info[i].Карта +
+                    info[i].Сертификат +
+                    info[i].Банк}{" "}
+                  руб{" "}
+                </IonRow>
+                <IonRow>
+                  {info[i].Наличные === 0 ? (
+                    ""
+                  ) : (
+                    <IonIcon icon={cashOutline} class="ionIcon">
+                      {" "}
+                    </IonIcon>
+                  )}
+                  {info[i].Карта === 0 ? (
+                    ""
+                  ) : (
+                    <IonIcon icon={cardOutline} class="ionIcon">
+                      {" "}
+                    </IonIcon>
+                  )}
+                  {info[i].Сертификат === 0 ? (
+                    ""
+                  ) : (
+                    <IonIcon icon={readerOutline} class="ionIcon">
+                      {" "}
+                    </IonIcon>
+                  )}
+                  {info[i].Банк === 0 ? (
+                    ""
+                  ) : (
+                    <IonIcon icon={businessOutline} class="ionIcon">
+                      {" "}
+                    </IonIcon>
+                  )}
+                </IonRow>
+                {/* {info[i].Наличные === 0 ? (
+                  ""
+                ) : (
+                  <IonRow class="ion-align-items-center">
+                    <IonIcon icon={cashOutline} class="ionIcon">
+                      {" "}
+                    </IonIcon>
+                    {info[i].Наличные} руб{" "}
+                  </IonRow>
+                )}
+                {info[i].Карта === 0 ? (
+                  ""
+                ) : (
+                  <IonRow class="ion-align-items-center">
+                    <IonIcon icon={cardOutline} class="ionIcon">
+                      {" "}
+                    </IonIcon>
+                    {info[i].Карта} руб 
+                  </IonRow>
+                )}
+                {info[i].Сертификат === 0 ? (
+                  ""
+                ) : (
+                  <IonRow class="ion-align-items-center">
+                    <IonIcon icon={readerOutline} class="ionIcon"></IonIcon>{" "}
+                    {info[i].Сертификат} руб
+                  </IonRow>
+                )}
+                {info[i].Банк === 0 ? (
+                  ""
+                ) : (
+                  <IonRow class="ion-align-items-center">
+                    <IonIcon icon={businessOutline} class="ionIcon"></IonIcon>{" "}
+                    {info[i].Банк} руб{" "}
+                  </IonRow>
+                )} */}
               </IonCol>
             </IonItem>
           </>
@@ -127,7 +242,7 @@ const Tab3: React.FC = () => {
       }
       elem = <IonList>{elem}</IonList>;
     }
-
+    
     return elem;
   }
 
@@ -167,10 +282,7 @@ const Tab3: React.FC = () => {
       <IonItem class="f-1">
         <IonText> Документ</IonText>
         <IonCol slot="end" size="3">
-          <IonRow>Наличные</IonRow>
-          <IonRow>Карта</IonRow>
-          <IonRow>Сертификат</IonRow>
-          <IonRow>Банк</IonRow>
+          <IonRow>Сумма</IonRow>
         </IonCol>
       </IonItem>
 

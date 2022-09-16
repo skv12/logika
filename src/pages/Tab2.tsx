@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   IonContent,
   IonHeader,
@@ -20,10 +20,22 @@ import {
   IonCardSubtitle,
   IonCardTitle,
   IonFooter,
+  IonToast,
+  IonItemDivider,
+  IonImg,
 } from "@ionic/react";
 import "./Tab2.css";
 import update from "immutability-helper";
-import { Store, o_type, getGoods, t_good, getData } from "./Store";
+import {
+  Store,
+  o_type,
+  getGoods,
+  t_good,
+  getData,
+  getImg,
+  t_image,
+  getCategory,
+} from "./Store";
 import {
   listOutline,
   ellipsisHorizontalOutline,
@@ -49,6 +61,19 @@ const g_state: t_good = {
   Цена: 0,
   Количество: 0,
   Сумма: 0,
+  Склад: "",
+  Остаток: 0,
+  Группа: "",
+  Вес: 0,
+  Объем: 0,
+  Производитель: "",
+  ИмпортерКонтрагент: "",
+  ДопРеквизиты: [],
+};
+
+const gimages_state: t_image = {
+  ГУИД: "",
+  Картинка: "",
 };
 
 interface t_detail {
@@ -61,11 +86,14 @@ const Tab2: React.FC = () => {
   // const [loading, setLoading]   = useState(false)
   const [upd, setUpd] = useState(0);
   const [basket, setBasket] = useState(false);
+  const [imgOpen, setImgOpen] = useState(false);
   const [b_length, setBLength] = useState(0);
   const [good, setGood] = useState<t_good>(g_state);
+  const [gimage, setGimage] = useState<t_image>(gimages_state);
   const [query, setQuery] = useState(false);
   const [doc, setDoc] = useState(false);
   const [docnum, setDocnum] = useState("");
+  const [showToast1, setShowToast1] = useState(false);
 
   Store.subscribe_basket(() => {
     let basket = Store.getState().basket;
@@ -198,15 +226,31 @@ const Tab2: React.FC = () => {
             <>
               {elem}
               <IonItem
-                onClick={() => {
+                onClick={async () => {
                   setGood({
-                    ГУИД: "",
+                    ГУИД: goods[i].ГУИД,
                     Артикул: goods[i].Артикул,
                     Наименование: goods[i].Номенклатура,
                     Цена: goods[i].Цена,
                     Количество: 1,
-                    Сумма: goods[1].Цена,
+                    Сумма: goods[i].Цена,
+                    Склад: goods[i].Склад,
+                    Остаток: goods[i].Остаток,
+                    Группа: goods[i].Группа,
+                    Вес: goods[i].Вес,
+                    Объем: goods[i].Объем,
+                    Производитель: goods[i].Производитель,
+                    ИмпортерКонтрагент: goods[i].ИмпортерКонтрагент,
+                    ДопРеквизиты: goods[i].ДопРеквизиты,
                   });
+
+                  await getImg(goods[i].ГУИД);
+                  console.log(Store.getState().gimages);
+
+                  setGimage(Store.getState().gimages);
+
+                  if (gimage.ГУИД === good.ГУИД) setImgOpen(true);
+
                   setQuery(true);
                 }}
               >
@@ -386,35 +430,227 @@ const Tab2: React.FC = () => {
         }}
       />
       <IonContent>
+        <IonButton
+          onClick={() => {
+            console.log(Store.getState());
+          }}
+        >
+          sadsad
+        </IonButton>
+        <IonButton
+          onClick={() => {
+            getCategory()
+            console.log(Store.getState());
+          }}
+        >
+          cat
+        </IonButton>
         <Goods goods={Store.getState().goods} />
       </IonContent>
 
-      <IonAlert
+      {/* <IonAlert 
+            isOpen={ query }
+            onDidDismiss={() => setQuery(false)}
+            header={'Корзина'}
+            message={good.Наименование}
+            //  inputs={[
+            //    {
+            //      name: 'Количество',
+            //      placeholder: 'Количество',
+            //      type: 'number',
+            //      min: -10,
+            //      max: 10,
+            //    },             
+            //  ]}
+            buttons={[
+              {
+                text: 'Отмена',
+                role: 'cancel',
+                handler: () => {}
+              },           
+              {
+                text: 'Добавить в корзину',
+                handler: (data) => {
+                  addBasket(1);
+                }
+              }
+          ]} />  */}
+
+      <IonModal
         isOpen={query}
+        swipeToClose={true}
         onDidDismiss={() => setQuery(false)}
-        header={"Корзина"}
-        message={good.Наименование}
-        // inputs={[
-        //   {
-        //     name: 'Количество',
-        //     type: 'number',
-        //     min: -10,
-        //     max: 10,
-        //   },
-        // ]}
-        buttons={[
-          {
-            text: "Cancel",
-            role: "cancel",
-            handler: () => {},
-          },
-          {
-            text: "Ok",
-            handler: (data) => {
-              addBasket(1);
-            },
-          },
-        ]}
+      >
+        <IonHeader>
+          <IonToolbar>
+            <IonButton
+              fill="clear"
+              slot="start"
+              onClick={() => {
+                setQuery(false);
+                Store.dispatch({ type: "del_img" });
+              }}
+            >
+              <IonIcon slot="icon-only" icon={arrowBackOutline}></IonIcon>
+            </IonButton>
+            <IonButton fill="clear" slot="end" onClick={() => setQuery(false)}>
+              <IonIcon slot="icon-only" icon={closeOutline}></IonIcon>
+            </IonButton>
+            <IonTitle> Информация о товаре </IonTitle>
+          </IonToolbar>
+        </IonHeader>
+
+        <IonContent>
+          <IonGrid class="i-item-modal">
+            <IonRow class="ion-justify-content-center">
+              {imgOpen ? (
+                <IonImg src={gimage.Картинка} />
+              ) : (
+                <>
+                  <IonItemDivider>
+                    <IonLabel>Нет изображения</IonLabel>
+                  </IonItemDivider>
+                  ;
+                </>
+              )}
+            </IonRow>
+            <IonRow>
+              <IonItemDivider>
+                <IonLabel>Наименование</IonLabel>
+              </IonItemDivider>
+              <IonItem lines="none">{good.Наименование}</IonItem>
+            </IonRow>
+            <IonRow>
+              <IonCol>
+                <IonItemDivider>
+                  <IonLabel>Группа товара</IonLabel>
+                </IonItemDivider>
+                <IonItem lines="none">{good.Группа}</IonItem>
+              </IonCol>
+              <IonCol>
+                <IonItemDivider>
+                  <IonLabel>Артикул</IonLabel>
+                </IonItemDivider>
+                <IonItem lines="none">{good.Артикул}</IonItem>
+              </IonCol>
+            </IonRow>
+            <IonRow>
+              <IonCol>
+                <IonItemDivider>
+                  <IonLabel>Склад</IonLabel>
+                </IonItemDivider>
+                <IonItem lines="none">{good.Склад}</IonItem>
+              </IonCol>
+              <IonCol>
+                <IonItemDivider>
+                  <IonLabel>Цена</IonLabel>
+                </IonItemDivider>
+                <IonItem lines="none">{good.Цена}</IonItem>
+              </IonCol>
+            </IonRow>
+            <IonRow>
+              <IonCol>
+                <IonItemDivider>
+                  <IonLabel>Производитель</IonLabel>
+                </IonItemDivider>
+                <IonItem lines="none">
+                  {good.Производитель === "" ? "~" : good.Производитель}
+                </IonItem>
+              </IonCol>
+              <IonCol>
+                <IonItemDivider>
+                  <IonLabel>Импортер</IonLabel>
+                </IonItemDivider>
+                <IonItem lines="none">
+                  {good.ИмпортерКонтрагент === ""
+                    ? "~"
+                    : good.ИмпортерКонтрагент}
+                </IonItem>
+              </IonCol>
+            </IonRow>
+            <IonRow>
+              <IonCol>
+                <IonItemDivider>
+                  <IonLabel>Остаток</IonLabel>
+                </IonItemDivider>
+                <IonItem lines="none">{good.Остаток} шт</IonItem>
+              </IonCol>
+              <IonCol>
+                <IonItemDivider>
+                  <IonLabel>Вес</IonLabel>
+                </IonItemDivider>
+                <IonItem lines="none">
+                  {good.Вес === 0 ? "~" : good.Вес} кг
+                </IonItem>
+              </IonCol>
+              <IonCol>
+                <IonItemDivider>
+                  <IonLabel>Объем</IonLabel>
+                </IonItemDivider>
+                <IonItem lines="none">
+                  {good.Объем === 0 ? "~" : good.Объем} м³{" "}
+                </IonItem>
+              </IonCol>
+            </IonRow>
+            <IonCol>
+              <IonItemDivider>
+                <IonLabel>Дополнительные реквизиты</IonLabel>
+              </IonItemDivider>
+              {Object.keys(good.ДопРеквизиты).map((e) => {
+                return (
+                  <IonItem lines="none" key={e}>
+                    {e.replace(/_/g, " ")}:{" "}
+                    {String(good.ДопРеквизиты[e]) === "true"
+                      ? "Да"
+                      : good.ДопРеквизиты[e] === "false"
+                      ? "Нет"
+                      : good.ДопРеквизиты[e]}
+                  </IonItem>
+                );
+              })}
+            </IonCol>
+            <IonButton
+              onClick={() => {
+                console.log(Store.getState());
+                console.log(imgOpen);
+              }}
+            >
+              ryjgrf
+            </IonButton>
+          </IonGrid>
+        </IonContent>
+
+        <IonFooter>
+          <IonToolbar>
+            <IonButton
+              slot="start"
+              onClick={() => {
+                setQuery(false);
+              }}
+            >
+              {" "}
+              Отменить
+            </IonButton>
+            <IonButton
+              slot="end"
+              onClick={() => {
+                setShowToast1(true);
+                addBasket(1);
+              }}
+            >
+              {" "}
+              Добавить в корзину
+            </IonButton>
+          </IonToolbar>
+        </IonFooter>
+      </IonModal>
+
+      <IonToast
+        isOpen={showToast1}
+        onDidDismiss={() => setShowToast1(false)}
+        message="Товар добавлен в корзину"
+        position="middle"
+        duration={200}
       />
 
       <IonAlert
@@ -461,16 +697,6 @@ const Tab2: React.FC = () => {
         <IonFooter>
           <IonToolbar>
             <IonButton
-              slot="end"
-              onClick={() => {
-                setBasket(false);
-                setOrder();
-              }}
-            >
-              {" "}
-              Чек
-            </IonButton>
-            <IonButton
               slot="start"
               onClick={() => {
                 Store.dispatch({ type: "cl_basket" });
@@ -479,6 +705,16 @@ const Tab2: React.FC = () => {
             >
               {" "}
               Отменить
+            </IonButton>
+            <IonButton
+              slot="end"
+              onClick={() => {
+                setBasket(false);
+                setOrder();
+              }}
+            >
+              {" "}
+              Чек
             </IonButton>
           </IonToolbar>
         </IonFooter>

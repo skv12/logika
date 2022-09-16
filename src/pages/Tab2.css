@@ -12,6 +12,9 @@
 
 .r-underline {
   border-bottom: 1px solid gray;
+  
+.i-item-modal {
+    width: 90%;
 }
 
 .t-right {

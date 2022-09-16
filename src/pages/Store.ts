@@ -29,6 +29,29 @@ export async function getData(url, params) {
   return res;
 }
 
+export async function getImg(params) {
+  let user = Store.getState().user;
+  console.log(params);
+  
+  let res = await axios
+    .post(SERV() + "МП_Фото", {ГУИД : params}, {
+      auth: {
+        username: unescape(encodeURIComponent(user.user)),
+        password: unescape(encodeURIComponent(user.password)),
+      },
+    })
+    .then((response) => response.data)
+    .then((data) => {
+      Store.dispatch({ type: "img", data: data });
+      return true;
+    })
+    .catch((error) => {
+      console.log(error);
+      return false;
+    });
+    
+  return res;
+}
 export async function getGoods(params) {
   let user = Store.getState().user;
   console.log(user);
@@ -128,15 +151,40 @@ export async function getStores() {
   return res;
 }
 
+export async function getCategory() {
+  let user = Store.getState().user;
+  console.log(user);
+  let res = false;
+  res = await axios
+    .get(SERV() + "Категории", {
+      auth: {
+        username: unescape(encodeURIComponent(user.user)),
+        password: unescape(encodeURIComponent(user.password)),
+      },
+    })
+    .then((response) => response.data)
+    .then((data) => {
+      Store.dispatch({ type: "cate", data: data });
+      return true;
+    })
+    .catch((error) => {
+      console.log(error);
+      return false;
+    });
+
+  return res;
+}
+
 export function StoreToString(): Array<string> {
   let stor = Store.getState().stores;
-  return stor.map(function(st) {
+  return stor.map(function (st) {
     if (st.checked) return st.value;
     return "";
   });
 }
 
 export interface o_type {
+  ГУИД: string;
   Склад: string;
   Группа: string;
   Код: string;
@@ -145,6 +193,12 @@ export interface o_type {
   Цена: number;
   Остаток: number;
   ЭтоГруппа: boolean;
+  Вес: number;
+  Объем: number;
+  Производитель: string;
+  ИмпортерКонтрагент: string;
+  ДопРеквизиты: Array<dr_type>;
+  
 }
 
 export interface h_type {
@@ -160,6 +214,10 @@ export interface h_type {
 export interface g_type {
   Номенклатура: string;
   КОтгрузке: number;
+}
+export interface dr_type {
+  Наименование: string;
+  Значение: string;
 }
 
 export interface d_type {
@@ -187,6 +245,11 @@ export interface t_param1 {
   Группа: Array<string>;
 }
 
+export interface t_image {
+  ГУИД: string;
+  Картинка: string;
+}
+
 export interface t_good {
   ГУИД: string;
   Артикул: string;
@@ -194,12 +257,26 @@ export interface t_good {
   Количество: number;
   Цена: number;
   Сумма: number;
+  Склад: string;
+  Остаток: number;
+  Группа: string;
+  Вес: number;
+  Объем: number;
+  Производитель: string;
+  ИмпортерКонтрагент: string;
+  ДопРеквизиты: Array<dr_type>;
 }
 
 interface t_search {
   Дата: string;
   Номенклатура: string;
   Пользователь: boolean;
+}
+
+interface t_categories {
+  Код: string;
+  Наименование: string;
+  Родитель: string;
 }
 
 interface s_type {
@@ -209,6 +286,8 @@ interface s_type {
     password: string;
     role: string;
   };
+
+  
 
   goods: Array<o_type>;
 
@@ -223,6 +302,11 @@ interface s_type {
   basket: Array<t_good>;
 
   search: t_search;
+
+  gimages: t_image;
+
+  categories: Array<t_categories>;
+
 }
 
 const i_state: s_type | any = {
@@ -250,7 +334,16 @@ const i_state: s_type | any = {
   basket: [],
 
   search: { Дата: i_data(), Номенклатура: "", Пользователь: false },
+
+  gimages: {
+    ГУИД: "",
+    Картинка: "",
+  },
+
+  categories: []
 };
+
+
 
 function usReducer(state = i_state.user, action) {
   switch (action.type) {
@@ -276,6 +369,30 @@ function gdReducer(state = i_state.goods, action) {
       return action.data;
     }
     case "del_goods":
+      return [];
+    default:
+      return state;
+  }
+}
+
+function imgReducer(state = i_state.gimages, action) {
+  switch (action.type) {
+    case "img": {
+      return action.data;
+    }
+    case "del_img":
+      return {};
+    default:
+      return state;
+  }
+}
+
+function cateReducer(state = i_state.categories, action) {
+  switch (action.type) {
+    case "cate": {
+      return action.data;
+    }
+    case "del_cate":
       return [];
     default:
       return state;
@@ -312,7 +429,7 @@ function stReducer(state = i_state.stores, action) {
       return action.data;
     }
     case "set_sto": {
-      return state.map(function(curr) {
+      return state.map(function (curr) {
         return {
           name: curr.name,
           type: curr.type,
@@ -323,7 +440,7 @@ function stReducer(state = i_state.stores, action) {
       });
     }
     case "upd_sto": {
-      return state.map(function(curr) {
+      return state.map(function (curr) {
         if (curr.value === action.value)
           return {
             name: curr.name,
@@ -432,12 +549,14 @@ function srReducer(state = i_state.search, action) {
 const rootReducer = combineReducers({
   user: usReducer,
   goods: gdReducer,
+  gimages: imgReducer,
   docs: dcReducer,
   dist: dsReducer,
   stores: stReducer,
   param1: p1Reducer,
   basket: bsReducer,
   search: srReducer,
+  categories: cateReducer
 });
 
 function create_Store(reducer, initialState) {
