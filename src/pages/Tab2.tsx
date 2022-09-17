@@ -53,10 +53,12 @@ import {
   arrowBack,
   arrowBackOutline,
   cameraOutline,
+  trashBinOutline,
+  checkmarkOutline,
 } from "ionicons/icons";
+
 let scanActive: boolean = false;
 
-import { group } from "console";
 interface t_param {
   Номенклатура: string;
   Склады: Array<string>;
@@ -104,6 +106,9 @@ const Tab2: React.FC = () => {
   const [showToast1, setShowToast1] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [scanActive, setScanActive] = useState(false);
+  useEffect(() =>{
+    getCategory();
+  },[]);
   const startScan = async () => {
     const status = await BarcodeScanner.checkPermission({
       force: true,
@@ -222,13 +227,13 @@ const Tab2: React.FC = () => {
               <IonButton
                 fill="clear"
                 onClick={() => {
-                  Store.dispatch({ type: "p1", Номенклатура: "" });
+                  Store.dispatch({ type: "p1", Номенклатура: "" , Группа: "" });
                   Store.dispatch({ type: "gr_del" });
                   Search();
                 }}
               >
                 <IonIcon
-                  icon={ellipsisHorizontalOutline}
+                  icon={trashBinOutline}
                   slot="icon-only"
                 ></IonIcon>
               </IonButton>
@@ -454,7 +459,7 @@ const Tab2: React.FC = () => {
           <IButton />
         </IonToolbar>
         <IonSearchbar
-          debounce={250}
+          
           value={searchText}
           onIonChange={(e) => {
             setSearchText(e.detail.value!);
@@ -483,7 +488,7 @@ const Tab2: React.FC = () => {
         </IonButton>
         <IonButton
           onClick={() => {
-            getCategory();
+            
             console.log(Store.getState());
           }}
         >
@@ -492,7 +497,7 @@ const Tab2: React.FC = () => {
         <IonButton
           onClick={() => {
             setGrouplist(true);
-            getCategory()
+            
             
           }}
         >
@@ -533,14 +538,18 @@ const Tab2: React.FC = () => {
           <IonHeader>
             <IonToolbar>
               <IonTitle>Группы товаров</IonTitle>
-              <IonButton fill="clear" slot="end" onClick={() => {setGrouplist(false)}
+              <IonButton fill="clear" slot="start" onClick={() => {setGrouplist(false); Store.dispatch({ type: "p1", Группа: "" });}
               }>
               <IonIcon slot="icon-only" icon={closeOutline}></IonIcon>
+            </IonButton>
+              <IonButton fill="clear" slot="end" onClick={() => {setGrouplist(false)}
+              }>
+              <IonIcon slot="icon-only" icon={checkmarkOutline}></IonIcon>
             </IonButton>
             </IonToolbar>
           </IonHeader>
           <IonContent className="ion-padding">
-         <Tree nodes={Store.getState().categories} theme={"light"} onSelect={(e) => {console.log(e)}}></Tree>
+         <Tree nodes={Store.getState().categories} theme={"light"} onSelect={(e) => {Store.dispatch({ type: "p1", Группа: e[0] })}}></Tree>
           </IonContent>
         </IonModal>
 
