@@ -23,9 +23,13 @@ import {
   IonToast,
   IonItemDivider,
   IonImg,
+  IonSegment,
+  IonSegmentButton,
+  IonButtons,
 } from "@ionic/react";
 import "./Tab2.css";
 import update from "immutability-helper";
+import Tree from '@naisutech/react-tree'
 import {
   Store,
   o_type,
@@ -47,6 +51,7 @@ import {
   arrowBack,
   arrowBackOutline,
 } from "ionicons/icons";
+import { group } from "console";
 
 interface t_param {
   Номенклатура: string;
@@ -86,7 +91,6 @@ const Tab2: React.FC = () => {
   // const [loading, setLoading]   = useState(false)
   const [upd, setUpd] = useState(0);
   const [basket, setBasket] = useState(false);
-  const [imgOpen, setImgOpen] = useState(false);
   const [b_length, setBLength] = useState(0);
   const [good, setGood] = useState<t_good>(g_state);
   const [gimage, setGimage] = useState<t_image>(gimages_state);
@@ -94,6 +98,7 @@ const Tab2: React.FC = () => {
   const [doc, setDoc] = useState(false);
   const [docnum, setDocnum] = useState("");
   const [showToast1, setShowToast1] = useState(false);
+  const [grouplist, setGrouplist] = useState(false);
 
   Store.subscribe_basket(() => {
     let basket = Store.getState().basket;
@@ -200,6 +205,7 @@ const Tab2: React.FC = () => {
                   slot="icon-only"
                 ></IonIcon>
               </IonButton>
+              
             );
         }
         if (goods[i].ЭтоГруппа)
@@ -250,7 +256,7 @@ const Tab2: React.FC = () => {
 
                   setGimage(Store.getState().gimages);
 
-                  if (gimage.ГУИД === good.ГУИД) setImgOpen(true);
+                
 
                   setQuery(true);
                 }}
@@ -446,6 +452,15 @@ const Tab2: React.FC = () => {
         >
           cat
         </IonButton>
+        <IonButton
+          onClick={() => {
+            setGrouplist(true);
+            getCategory()
+            
+          }}
+        >
+          filter
+        </IonButton>
         <Goods goods={Store.getState().goods} />
       </IonContent>
 
@@ -477,6 +492,21 @@ const Tab2: React.FC = () => {
               }
           ]} />  */}
 
+        <IonModal isOpen={grouplist}>
+          <IonHeader>
+            <IonToolbar>
+              <IonTitle>Группы товаров</IonTitle>
+              <IonButton fill="clear" slot="end" onClick={() => {setGrouplist(false)}
+              }>
+              <IonIcon slot="icon-only" icon={closeOutline}></IonIcon>
+            </IonButton>
+            </IonToolbar>
+          </IonHeader>
+          <IonContent className="ion-padding">
+         <Tree nodes={Store.getState().categories} theme={"light"} onSelect={(e) => {console.log(e)}}></Tree>
+          </IonContent>
+        </IonModal>
+
       <IonModal
         isOpen={query}
         swipeToClose={true}
@@ -504,16 +534,9 @@ const Tab2: React.FC = () => {
         <IonContent>
           <IonGrid class="i-item-modal">
             <IonRow class="ion-justify-content-center">
-              {imgOpen ? (
+             
                 <IonImg src={gimage.Картинка} />
-              ) : (
-                <>
-                  <IonItemDivider>
-                    <IonLabel>Нет изображения</IonLabel>
-                  </IonItemDivider>
-                  ;
-                </>
-              )}
+         
             </IonRow>
             <IonRow>
               <IonItemDivider>
@@ -613,7 +636,6 @@ const Tab2: React.FC = () => {
             <IonButton
               onClick={() => {
                 console.log(Store.getState());
-                console.log(imgOpen);
               }}
             >
               ryjgrf
