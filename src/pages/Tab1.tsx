@@ -76,6 +76,7 @@ class Tab1 extends React.Component {
             >
               <IonIcon slot="icon-only" icon={syncOutline}></IonIcon>
             </IonButton>
+            
             <IonTitle class="a-center">Графики продаж</IonTitle>
             {/* <LogButtons /> */}
             <IonButton
