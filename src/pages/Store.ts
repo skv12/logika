@@ -52,8 +52,6 @@ export async function getImg(params) {
     
   return res;
 }
-
-
 export async function getGoods(params) {
   let user = Store.getState().user;
   console.log(user);
@@ -218,7 +216,6 @@ export interface g_type {
   КОтгрузке: number;
 }
 export interface dr_type {
-
   Наименование: string;
   Значение: string;
 }
@@ -251,7 +248,6 @@ export interface t_param1 {
 export interface t_image {
   ГУИД: string;
   Картинка: string;
-
 }
 
 export interface t_good {
@@ -269,7 +265,6 @@ export interface t_good {
   Производитель: string;
   ИмпортерКонтрагент: string;
   ДопРеквизиты: Array<dr_type>;
-  
 }
 
 interface t_search {
@@ -626,7 +621,7 @@ export function SERV() {
   return url;
 }
 
-export const Store = create_Store(rootReducer, i_state,);
+export const Store = create_Store(rootReducer, i_state);
 
 export async function getDatas() {}
 

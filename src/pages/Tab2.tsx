@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import { BarcodeScanner } from "@capacitor-community/barcode-scanner";
+import { AndroidSettings, NativeSettings } from "capacitor-native-settings";
 import {
   IonContent,
   IonHeader,
@@ -50,9 +52,11 @@ import {
   giftOutline,
   arrowBack,
   arrowBackOutline,
+  cameraOutline,
 } from "ionicons/icons";
-import { group } from "console";
+let scanActive: boolean = false;
 
+import { group } from "console";
 interface t_param {
   Номенклатура: string;
   Склады: Array<string>;
@@ -98,6 +102,29 @@ const Tab2: React.FC = () => {
   const [doc, setDoc] = useState(false);
   const [docnum, setDocnum] = useState("");
   const [showToast1, setShowToast1] = useState(false);
+  const [searchText, setSearchText] = useState("");
+  const [scanActive, setScanActive] = useState(false);
+  const startScan = async () => {
+    const status = await BarcodeScanner.checkPermission({
+      force: true,
+    });
+    if (status.granted) {
+      setScanActive(true);
+      BarcodeScanner.hideBackground();
+      const data = await BarcodeScanner.startScan();
+      if (data.content) {
+        setSearchText(data.content);
+        BarcodeScanner.showBackground();
+        setScanActive(false);
+        BarcodeScanner.stopScan();
+      }
+    }
+    if (status.denied) {
+      NativeSettings.openAndroid({
+        option: AndroidSettings.Security,
+      });
+    }
+  };
   const [grouplist, setGrouplist] = useState(false);
 
   Store.subscribe_basket(() => {
@@ -115,7 +142,7 @@ const Tab2: React.FC = () => {
 
     if (basket === undefined) basket = [];
 
-    var commentIndex = basket.findIndex(function (b) {
+    var commentIndex = basket.findIndex(function(b) {
       return b.Артикул === Артикул;
     });
     if (commentIndex >= 0) {
@@ -129,7 +156,7 @@ const Tab2: React.FC = () => {
 
     if (basket === undefined) basket = [];
 
-    var commentIndex = basket.findIndex(function (b) {
+    var commentIndex = basket.findIndex(function(b) {
       return b.Артикул === Артикул;
     });
     if (commentIndex >= 0) {
@@ -156,7 +183,7 @@ const Tab2: React.FC = () => {
 
     if (basket === undefined) basket = [];
 
-    var commentIndex = basket.findIndex(function (b) {
+    var commentIndex = basket.findIndex(function(b) {
       return b.Артикул === good.Артикул;
     });
     if (commentIndex >= 0) {
@@ -220,7 +247,6 @@ const Tab2: React.FC = () => {
                   onClick={() => {
                     Store.dispatch({ type: "gr_add", Группа: goods[i].Код });
                     Search();
-                    
                   }}
                 >
                   <IonIcon slot="icon-only" icon={listOutline}></IonIcon>
@@ -422,21 +448,32 @@ const Tab2: React.FC = () => {
         message={'Please wait...'}
       /> */}
 
-      <IonHeader>
+      <IonHeader hidden={scanActive}>
         <IonToolbar>
           <IonTitle class="a-center">Остатки</IonTitle>
           <IButton />
         </IonToolbar>
+        <IonSearchbar
+          debounce={250}
+          value={searchText}
+          onIonChange={(e) => {
+            setSearchText(e.detail.value!);
+            Store.dispatch({ type: "p1", Номенклатура: searchText });
+            Search();
+          }}
+        >
+          <IonButton
+            className="searchbar-camera"
+            onClick={() => {
+              startScan();
+            }}
+          >
+            <IonIcon slot="icon-only" icon={cameraOutline} />
+          </IonButton>
+        </IonSearchbar>
       </IonHeader>
 
-      <IonSearchbar
-        debounce={250}
-        onIonChange={(e) => {
-          Store.dispatch({ type: "p1", Номенклатура: e.detail.value });
-          Search();
-        }}
-      />
-      <IonContent>
+      <IonContent hidden={scanActive}>
         <IonButton
           onClick={() => {
             console.log(Store.getState());
@@ -446,7 +483,7 @@ const Tab2: React.FC = () => {
         </IonButton>
         <IonButton
           onClick={() => {
-            getCategory()
+            getCategory();
             console.log(Store.getState());
           }}
         >
