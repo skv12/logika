@@ -459,7 +459,6 @@ const Tab2: React.FC = () => {
           <IButton />
         </IonToolbar>
         <IonSearchbar
-          
           value={searchText}
           onIonChange={(e) => {
             setSearchText(e.detail.value!);
@@ -542,7 +541,7 @@ const Tab2: React.FC = () => {
               }>
               <IonIcon slot="icon-only" icon={closeOutline}></IonIcon>
             </IonButton>
-              <IonButton fill="clear" slot="end" onClick={() => {setGrouplist(false)}
+              <IonButton fill="clear" slot="end" onClick={() => {setGrouplist(false);Store.dispatch({ type: "p1", Номенклатура: "" });setSearchText(""); Search()}
               }>
               <IonIcon slot="icon-only" icon={checkmarkOutline}></IonIcon>
             </IonButton>
