@@ -242,7 +242,7 @@ export interface t_type {
 export interface t_param1 {
   Номенклатура: string;
   Склады: Array<string>;
-  Группа: Array<string>;
+  Группа: string;
 }
 
 export interface t_image {
@@ -328,7 +328,7 @@ const i_state: s_type | any = {
   param1: {
     Номенклатура: "",
     Склады: [],
-    Группа: [""],
+    Группа: "",
   },
 
   basket: [],
@@ -487,13 +487,12 @@ function p1Reducer(state = i_state.param1, action) {
       };
     }
     case "gr_del": {
-      let jarr = state.Группа;
-      let count = state.Группа.length;
-      if (count > 1) jarr.splice(count - 1, 1);
+     
+      
       return {
         Номенклатура: state.Номенклатура,
         Склады: state.Склады,
-        Группа: jarr,
+        Группа: state.Группа,
       };
     }
     default:
