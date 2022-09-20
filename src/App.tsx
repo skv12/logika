@@ -11,7 +11,7 @@ import {
   setupIonicReact
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import { barChartOutline, listOutline, serverOutline, bicycleOutline, calendarOutline } from 'ionicons/icons';
+import { barChartOutline, listOutline, serverOutline, bicycleOutline, informationCircleOutline } from 'ionicons/icons';
 import Tab1 from './pages/Tab1';
 import Tab2 from './pages/Tab2';
 import Tab3 from './pages/Tab3';
@@ -37,6 +37,7 @@ import '@ionic/react/css/display.css';
 /* Theme variables */
 import './theme/variables.css';
 import { getStores, Store } from './pages/Store';
+import AboutActivity from './pages/AboutActivity';
 setupIonicReact();
 const App: React.FC = () =>  {
 
@@ -44,7 +45,7 @@ const App: React.FC = () =>  {
   const [cl2, setCl2] = useState("");
   const [cl3, setCl3] = useState("");
   const [cl4, setCl4] = useState("");
-
+  const [cl5, setCl5] = useState("");
 
 
    Store.subscribe_auth(()=>{
@@ -79,8 +80,9 @@ const App: React.FC = () =>  {
           {/* <Route path="/tab4" component={Tab4} exact={true} />           */}
           <Route path="/login" component={Login} exact={true} />
           <Route path="/" render={() => <Redirect to="/login" />} exact={true} />
+          <Route path="/about" component={AboutActivity} exact={true}></Route>
         </IonRouterOutlet>
-        <IonTabBar slot="bottom" >
+        <IonTabBar slot="bottom">
             <IonTabButton tab="tab1" href="/tab1" class = { cl1 }>
               <IonIcon icon={barChartOutline} />
               <IonLabel>Продажи</IonLabel>
@@ -90,13 +92,17 @@ const App: React.FC = () =>  {
               <IonLabel>Остатки</IonLabel>
             </IonTabButton>
             <IonTabButton tab="tab3" href="/tab3" class = { cl3 }>
-              <IonIcon icon={calendarOutline} />
+              <IonIcon icon={serverOutline} />
               <IonLabel>История</IonLabel>
             </IonTabButton>
             {/* <IonTabButton tab="tab4" href="/tab4" class = { cl4 }>
               <IonIcon icon={bicycleOutline} />
               <IonLabel>Доставка</IonLabel>
             </IonTabButton> */}
+            <IonTabButton tab="about" href="/about" class = { cl5 }>
+              <IonIcon icon={informationCircleOutline} />
+              <IonLabel>О программе</IonLabel>
+            </IonTabButton>
         </IonTabBar>
       </IonTabs>
     </IonReactRouter>

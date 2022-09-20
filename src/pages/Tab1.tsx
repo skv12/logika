@@ -115,24 +115,31 @@ class Tab1 extends React.Component {
           </IonToolbar>
         </IonHeader>
         <IonContent>
-          <IonButton
-            fill="clear"
-            onClick={() => {
-              this.setState({ stores: true });
-            }}
-          >
-            <IonIcon icon={layersOutline}></IonIcon>
-            Склады
-          </IonButton>
-          <IonButton
-            fill="clear"
-            onClick={() => {
-              this.setState({ query: true });
-            }}
-          >
-            <IonIcon icon={peopleOutline}></IonIcon>
-            Статистика
-          </IonButton>
+          <IonRow>
+            <IonCol>
+              <IonButton
+                fill="clear"
+                onClick={() => {
+                  this.setState({ stores: true });
+                }}
+              >
+                <IonIcon icon={layersOutline}></IonIcon>
+                Склады
+              </IonButton>
+            </IonCol>
+            <IonCol className="statbtn">
+              <IonButton
+                fill="clear"
+                onClick={() => {
+                  this.setState({ query: true });
+                }}
+              >
+                <IonIcon icon={peopleOutline}></IonIcon>
+                Статистика
+              </IonButton>
+            </IonCol>
+          </IonRow>
+
           <IonSlides>
             <IonSlide>
               <IonGrid>
@@ -178,7 +185,9 @@ class Tab1 extends React.Component {
           <IonContent>
             <IonRadioGroup
               value={this.state.selectedPeriod}
-              onIonChange={(e) => this.setState({ selectedPeriod: e.detail.value })}
+              onIonChange={(e) =>
+                this.setState({ selectedPeriod: e.detail.value })
+              }
             >
               <IonItem>
                 <IonLabel>День</IonLabel>
@@ -202,12 +211,27 @@ class Tab1 extends React.Component {
             </IonRow>
 
             <IonModal keepContentsMounted={true}>
-              <IonDatetime id="startdate" presentation="date" onIonChange={(e) => this.setState({startdate: e.detail.value})}></IonDatetime>
+              <IonDatetime
+                id="startdate"
+                presentation="date"
+                onIonChange={(e) =>
+                  this.setState({ startdate: e.detail.value })
+                }
+              ></IonDatetime>
             </IonModal>
             <IonModal keepContentsMounted={true}>
-              <IonDatetime id="enddate" presentation="date" onIonChange={(e) => this.setState({enddate: e.detail.value})} min={this.state.startdate}></IonDatetime>
+              <IonDatetime
+                id="enddate"
+                presentation="date"
+                onIonChange={(e) => this.setState({ enddate: e.detail.value })}
+                min={this.state.startdate}
+              ></IonDatetime>
             </IonModal>
-            <BarChart startdate={this.state.startdate} enddate={this.state.enddate} period={this.state.selectedPeriod} ></BarChart>
+            <BarChart
+              startdate={this.state.startdate}
+              enddate={this.state.enddate}
+              period={this.state.selectedPeriod}
+            ></BarChart>
           </IonContent>
         </IonModal>
 

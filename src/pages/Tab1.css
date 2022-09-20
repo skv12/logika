@@ -24,3 +24,7 @@ ion-slides {
   top: -13px;
   left: -18px;
 }
+.statbtn{
+  display: flex;
+  justify-content: end;
+}

@@ -1,0 +1,7 @@
+.about_img{
+    display: flex;
+    justify-content: center;
+}
+.about_img::part(image){
+    width: 100px;
+}
