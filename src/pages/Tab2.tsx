@@ -31,7 +31,7 @@ import {
 } from "@ionic/react";
 import "./Tab2.css";
 import update from "immutability-helper";
-import Tree from '@naisutech/react-tree'
+import Tree from "@naisutech/react-tree";
 import {
   Store,
   o_type,
@@ -55,6 +55,7 @@ import {
   cameraOutline,
   trashBinOutline,
   checkmarkOutline,
+  funnelOutline,
 } from "ionicons/icons";
 
 let scanActive: boolean = false;
@@ -106,9 +107,9 @@ const Tab2: React.FC = () => {
   const [showToast1, setShowToast1] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [scanActive, setScanActive] = useState(false);
-  useEffect(() =>{
+  useEffect(() => {
     getCategory();
-  },[]);
+  }, []);
   const startScan = async () => {
     const status = await BarcodeScanner.checkPermission({
       force: true,
@@ -147,7 +148,7 @@ const Tab2: React.FC = () => {
 
     if (basket === undefined) basket = [];
 
-    var commentIndex = basket.findIndex(function(b) {
+    var commentIndex = basket.findIndex(function (b) {
       return b.Артикул === Артикул;
     });
     if (commentIndex >= 0) {
@@ -161,7 +162,7 @@ const Tab2: React.FC = () => {
 
     if (basket === undefined) basket = [];
 
-    var commentIndex = basket.findIndex(function(b) {
+    var commentIndex = basket.findIndex(function (b) {
       return b.Артикул === Артикул;
     });
     if (commentIndex >= 0) {
@@ -188,7 +189,7 @@ const Tab2: React.FC = () => {
 
     if (basket === undefined) basket = [];
 
-    var commentIndex = basket.findIndex(function(b) {
+    var commentIndex = basket.findIndex(function (b) {
       return b.Артикул === good.Артикул;
     });
     if (commentIndex >= 0) {
@@ -221,25 +222,6 @@ const Tab2: React.FC = () => {
     let goods = props.goods;
     if (goods.length > 0) {
       for (let i = 0; i < goods.length; i++) {
-        if (i === 0) {
-          if (goods[i].Группа !== "")
-            elem = (
-              <IonButton
-                fill="clear"
-                onClick={() => {
-                  Store.dispatch({ type: "p1", Номенклатура: "" , Группа: "" });
-                  Store.dispatch({ type: "gr_del" });
-                  Search();
-                }}
-              >
-                <IonIcon
-                  icon={trashBinOutline}
-                  slot="icon-only"
-                ></IonIcon>
-              </IonButton>
-              
-            );
-        }
         if (goods[i].ЭтоГруппа)
           elem = (
             <>
@@ -287,8 +269,6 @@ const Tab2: React.FC = () => {
 
                   setGimage(Store.getState().gimages);
 
-                
-
                   setQuery(true);
                 }}
               >
@@ -325,7 +305,7 @@ const Tab2: React.FC = () => {
             setBasket(true);
           }}
         >
-          <IonIcon slot="icon-only" icon={cartOutline} />
+          <IonIcon className="cartIcon" slot="icon-only" icon={cartOutline}/>
           <IonText class="red-1"> {b_length} </IonText>
         </IonButton>
       </>
@@ -453,13 +433,15 @@ const Tab2: React.FC = () => {
         message={'Please wait...'}
       /> */}
 
-      <IonHeader hidden={scanActive}>
+      <IonHeader hidden={scanActive} className="headerCustom">
         <IonToolbar>
           <IonTitle class="a-center">Остатки</IonTitle>
           <IButton />
         </IonToolbar>
+      </IonHeader>
+
+      <IonContent hidden={scanActive}>
         <IonSearchbar
-          
           value={searchText}
           onIonChange={(e) => {
             setSearchText(e.detail.value!);
@@ -469,40 +451,44 @@ const Tab2: React.FC = () => {
         >
           <IonButton
             className="searchbar-camera"
+            color="none"
             onClick={() => {
               startScan();
             }}
           >
-            <IonIcon slot="icon-only" icon={cameraOutline} />
+            <IonIcon slot="icon-only" icon={cameraOutline} color="medium" />
           </IonButton>
         </IonSearchbar>
-      </IonHeader>
+        <IonRow>
+          <IonCol >
+            <IonButton
+              fill="clear"
+              onClick={() => {
+                Store.dispatch({
+                  type: "p1",
+                  Номенклатура: "Без номенклатуры",
+                  Группа: "",
+                });
+                Store.dispatch({ type: "gr_del" });
+                Search();
+              }}
+            >
+              <IonIcon icon={trashBinOutline} slot="icon-only"></IonIcon>
+            </IonButton>
+          </IonCol>
+          <IonCol className="filter">
+            <IonButton
+              fill="clear"
+              onClick={() => {
+                setGrouplist(true);
+              }}
+            >
+              <IonIcon slot="icon-only" icon={funnelOutline}></IonIcon>
+              Фильтр
+            </IonButton>
+          </IonCol>
+        </IonRow>
 
-      <IonContent hidden={scanActive}>
-        <IonButton
-          onClick={() => {
-            console.log(Store.getState());
-          }}
-        >
-          sadsad
-        </IonButton>
-        <IonButton
-          onClick={() => {
-            
-            console.log(Store.getState());
-          }}
-        >
-          cat
-        </IonButton>
-        <IonButton
-          onClick={() => {
-            setGrouplist(true);
-            
-            
-          }}
-        >
-          filter
-        </IonButton>
         <Goods goods={Store.getState().goods} />
       </IonContent>
 
@@ -534,24 +520,44 @@ const Tab2: React.FC = () => {
               }
           ]} />  */}
 
-        <IonModal isOpen={grouplist}>
-          <IonHeader>
-            <IonToolbar>
-              <IonTitle>Группы товаров</IonTitle>
-              <IonButton fill="clear" slot="start" onClick={() => {setGrouplist(false); Store.dispatch({ type: "p1", Группа: "" });}
-              }>
+      <IonModal isOpen={grouplist}>
+        <IonHeader>
+          <IonToolbar>
+            <IonTitle>Группы товаров</IonTitle>
+            <IonButton
+              fill="clear"
+              slot="start"
+              onClick={() => {
+                setGrouplist(false);
+                Store.dispatch({ type: "p1", Группа: "" });
+              }}
+            >
               <IonIcon slot="icon-only" icon={closeOutline}></IonIcon>
             </IonButton>
-              <IonButton fill="clear" slot="end" onClick={() => {setGrouplist(false)}
-              }>
+            <IonButton
+              fill="clear"
+              slot="end"
+              onClick={() => {
+                setGrouplist(false);
+                Store.dispatch({ type: "p1", Номенклатура: "" });
+                setSearchText("");
+                Search();
+              }}
+            >
               <IonIcon slot="icon-only" icon={checkmarkOutline}></IonIcon>
             </IonButton>
-            </IonToolbar>
-          </IonHeader>
-          <IonContent className="ion-padding">
-         <Tree nodes={Store.getState().categories} theme={"light"} onSelect={(e) => {Store.dispatch({ type: "p1", Группа: e[0] })}}></Tree>
-          </IonContent>
-        </IonModal>
+          </IonToolbar>
+        </IonHeader>
+        <IonContent className="ion-padding">
+          <Tree
+            nodes={Store.getState().categories}
+            theme={"light"}
+            onSelect={(e) => {
+              Store.dispatch({ type: "p1", Группа: e[0] });
+            }}
+          ></Tree>
+        </IonContent>
+      </IonModal>
 
       <IonModal
         isOpen={query}
@@ -580,9 +586,7 @@ const Tab2: React.FC = () => {
         <IonContent>
           <IonGrid class="i-item-modal">
             <IonRow class="ion-justify-content-center">
-             
-                <IonImg src={gimage.Картинка} />
-         
+              <IonImg src={gimage.Картинка} />
             </IonRow>
             <IonRow>
               <IonItemDivider>
@@ -679,19 +683,13 @@ const Tab2: React.FC = () => {
                 );
               })}
             </IonCol>
-            <IonButton
-              onClick={() => {
-                console.log(Store.getState());
-              }}
-            >
-              ryjgrf
-            </IonButton>
           </IonGrid>
         </IonContent>
 
         <IonFooter>
           <IonToolbar>
             <IonButton
+            fill="clear"
               slot="start"
               onClick={() => {
                 setQuery(false);
@@ -701,6 +699,7 @@ const Tab2: React.FC = () => {
               Отменить
             </IonButton>
             <IonButton
+            fill="clear"
               slot="end"
               onClick={() => {
                 setShowToast1(true);

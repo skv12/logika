@@ -25,6 +25,7 @@ import {
   cardOutline,
   businessOutline,
   readerOutline,
+  arrowBackOutline,
 } from "ionicons/icons";
 import axios from "axios";
 
@@ -79,7 +80,7 @@ const Tab3: React.FC = () => {
             setDetail([]);
           }}
         >
-          <IonIcon icon={ellipsisHorizontalOutline} slot="icon-only"></IonIcon>
+          <IonIcon icon={arrowBackOutline} slot="icon-only"></IonIcon>
         </IonButton>
         <IonItem>
           <IonText class="f-1">Вид оплаты</IonText>
