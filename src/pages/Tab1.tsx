@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   IonContent,
   IonHeader,
@@ -12,13 +12,30 @@ import {
   IonButton,
   IonAlert,
   IonLoading,
+  IonModal,
+  IonDatetime,
+  IonRadio,
+  IonRadioGroup,
+  IonItem,
+  IonLabel,
+  IonDatetimeButton,
+  IonRow,
+  IonCol,
 } from "@ionic/react";
 
 import { Store, getData, StoreToString } from "./Store";
 import LineChart from "./chart";
-
+import moment from "moment";
 import "./Tab1.css";
-import { syncOutline, layersOutline, optionsOutline } from "ionicons/icons";
+import {
+  syncOutline,
+  layersOutline,
+  optionsOutline,
+  closeOutline,
+  checkmarkOutline,
+  peopleOutline,
+} from "ionicons/icons";
+import BarChart from "./UsersChart";
 
 //const Tab1: React.FC = () => {
 class Tab1 extends React.Component {
@@ -26,7 +43,10 @@ class Tab1 extends React.Component {
     logout: false,
     stores: false,
     load: false,
-
+    query: false,
+    selectedPeriod: false,
+    startdate: moment().toISOString(),
+    enddate: "",
     upd1: 0,
     upd2: 0,
     upd3: 0,
@@ -67,7 +87,7 @@ class Tab1 extends React.Component {
         <IonLoading isOpen={this.state.load} message={"Please wait..."} />
         <IonHeader>
           <IonToolbar>
-            <IonButton
+            {/* <IonButton
               slot="start"
               fill="clear"
               onClick={() => {
@@ -75,8 +95,8 @@ class Tab1 extends React.Component {
               }}
             >
               <IonIcon slot="icon-only" icon={syncOutline}></IonIcon>
-            </IonButton>
-            
+            </IonButton> */}
+
             <IonTitle class="a-center">Графики продаж</IonTitle>
             {/* <LogButtons /> */}
             <IonButton
@@ -104,6 +124,15 @@ class Tab1 extends React.Component {
             <IonIcon icon={layersOutline}></IonIcon>
             Склады
           </IonButton>
+          <IonButton
+            fill="clear"
+            onClick={() => {
+              this.setState({ query: true });
+            }}
+          >
+            <IonIcon icon={peopleOutline}></IonIcon>
+            Статистика
+          </IonButton>
           <IonSlides>
             <IonSlide>
               <IonGrid>
@@ -130,6 +159,57 @@ class Tab1 extends React.Component {
             </IonSlide>
           </IonSlides>
         </IonContent>
+
+        <IonModal isOpen={this.state.query}>
+          <IonHeader>
+            <IonToolbar>
+              <IonTitle>Статистика по продавцам</IonTitle>
+              <IonButton
+                fill="clear"
+                slot="start"
+                onClick={() => {
+                  this.setState({ query: false });
+                }}
+              >
+                <IonIcon slot="icon-only" icon={closeOutline}></IonIcon>
+              </IonButton>
+            </IonToolbar>
+          </IonHeader>
+          <IonContent>
+            <IonRadioGroup
+              value={this.state.selectedPeriod}
+              onIonChange={(e) => this.setState({ selectedPeriod: e.detail.value })}
+            >
+              <IonItem>
+                <IonLabel>День</IonLabel>
+                <IonRadio value={false} />
+              </IonItem>
+              <IonItem>
+                <IonLabel>Период</IonLabel>
+                <IonRadio value={true} />
+              </IonItem>
+            </IonRadioGroup>
+            <IonRow>
+              <IonCol>
+                <IonDatetimeButton datetime="startdate"></IonDatetimeButton>
+              </IonCol>
+              <IonCol>
+                <IonDatetimeButton
+                  hidden={!this.state.selectedPeriod}
+                  datetime="enddate"
+                ></IonDatetimeButton>
+              </IonCol>
+            </IonRow>
+
+            <IonModal keepContentsMounted={true}>
+              <IonDatetime id="startdate" presentation="date" onIonChange={(e) => this.setState({startdate: e.detail.value})}></IonDatetime>
+            </IonModal>
+            <IonModal keepContentsMounted={true}>
+              <IonDatetime id="enddate" presentation="date" onIonChange={(e) => this.setState({enddate: e.detail.value})} min={this.state.startdate}></IonDatetime>
+            </IonModal>
+            <BarChart startdate={this.state.startdate} enddate={this.state.enddate} period={this.state.selectedPeriod} ></BarChart>
+          </IonContent>
+        </IonModal>
 
         {/* Логоут */}
         <IonAlert

@@ -18,8 +18,9 @@ ion-slides {
 }
 
 .red-1 {
+  font-size: 12px;
   color: red;
   position: relative;
   top: -13px;
-  left: -15px;
+  left: -18px;
 }
