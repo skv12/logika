@@ -107,6 +107,22 @@ const Tab2: React.FC = () => {
   const [showToast1, setShowToast1] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [scanActive, setScanActive] = useState(false);
+  const myThemes = {
+    modifiedDarkLarge: {
+      text: "#fafafa", // text color
+      bg: "#2d3439", // background color of whole tree
+      indicator: "gold", // open folder indicator color
+      separator: "gold", // row seperator color
+      icon: "gold", // fill & stroke color of default icons - has no effect when using custom icons
+      selectedBg: "#3f464e", // background of selected element
+      selectedText: "#fafafa", // text color of selected element
+      hoverBg: "#505a63", // background of hovered element
+      hoverText: "#fafafa", // text color of hovered element
+      accentBg: "#2d3439", // background of empty folder element
+      accentText: "#999", // text color of empty folder element
+      textSize: "large", // preferred text size
+    },
+  };
   useEffect(() => {
     getCategory();
   }, []);
@@ -305,7 +321,7 @@ const Tab2: React.FC = () => {
             setBasket(true);
           }}
         >
-          <IonIcon className="cartIcon" slot="icon-only" icon={cartOutline}/>
+          <IonIcon className="cartIcon" slot="icon-only" icon={cartOutline} />
           <IonText class="red-1"> {b_length} </IonText>
         </IonButton>
       </>
@@ -460,7 +476,7 @@ const Tab2: React.FC = () => {
           </IonButton>
         </IonSearchbar>
         <IonRow>
-          <IonCol >
+          <IonCol>
             <IonButton
               fill="clear"
               onClick={() => {
@@ -551,7 +567,23 @@ const Tab2: React.FC = () => {
         <IonContent className="ion-padding">
           <Tree
             nodes={Store.getState().categories}
-            theme={"light"}
+            customTheme={{
+              modifiedLightLarge: {
+                accentBg: "#fff",
+                accentText: "#999",
+                bg: "#fff",
+                hoverBg: "#505a63",
+                hoverText: "#fafafa",
+                icon: "#26547C",
+                indicator: "#26547C",
+                selectedBg: "#26547C",
+                selectedText: "#fafafa",
+                separator: "#f1f1f1",
+                text: "#424242",
+                textSize: "large",
+              },
+            }}
+            theme="modifiedLightLarge"
             onSelect={(e) => {
               Store.dispatch({ type: "p1", Группа: e[0] });
             }}
@@ -689,7 +721,7 @@ const Tab2: React.FC = () => {
         <IonFooter>
           <IonToolbar>
             <IonButton
-            fill="clear"
+              fill="clear"
               slot="start"
               onClick={() => {
                 setQuery(false);
@@ -699,7 +731,7 @@ const Tab2: React.FC = () => {
               Отменить
             </IonButton>
             <IonButton
-            fill="clear"
+              fill="clear"
               slot="end"
               onClick={() => {
                 setShowToast1(true);

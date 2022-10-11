@@ -94,7 +94,6 @@ const BarChart: React.FC<ContainerProps> = ({ startdate, enddate, period }) => {
         );
         updateChart(dataset1);
         updateChart2(dataset2);
-        
       })
       .catch((error) => {
         return {};

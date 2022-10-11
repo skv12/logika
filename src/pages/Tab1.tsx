@@ -25,7 +25,7 @@ import {
 
 import { Store, getData, StoreToString } from "./Store";
 import LineChart from "./chart";
-import moment from "moment";
+import { formatISO, endOfDay } from "date-fns";
 import "./Tab1.css";
 import {
   syncOutline,
@@ -45,7 +45,7 @@ class Tab1 extends React.Component {
     load: false,
     query: false,
     selectedPeriod: false,
-    startdate: moment().toISOString(),
+    startdate: formatISO(endOfDay(new Date())),
     enddate: "",
     upd1: 0,
     upd2: 0,
@@ -198,35 +198,24 @@ class Tab1 extends React.Component {
                 <IonRadio value={true} />
               </IonItem>
             </IonRadioGroup>
-            <IonRow>
+            <IonRow className="ion-padding-vertical">
               <IonCol>
-                <IonDatetimeButton datetime="startdate"></IonDatetimeButton>
+                <input
+                  id="startdate"
+                  type="date"
+                  onChange={(e) => this.setState({ startdate: e.target.value })}
+                />
               </IonCol>
-              <IonCol>
-                <IonDatetimeButton
+              <IonCol className="datecol">
+                <input
                   hidden={!this.state.selectedPeriod}
-                  datetime="enddate"
-                ></IonDatetimeButton>
+                  id="enddate"
+                  type="date"
+                  onChange={(e) => this.setState({ enddate: e.target.value })}
+                  min={this.state.startdate}
+                />
               </IonCol>
             </IonRow>
-
-            <IonModal keepContentsMounted={true}>
-              <IonDatetime
-                id="startdate"
-                presentation="date"
-                onIonChange={(e) =>
-                  this.setState({ startdate: e.detail.value })
-                }
-              ></IonDatetime>
-            </IonModal>
-            <IonModal keepContentsMounted={true}>
-              <IonDatetime
-                id="enddate"
-                presentation="date"
-                onIonChange={(e) => this.setState({ enddate: e.detail.value })}
-                min={this.state.startdate}
-              ></IonDatetime>
-            </IonModal>
             <BarChart
               startdate={this.state.startdate}
               enddate={this.state.enddate}

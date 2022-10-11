@@ -24,7 +24,11 @@ ion-slides {
   top: -13px;
   left: -18px;
 }
-.statbtn{
+.statbtn {
+  display: flex;
+  justify-content: end;
+}
+.datecol {
   display: flex;
   justify-content: end;
 }
