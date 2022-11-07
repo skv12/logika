@@ -19,7 +19,6 @@ import "./Tab3.css";
 import { Store, getDocs, h_type, SERV } from "./Store";
 import {
   searchOutline,
-  ellipsisHorizontalOutline,
   personCircleOutline,
   cashOutline,
   cardOutline,

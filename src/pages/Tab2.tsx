@@ -25,13 +25,10 @@ import {
   IonToast,
   IonItemDivider,
   IonImg,
-  IonSegment,
-  IonSegmentButton,
-  IonButtons,
 } from "@ionic/react";
 import "./Tab2.css";
 import update from "immutability-helper";
-import Tree from "@naisutech/react-tree";
+
 import {
   Store,
   o_type,
@@ -44,13 +41,11 @@ import {
 } from "./Store";
 import {
   listOutline,
-  ellipsisHorizontalOutline,
   cartOutline,
   closeOutline,
   removeCircleOutline,
   addCircleOutline,
   giftOutline,
-  arrowBack,
   arrowBackOutline,
   cameraOutline,
   trashBinOutline,
@@ -565,7 +560,7 @@ const Tab2: React.FC = () => {
           </IonToolbar>
         </IonHeader>
         <IonContent className="ion-padding">
-          <Tree
+          {/* <Tree
             nodes={Store.getState().categories}
             customTheme={{
               modifiedLightLarge: {
@@ -587,7 +582,7 @@ const Tab2: React.FC = () => {
             onSelect={(e) => {
               Store.dispatch({ type: "p1", Группа: e[0] });
             }}
-          ></Tree>
+          /> */}
         </IonContent>
       </IonModal>
 

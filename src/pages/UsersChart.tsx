@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import axios from "axios";
 import { Chart, registerables } from "chart.js";
 import { Store, SERV } from "./Store";
-import { IonRow, IonCol, IonLabel, IonText, IonItem } from "@ionic/react";
 import "./Tab3.css";
 
 Chart.register(...registerables);
@@ -104,7 +103,7 @@ const BarChart: React.FC<ContainerProps> = ({ startdate, enddate, period }) => {
     const canvas: any = c_ref.current;
     const ctx = canvas.getContext("2d");
     let status = Chart.getChart(canvas);
-    if (status != undefined) {
+    if (status !== undefined) {
       status.destroy();
     }
     var chart = new Chart(ctx, {
@@ -129,12 +128,13 @@ const BarChart: React.FC<ContainerProps> = ({ startdate, enddate, period }) => {
         },
       },
     });
+    chart.render();
   }
   function updateChart2(dat: ChartDataset) {
     const canvas: any = c_ref2.current;
     const ctx = canvas.getContext("2d");
     let status = Chart.getChart(canvas);
-    if (status != undefined) {
+    if (status !== undefined) {
       status.destroy();
     }
     var chart = new Chart(ctx, {
