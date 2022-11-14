@@ -1,34 +1,38 @@
 import axios from "axios";
-import { SERV, Store } from "../pages/Store";
+import { getStores, SERV, Store } from "../pages/Store";
 import { Buffer } from "buffer";
 export const Auth = async (
-  login: string,
-  password: string,
-  remember: boolean
+  autologin: boolean,
+  remember?: boolean,
+  login?: string,
+  password?: string
 ) => {
-  let authcode: string;
-  authcode = Buffer.from(login + ":" + password).toString("base64");
+  let authcode: any;
+  if (autologin) authcode = localStorage.getItem("app_data_token");
+  else authcode = Buffer.from(login + ":" + password).toString("base64");
   var res = await axios
     .get(SERV() + "Логин", {
       headers: {
         Authorization: "Basic " + authcode,
       },
     })
-    .then((response) => response.data)
-    .then((getData) => {
+    .then((response) => {
       Store.dispatch({
         type: "us",
         auth: true,
         user: login,
         password: password,
-        role: getData.Тип,
+        role: response.data.Тип,
       });
-      localStorage.setItem("app_data_login", login);
-      localStorage.setItem(
-        "app_data_token",
-        Buffer.from(login + ":" + password).toString("base64")
-      );
-      localStorage.setItem("app_remember", remember.toString());
+      if (login) localStorage.setItem("app_data_login", login);
+      if (login)
+        localStorage.setItem(
+          "app_data_token",
+          Buffer.from(login + ":" + password).toString("base64")
+        );
+      if (remember !== undefined)
+        localStorage.setItem("app_remember", remember.toString());
+
       return true;
     })
     .catch((error) => {

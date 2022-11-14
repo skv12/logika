@@ -1,0 +1,9 @@
+ion-tab-bar{
+    border-radius: 10px 10px 0 0;
+}
+ion-tab-button::part(native){
+    font-size: 10px;
+}
+ion-tab-button.tab-selected::part(native){
+    color: var(--ion-color-pink);
+}

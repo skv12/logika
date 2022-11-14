@@ -4,15 +4,14 @@
   align-items: center;
 
   &__title {
-    text-align: center;
-    margin-bottom: 30px;
+    font-weight: 600;
   }
   &__input {
     display: flex;
     justify-content: center;
     align-items: center;
     font-size: 16px;
-    background-color: #ECE6ED;
+    background-color: #ece6ed;
     border-radius: 10px;
     margin-bottom: 10px;
   }
@@ -25,4 +24,36 @@
 }
 .checkbox {
   padding: 0;
+}
+.fullheight {
+  height: 100%;
+}
+
+.xc {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.center {
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  align-items: center;
+}
+.vertical-center {
+  .fixed-content,
+  .scroll-content {
+      display: flex;
+      align-items: center;
+
+      ion-list {
+          max-width: 300px; 
+          width:100%; 
+          margin: auto; 
+          text-align: center;
+      }
+  }
+}
+.height-standard{
+  height: 54px;
 }

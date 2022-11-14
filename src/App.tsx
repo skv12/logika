@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Redirect, Route } from "react-router-dom";
 import {
   IonApp,
@@ -9,6 +9,8 @@ import {
   IonTabButton,
   IonTabs,
   setupIonicReact,
+  useIonViewWillEnter,
+  withIonLifeCycle,
 } from "@ionic/react";
 import { IonReactRouter } from "@ionic/react-router";
 import {
@@ -43,24 +45,23 @@ import "@ionic/react/css/display.css";
 /* Theme variables */
 import "./theme/variables.css";
 import TabNavigator from "./routers/TabNavigator";
+import { Auth } from "./data/DataApi";
+import { Store } from "./pages/Store";
 setupIonicReact();
 
 const App: React.FC = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(Store.getState().user.auth);
   return (
     <IonApp>
       <IonReactRouter>
-        {localStorage.getItem("app_data_login") &&
-        localStorage.getItem("app_data_token") ? (
-          <>
-            <Route path="/tabs" render={() => <TabNavigator />} ></Route>
-            <Redirect exact from="/login" to="/" />
-          </>
-        ) : (
-          <>
-            <Route path="/login" component={Login} />
-            <Redirect exact from="/" to="/login" />
-          </>
-        )}
+        <Route
+          path="/tabs"
+          render={(props) => {
+            return isLoggedIn ? <TabNavigator /> : <Login />;
+          }}
+        />
+        <Route path="/login" component={Login} />
+        <Redirect exact from="/" to="/login" />
       </IonReactRouter>
     </IonApp>
   );

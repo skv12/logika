@@ -59,9 +59,8 @@ const BarChart: React.FC<ContainerProps> = ({ startdate, enddate, period }) => {
 
     axios
       .get(SERV() + "СтатистикаПродавцов", {
-        auth: {
-          username: unescape(encodeURIComponent(user.user)),
-          password: unescape(encodeURIComponent(user.password)),
+        headers: {
+          Authorization: "Basic " + localStorage.getItem("app_data_token"),
         },
         params,
       })

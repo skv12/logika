@@ -12,9 +12,8 @@ export async function getData(url, params) {
   console.log(user);
   let res = await axios
     .post(SERV() + url, params, {
-      auth: {
-        username: unescape(encodeURIComponent(user.user)),
-        password: unescape(encodeURIComponent(user.password)),
+      headers: {
+        Authorization: "Basic " + localStorage.getItem("app_data_token"),
       },
     })
     .then((response) => response.data)
@@ -32,14 +31,17 @@ export async function getData(url, params) {
 export async function getImg(params) {
   let user = Store.getState().user;
   console.log(params);
-  
+
   let res = await axios
-    .post(SERV() + "МП_Фото", {ГУИД : params}, {
-      auth: {
-        username: unescape(encodeURIComponent(user.user)),
-        password: unescape(encodeURIComponent(user.password)),
-      },
-    })
+    .post(
+      SERV() + "МП_Фото",
+      { ГУИД: params },
+      {
+        headers: {
+          Authorization: "Basic " + localStorage.getItem("app_data_token"),
+        },
+      }
+    )
     .then((response) => response.data)
     .then((data) => {
       Store.dispatch({ type: "img", data: data });
@@ -49,7 +51,7 @@ export async function getImg(params) {
       console.log(error);
       return false;
     });
-    
+
   return res;
 }
 export async function getGoods(params) {
@@ -58,9 +60,8 @@ export async function getGoods(params) {
 
   let res = await axios
     .post(SERV() + "Остатки", params, {
-      auth: {
-        username: unescape(encodeURIComponent(user.user)),
-        password: unescape(encodeURIComponent(user.password)),
+      headers: {
+        Authorization: "Basic " + localStorage.getItem("app_data_token"),
       },
     })
     .then((response) => response.data)
@@ -82,9 +83,8 @@ export async function getDocs(params) {
 
   let res = await axios
     .get(SERV() + "История", {
-      auth: {
-        username: unescape(encodeURIComponent(user.user)),
-        password: unescape(encodeURIComponent(user.password)),
+      headers: {
+        Authorization: "Basic " + localStorage.getItem("app_data_token"),
       },
       params,
     })
@@ -107,9 +107,8 @@ export async function getDist(params) {
 
   let res = await axios
     .get(SERV() + "Доставки", {
-      auth: {
-        username: unescape(encodeURIComponent(user.user)),
-        password: unescape(encodeURIComponent(user.password)),
+      headers: {
+        Authorization: "Basic " + localStorage.getItem("app_data_token"),
       },
       params,
     })
@@ -132,14 +131,13 @@ export async function getStores() {
   let res = false;
   res = await axios
     .get(SERV() + "Склады", {
-      auth: {
-        username: unescape(encodeURIComponent(user.user)),
-        password: unescape(encodeURIComponent(user.password)),
+      headers: {
+        Authorization: "Basic " + localStorage.getItem("app_data_token"),
       },
     })
     .then((response) => response.data)
     .then((data) => {
-      Store.dispatch({ type: "sto", data: data });
+      Store.dispatch({ type: "stock", data: data });
       Store.dispatch({ type: "p1", Склады: StoreToString() });
       return true;
     })
@@ -157,9 +155,8 @@ export async function getCategory() {
   let res = false;
   res = await axios
     .get(SERV() + "Категории", {
-      auth: {
-        username: unescape(encodeURIComponent(user.user)),
-        password: unescape(encodeURIComponent(user.password)),
+      headers: {
+        Authorization: "Basic " + localStorage.getItem("app_data_token"),
       },
     })
     .then((response) => response.data)
@@ -198,7 +195,6 @@ export interface o_type {
   Производитель: string;
   ИмпортерКонтрагент: string;
   ДопРеквизиты: Array<dr_type>;
-  
 }
 
 export interface h_type {
@@ -287,8 +283,6 @@ interface s_type {
     role: string;
   };
 
-  
-
   goods: Array<o_type>;
 
   docs: Array<h_type>;
@@ -306,7 +300,6 @@ interface s_type {
   gimages: t_image;
 
   categories: Array<t_categories>;
-
 }
 
 const i_state: s_type | any = {
@@ -340,10 +333,8 @@ const i_state: s_type | any = {
     Картинка: "",
   },
 
-  categories: []
+  categories: [],
 };
-
-
 
 function usReducer(state = i_state.user, action) {
   switch (action.type) {
@@ -425,10 +416,10 @@ function dsReducer(state = i_state.dist, action) {
 
 function stReducer(state = i_state.stores, action) {
   switch (action.type) {
-    case "sto": {
+    case "stock": {
       return action.data;
     }
-    case "set_sto": {
+    case "set_stock": {
       return state.map(function (curr) {
         return {
           name: curr.name,
@@ -439,7 +430,7 @@ function stReducer(state = i_state.stores, action) {
         };
       });
     }
-    case "upd_sto": {
+    case "upd_stock": {
       return state.map(function (curr) {
         if (curr.value === action.value)
           return {
@@ -459,7 +450,7 @@ function stReducer(state = i_state.stores, action) {
           };
       });
     }
-    case "del_sto":
+    case "del_stock":
       return [];
     default:
       return state;
@@ -487,8 +478,6 @@ function p1Reducer(state = i_state.param1, action) {
       };
     }
     case "gr_del": {
-     
-      
       return {
         Номенклатура: state.Номенклатура,
         Склады: state.Склады,
@@ -555,7 +544,7 @@ const rootReducer = combineReducers({
   param1: p1Reducer,
   basket: bsReducer,
   search: srReducer,
-  categories: cateReducer
+  categories: cateReducer,
 });
 
 function create_Store(reducer, initialState) {
@@ -571,7 +560,7 @@ function create_Store(reducer, initialState) {
     dispatch(action) {
       currentState = currentReducer(currentState, action);
       switch (action.type) {
-        case "list_sto":
+        case "list_stock":
           store_list();
           break;
         case "us":
@@ -598,7 +587,7 @@ function create_Store(reducer, initialState) {
 export async function get_Store() {
   let res = await getStores();
   if (res) {
-    Store.dispatch({ type: "list_sto" });
+    Store.dispatch({ type: "list_stock" });
     getGoods(Store.getState().param1);
     getDocs({ params: {} });
     getDist({ params: {} });

@@ -36,6 +36,7 @@ import {
   peopleOutline,
 } from "ionicons/icons";
 import BarChart from "./UsersChart";
+import PageHeader from "../components/PageHeader";
 
 //const Tab1: React.FC = () => {
 class Tab1 extends React.Component {
@@ -58,16 +59,16 @@ class Tab1 extends React.Component {
   };
 
   async setStore(data) {
-    Store.dispatch({ type: "set_sto", data: false });
+    Store.dispatch({ type: "set_stock", data: false });
     data.forEach((stor) => {
-      Store.dispatch({ type: "upd_sto", value: stor, checked: true });
+      Store.dispatch({ type: "upd_stock", value: stor, checked: true });
     });
 
     let starr = StoreToString();
 
     Store.dispatch({ type: "p1", Склады: starr });
 
-    Store.dispatch({ type: "list_sto" });
+    Store.dispatch({ type: "list_stock" });
   }
 
   render() {
@@ -85,35 +86,7 @@ class Tab1 extends React.Component {
     return (
       <IonPage>
         <IonLoading isOpen={this.state.load} message={"Please wait..."} />
-        <IonHeader>
-          <IonToolbar>
-            {/* <IonButton
-              slot="start"
-              fill="clear"
-              onClick={() => {
-                // getData();
-              }}
-            >
-              <IonIcon slot="icon-only" icon={syncOutline}></IonIcon>
-            </IonButton> */}
-
-            <IonTitle class="a-center">Графики продаж</IonTitle>
-            {/* <LogButtons /> */}
-            <IonButton
-              slot="end"
-              fill="clear"
-              onClick={() => {
-                let serv = localStorage.getItem("StokHolm_SERV");
-                if (serv === null) serv = "188.244.191.2";
-                let port = localStorage.getItem("StokHolm_PORT");
-                if (port === null) port = "29080";
-                this.setState({ options: true, serv: serv, port: port });
-              }}
-            >
-              <IonIcon icon={optionsOutline} slot="icon-only"></IonIcon>
-            </IonButton>
-          </IonToolbar>
-        </IonHeader>
+        <PageHeader name="График продаж"></PageHeader>
         <IonContent>
           <IonRow>
             <IonCol>
@@ -267,41 +240,7 @@ class Tab1 extends React.Component {
           ]}
         />
 
-        {/* Оптионс */}
-        <IonAlert
-          isOpen={this.state.options}
-          onDidDismiss={() => this.setState({ options: false })}
-          header={"Настройки"}
-          message={""}
-          inputs={[
-            {
-              name: "Сервер",
-              type: "text",
-              placeholder: "Сервер",
-              value: this.state.serv,
-            },
-            {
-              name: "Порт",
-              type: "text",
-              placeholder: "Порт",
-              value: this.state.port,
-            },
-          ]}
-          buttons={[
-            {
-              text: "Cancel",
-              role: "cancel",
-              handler: () => {},
-            },
-            {
-              text: "Ok",
-              handler: (data) => {
-                localStorage.setItem("StokHolm_SERV", data.Сервер);
-                localStorage.setItem("StokHolm_PORT", data.Порт);
-              },
-            },
-          ]}
-        />
+       
       </IonPage>
     );
   }

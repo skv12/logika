@@ -44,22 +44,19 @@ const LineChart: React.FC<ContainerProps> = ({ period, upd }) => {
   useEffect(() => {
     let Склады = Store.getState().param1.Склады;
 
-    let params = {
-      params: {
-        Период: period,
-        Склады: Склады,
-      },
-    };
-
     let user = Store.getState().user;
 
     axios
       .get(SERV() + "График_", {
-        auth: {
-          username: unescape(encodeURIComponent(user.user)),
-          password: unescape(encodeURIComponent(user.password)),
+        headers: {
+          Authorization: "Basic " + localStorage.getItem("app_data_token"),
         },
-        params,
+        params:{
+          params: {
+            Период: period,
+            Склады: Склады,
+          },
+        }
       })
       .then((response) => response.data)
       .then((data) => {
