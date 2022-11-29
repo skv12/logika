@@ -1,16 +1,12 @@
 import React from "react";
 import {
   IonContent,
-  IonHeader,
   IonPage,
-  IonTitle,
-  IonToolbar,
   IonGrid,
   IonImg,
   IonText,
   IonRow,
   IonCol,
-  IonThumbnail,
   IonLabel,
   IonItem,
   IonIcon,
@@ -30,7 +26,7 @@ const AboutActivity: React.FC = () => {
     justifyContent: "center",
     width: "30px",
     height: "30px",
-    marginRight: '10px'
+    marginRight: "10px",
   };
   return (
     <IonPage>

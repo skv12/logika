@@ -5,8 +5,6 @@ import {
   IonSlides,
   IonSlide,
   IonGrid,
-  IonAlert,
-  IonLoading,
   IonRadio,
   IonRadioGroup,
   IonItem,
@@ -19,16 +17,13 @@ import {
   IonRefresherContent,
 } from "@ionic/react";
 
-import { Store } from "./Store";
 import LineChart from "./chart";
-import { formatISO, endOfDay, format } from "date-fns";
+import { endOfDay, format } from "date-fns";
 import "./StatsActivity.scss";
 import BarChart from "./UsersChart";
 import PageHeader from "../components/PageHeader";
 
 const StatsActivity: React.FC = () => {
-  const [logout, setLogout] = useState(false);
-  const [load, setLoad] = useState(false);
   const [selectedPeriod, setSelectedPeriod] = useState(false);
   const [startdate, setStartDate] = useState(
     format(endOfDay(new Date()), "yyyy-MM-dd")
@@ -41,7 +36,6 @@ const StatsActivity: React.FC = () => {
   const [segment, setSegment] = useState("shop");
   return (
     <IonPage>
-      <IonLoading isOpen={load} message={"Please wait..."} />
       <PageHeader name="Статистика"></PageHeader>
       <div className="ion-padding-horizontal">
         <IonSegment
@@ -151,8 +145,7 @@ const StatsActivity: React.FC = () => {
         ></BarChart>
       </IonContent>
 
-      {/* Логоут */}
-      <IonAlert
+      {/* <IonAlert
         isOpen={logout}
         onDidDismiss={() => setLogout(false)}
         header={"Выход"}
@@ -179,7 +172,7 @@ const StatsActivity: React.FC = () => {
             },
           },
         ]}
-      />
+      /> */}
     </IonPage>
   );
 };

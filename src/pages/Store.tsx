@@ -1,6 +1,5 @@
 import { combineReducers } from "redux";
 import { endOfDay, format } from "date-fns";
-import { getGoods } from "../data/DataApi";
 
 export interface item_type {
   ГУИД: string;
