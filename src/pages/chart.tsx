@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Chart, registerables } from "chart.js";
-import { Store, SERV } from "./Store";
-import { IonRow, IonCol, IonLabel, IonText, IonItem } from "@ionic/react";
-import "./Tab3.css";
+import { Store } from "./Store";
+import { IonRow, IonCol, IonLabel, IonText } from "@ionic/react";
+import { SERV } from "../data/DataApi";
 
 Chart.register(...registerables);
 
@@ -42,21 +42,15 @@ const LineChart: React.FC<ContainerProps> = ({ period, upd }) => {
   const c_ref = React.useRef(null);
 
   useEffect(() => {
-    let Склады = Store.getState().param1.Склады;
-
-    let user = Store.getState().user;
-
+    let data = Store.getState().param1;
     axios
       .get(SERV() + "График_", {
         headers: {
           Authorization: "Basic " + localStorage.getItem("app_data_token"),
         },
-        params:{
-          params: {
-            Период: period,
-            Склады: Склады,
-          },
-        }
+        params: {
+          params: JSON.stringify(data),
+        },
       })
       .then((response) => response.data)
       .then((data) => {
@@ -69,23 +63,21 @@ const LineChart: React.FC<ContainerProps> = ({ period, upd }) => {
           });
           setSales(data.Показатели);
           updateChart(data);
-        } //else console.log(data)
+        }
       })
       .catch((error) => {
         return {};
       });
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [upd]);
 
   function updateChart(info) {
     const canvas: any = c_ref.current;
     const ctx = canvas.getContext("2d");
-    //  console.log(ctx);
-
-    //ctx.fillRect(0,0, 100, 100);
-
-    new Chart(ctx, {
+    let status = Chart.getChart(canvas);
+    if (status !== undefined) {
+      status.destroy();
+    }
+    var chart = new Chart(ctx, {
       type: "line",
       data: {
         labels: info.Периоды,
@@ -99,74 +91,68 @@ const LineChart: React.FC<ContainerProps> = ({ period, upd }) => {
         },
       },
     });
+    chart.render();
   }
 
-  function Proc(props: { percent: string }): JSX.Element {
-    let elem = <></>;
+  function Proc(props: { percent: string; name: string }): JSX.Element {
     if (props.percent.charAt(0) === "-") {
-      elem = (
-        <IonItem>
-          <IonLabel position="stacked"> Процент </IonLabel>
-          <IonText class="red-2 f-1"> {props.percent} </IonText>
-        </IonItem>
+      return (
+        <>
+          <IonLabel color="medium" className="text_12">
+            {props.name}
+          </IonLabel>
+          <IonText class="red-2 text_14">{props.percent}</IonText>
+        </>
       );
-    } else
-      elem = (
-        <IonItem>
-          <IonLabel position="stacked"> Процент </IonLabel>
-          <IonText class="f-1"> {props.percent} </IonText>
-        </IonItem>
-      );
-    return elem;
+    }
+    return (
+      <>
+        <IonLabel color="medium" className="text_12">
+          Процент
+        </IonLabel>
+        <IonText class="text_14">{props.percent}</IonText>
+      </>
+    );
   }
   return (
     <>
       <IonRow>
-        <IonCol size="12" class="a-center">
+        <IonCol size="12" className="ion-text-center chart-title">
           {period}
         </IonCol>
       </IonRow>
       <IonRow>
-        <IonCol size="3.5">
-          <IonItem>
-            <IonLabel class="f-1" position="stacked">
-              {" "}
-              Продаж{" "}
-            </IonLabel>
-            <IonText class="f-1"> {Sales.Продаж} </IonText>
-          </IonItem>
+        <IonCol size="4">
+          <IonLabel color="medium" className="text_12">
+            Продаж
+          </IonLabel>
+          <IonText className="text_14">{Sales.Продаж}</IonText>
         </IonCol>
-        <IonCol size="5" class="a-center">
-          <IonItem>
-            <IonLabel position="stacked"> Сумма </IonLabel>
-            <IonText class="f-1"> {Sales.СуммаПродаж} </IonText>
-          </IonItem>
+        <IonCol size="4">
+          <IonLabel color="medium" className="text_12">
+            Сумма
+          </IonLabel>
+          <IonText className="text_14"> {Sales.СуммаПродаж} </IonText>
         </IonCol>
-        <IonCol size="3.5" class="a-center">
-          <Proc percent={Sales.Процент} />
+        <IonCol size="4">
+          <Proc percent={Sales.Процент} name="Процент" />
         </IonCol>
       </IonRow>
       <IonRow>
-        <IonCol size="3.5">
-          <IonItem>
-            <IonLabel class="f-1" position="stacked">
-              {" "}
-              Возвраты{" "}
-            </IonLabel>
-            <IonText class="f-1"> {Sales.Возвраты} </IonText>
-          </IonItem>
+        <IonCol size="4">
+          <IonLabel color="medium" className="text_12">
+            Возвраты
+          </IonLabel>
+          <IonText className="text_14"> {Sales.Возвраты} </IonText>
         </IonCol>
-        <IonCol size="5" class="a-center">
-          <IonItem>
-            <IonLabel class="f-1" position="stacked">
-              {" "}
-              Сумма{" "}
-            </IonLabel>
-            <IonText class="f-1"> {Sales.СуммаВозвратов} </IonText>
-          </IonItem>
+        <IonCol size="4">
+          <IonLabel color="medium" className="text_12">
+            Сумма
+          </IonLabel>
+          <IonText className="text_14"> {Sales.СуммаВозвратов} </IonText>
         </IonCol>
-        <IonCol size="3.5" class="a-center">
-          <Proc percent={Sales.ПроцентВозвратов} />
+        <IonCol size="4">
+          <Proc percent={Sales.ПроцентВозвратов} name={"Процент возвратов"} />
         </IonCol>
       </IonRow>
       <IonRow>

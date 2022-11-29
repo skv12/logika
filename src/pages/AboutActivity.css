@@ -5,3 +5,9 @@
 .about_img::part(image){
     width: 100px;
 }
+.flex-col{
+    align-items: baseline;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}

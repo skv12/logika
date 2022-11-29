@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
 import axios from "axios";
 import { Chart, registerables } from "chart.js";
-import { Store, SERV } from "./Store";
-import "./Tab3.css";
-
+import "./HistoryActivity.scss";
+import { IonCol, IonGrid, IonRow } from "@ionic/react";
+import { SERV } from "../data/DataApi";
 Chart.register(...registerables);
 
 const colors = [
@@ -47,22 +47,16 @@ const BarChart: React.FC<ContainerProps> = ({ startdate, enddate, period }) => {
   const c_ref = React.useRef(null);
   const c_ref2 = React.useRef(null);
   useEffect(() => {
-    let params = {
-      params: {
-        НачалоДата: startdate.split("T")[0],
-        КонецДата: enddate.split("T")[0],
-        Период: period,
-      },
-    };
-
-    let user = Store.getState().user;
-
     axios
       .get(SERV() + "СтатистикаПродавцов", {
         headers: {
           Authorization: "Basic " + localStorage.getItem("app_data_token"),
         },
-        params,
+        params: {
+          НачалоДата: startdate.split("T")[0],
+          КонецДата: enddate.split("T")[0],
+          Период: period,
+        },
       })
       .then((response) => response.data)
       .then((data) => {
@@ -125,6 +119,16 @@ const BarChart: React.FC<ContainerProps> = ({ startdate, enddate, period }) => {
             beginAtZero: true,
           },
         },
+        layout: {
+          padding: 20,
+        },
+        plugins: {
+          title: {
+            font: {
+              size: 10,
+            },
+          },
+        },
       },
     });
     chart.render();
@@ -156,14 +160,35 @@ const BarChart: React.FC<ContainerProps> = ({ startdate, enddate, period }) => {
             beginAtZero: true,
           },
         },
+        layout: {
+          padding: 20,
+        },
+        plugins: {
+          title: {
+            font: {
+              size: 10,
+            },
+          },
+        },
       },
     });
     chart.render();
   }
   return (
     <>
-      <canvas ref={c_ref} width={300} height={300}></canvas>
-      <canvas ref={c_ref2} width={300} height={300}></canvas>
+      <IonGrid>
+        <IonRow>
+          <IonCol>
+            <canvas ref={c_ref} width={300} height={300}></canvas>
+          </IonCol>
+        </IonRow>
+
+        <IonRow>
+          <IonCol>
+            <canvas ref={c_ref2} width={300} height={300}></canvas>
+          </IonCol>
+        </IonRow>
+      </IonGrid>
     </>
   );
 };

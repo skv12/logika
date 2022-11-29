@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import {
   IonPage,
   IonLoading,
@@ -10,62 +9,43 @@ import {
   IonAlert,
   IonButton,
   IonIcon,
-  IonToast,
   IonInput,
-  IonCheckbox,
-  IonItem,
-  IonLabel,
   IonText,
   IonGrid,
   IonRow,
   IonCol,
 } from "@ionic/react";
-import { Store, SERV } from "./Store";
+import { Store } from "./Store";
 import { useHistory } from "react-router-dom";
 import { optionsOutline } from "ionicons/icons";
 import "./Login.scss";
-import { Auth } from "../data/DataApi";
+import AuthContext from "../Auth";
 
-//const Tab1: React.FC = () => {
 const Login: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [login, setLogin] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [message, setMessage] = useState("");
-  const [e_auth, setEAuth] = useState(false);
-  const [s_auth, setSAuth] = useState(false);
-  const [tip, setTip] = useState("");
   const [options, setOptions] = useState(false);
   const [serv, setServ] = useState("");
   const [port, setPort] = useState("");
-  const [s_toast, setToast] = useState(false);
   const [remember, setRemember] = useState(false);
-  const [formSubmitted, setFormSubmitted] = useState(false);
-  const [loginError, setLoginError] = useState(false);
-  const [passwordError, setPasswordError] = useState(false);
-  const [loginFailed, setLoginFailed] = useState(false);
+  const { Auth } = React.useContext(AuthContext);
   let history = useHistory();
   const loginEvent = async (e: React.FormEvent) => {
     setLoading(true);
     e.preventDefault();
-    setFormSubmitted(true);
     if (!login) {
       setLoading(false);
-      setLoginError(true);
     }
     if (!password) {
       setLoading(false);
-      setPasswordError(true);
     }
     if (login && password) {
       if (await Auth(false, remember, login, password)) {
-        setLoginFailed(true ? false : false);
         setLoading(false);
-        history.push("/tabs/tab1");
+        history.push("/tabs");
       } else {
         setLoading(false);
-        setLoginFailed(true);
       }
     }
   };
@@ -81,20 +61,20 @@ const Login: React.FC = () => {
       setRemember(true);
       Auth(true);
       console.log(Store.getState().user.auth);
-      history.push("/tabs/tab1");
+      history.push("/tabs");
     }
-  }, []);
+  }, [Auth, history]);
 
   return (
     <IonPage className="loginPage">
-      <IonHeader className="ion-no-border">
+      <IonHeader className="headerCustom ion-no-border">
         <IonToolbar>
           <IonTitle
-            className="loginPage__title"
+            className="loginPage__title a-center"
             size="large"
             class="ion-text-center"
           >
-            Логин
+            Вход
           </IonTitle>
           <IonButton
             slot="end"
@@ -140,14 +120,14 @@ const Login: React.FC = () => {
                   value={password}
                   onIonChange={(e) => setPassword(e.detail.value!)}
                 />
-                <IonItem className="checkbox ion-no-padding loginPage__checkbox">
+                {/* <IonItem className="checkbox ion-no-padding loginPage__checkbox">
                   <IonCheckbox
                     slot="start"
                     checked={remember}
                     onIonChange={(e) => setRemember(e.detail.checked)}
                   ></IonCheckbox>
                   <IonLabel>Запомнить</IonLabel>
-                </IonItem>
+                </IonItem> */}
 
                 <IonButton
                   type="submit"
@@ -161,25 +141,6 @@ const Login: React.FC = () => {
             </IonCol>
           </IonRow>
         </IonGrid>
-
-        {/* Авторизация успех */}
-        <IonAlert
-          isOpen={s_auth}
-          onDidDismiss={() => setSAuth(false)}
-          header={"Поздравляем"}
-          message={"Вы успешо авторизировались"}
-          buttons={[
-            {
-              text: "Ok",
-              handler: () => {
-                if (tip === "Полный") history.push("/Tab1");
-                if (tip === "Продажи") history.push("/Tab1");
-                if (tip === "Доставка") history.push("/Tab4");
-              },
-            },
-          ]}
-        />
-        {/* Оптионс */}
         <IonAlert
           isOpen={options}
           onDidDismiss={() => setOptions(false)}
@@ -212,13 +173,6 @@ const Login: React.FC = () => {
               },
             },
           ]}
-        />
-
-        <IonToast
-          isOpen={s_toast}
-          onDidDismiss={() => setToast(false)}
-          message={message}
-          duration={3500}
         />
 
         {/* Оптионс */}

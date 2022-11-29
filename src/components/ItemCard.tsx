@@ -1,7 +1,6 @@
 import {
   IonButton,
-  IonCardSubtitle,
-  IonCardTitle,
+  IonButtons,
   IonCol,
   IonContent,
   IonFooter,
@@ -10,9 +9,7 @@ import {
   IonIcon,
   IonImg,
   IonItem,
-  IonItemDivider,
   IonLabel,
-  IonModal,
   IonPage,
   IonRow,
   IonText,
@@ -20,70 +17,25 @@ import {
   IonToast,
   IonToolbar,
 } from "@ionic/react";
-import { arrowBackOutline, closeOutline, listOutline } from "ionicons/icons";
-import { useEffect, useRef, useState } from "react";
-import { getImg, o_type, Store, t_good, t_image } from "../pages/Store";
+import { useState } from "react";
+import { element_type,  Store } from "../pages/Store";
 import update from "immutability-helper";
-
+import backButton from "../res/backButton.svg";
 interface ContainerProps {
-  item: o_type;
-  onDismiss: () => void,
+  item: element_type;
+  onDismiss: () => void;
 }
 
-const g_state: t_good = {
-  ГУИД: "",
-  Артикул: "",
-  Наименование: "",
-  Цена: 0,
-  Количество: 0,
-  Сумма: 0,
-  Склад: "",
-  Остаток: 0,
-  Группа: "",
-  Вес: 0,
-  Объем: 0,
-  Производитель: "",
-  ИмпортерКонтрагент: "",
-  ДопРеквизиты: [],
-};
-
-const gimages_state: t_image = {
-  ГУИД: "",
-  Картинка: "",
-};
-
 const ItemCard: React.FC<ContainerProps> = ({ item, onDismiss }) => {
-  const [good, setGood] = useState<t_good>(g_state);
-  const [gimage, setGimage] = useState<t_image>(gimages_state);
   const [showToast1, setShowToast1] = useState(false);
-  useEffect(() => {
-    setGood({
-      ГУИД: item.ГУИД,
-      Артикул: item.Артикул,
-      Наименование: item.Номенклатура,
-      Цена: item.Цена,
-      Количество: 1,
-      Сумма: item.Цена,
-      Склад: item.Склад,
-      Остаток: item.Остаток,
-      Группа: item.Группа,
-      Вес: item.Вес,
-      Объем: item.Объем,
-      Производитель: item.Производитель,
-      ИмпортерКонтрагент: item.ИмпортерКонтрагент,
-      ДопРеквизиты: item.ДопРеквизиты,
-    });
 
-    //getImg(item.ГУИД);
-    setGimage(Store.getState().gimages);
-  }, []);
   function addBasket(amount: number) {
     let basket = Store.getState().basket;
 
     if (basket === undefined) basket = [];
 
-    var commentIndex = basket.findIndex(function (b) {
-      return b.Артикул === good.Артикул;
+    var commentIndex = basket.findIndex((b) => {
+      return b.Артикул === item.Артикул;
     });
     if (commentIndex >= 0) {
       let b_amount = basket[commentIndex].Количество;
@@ -100,11 +52,11 @@ const ItemCard: React.FC<ContainerProps> = ({ item, onDismiss }) => {
         type: "add_basket",
         basket: {
           ГУИД: "",
-          Артикул: good.Артикул,
-          Наименование: good.Наименование,
-          Цена: good.Цена,
+          Артикул: item.Артикул,
+          Наименование: item.Наименование,
+          Цена: item.Цена,
           Количество: amount,
-          Сумма: good.Цена * amount,
+          Сумма: item.Цена * amount,
         },
       });
     }
@@ -112,148 +64,151 @@ const ItemCard: React.FC<ContainerProps> = ({ item, onDismiss }) => {
   return (
     <>
       <IonPage>
-        <IonHeader>
+        <IonHeader className="ion-no-border">
           <IonToolbar>
-            <IonButton
-              fill="clear"
-              slot="start"
-              onClick={() => {
-                onDismiss();
-                Store.dispatch({ type: "del_img" });
-              }}
-            >
-              <IonIcon slot="icon-only" icon={arrowBackOutline}></IonIcon>
-            </IonButton>
-            <IonTitle> Информация о товаре </IonTitle>
+            <IonTitle className="a-center"> Информация о товаре </IonTitle>
+            <IonButtons>
+              <IonButton
+                slot="start"
+                onClick={() => {
+                  Store.dispatch({ type: "del_element" });
+                  onDismiss();
+                }}
+              >
+                <IonIcon slot="icon-only" icon={backButton}></IonIcon>
+              </IonButton>
+            </IonButtons>
           </IonToolbar>
         </IonHeader>
 
-        <IonContent>
-          <IonGrid class="i-item-modal">
-            <IonRow class="ion-justify-content-center">
-              <IonImg src={gimage.Картинка} />
-            </IonRow>
-            <IonRow>
-              <IonItemDivider>
-                <IonLabel>Наименование</IonLabel>
-              </IonItemDivider>
-              <IonItem lines="none">{good.Наименование}</IonItem>
-            </IonRow>
-            <IonRow>
-              <IonCol>
-                <IonItemDivider>
-                  <IonLabel>Группа товара</IonLabel>
-                </IonItemDivider>
-                <IonItem lines="none">{good.Группа}</IonItem>
-              </IonCol>
-              <IonCol>
-                <IonItemDivider>
-                  <IonLabel>Артикул</IonLabel>
-                </IonItemDivider>
-                <IonItem lines="none">{good.Артикул}</IonItem>
-              </IonCol>
-            </IonRow>
-            <IonRow>
-              <IonCol>
-                <IonItemDivider>
-                  <IonLabel>Склад</IonLabel>
-                </IonItemDivider>
-                <IonItem lines="none">{good.Склад}</IonItem>
-              </IonCol>
-              <IonCol>
-                <IonItemDivider>
-                  <IonLabel>Цена</IonLabel>
-                </IonItemDivider>
-                <IonItem lines="none">{good.Цена}</IonItem>
-              </IonCol>
-            </IonRow>
-            <IonRow>
-              <IonCol>
-                <IonItemDivider>
-                  <IonLabel>Производитель</IonLabel>
-                </IonItemDivider>
-                <IonItem lines="none">
-                  {good.Производитель === "" ? "~" : good.Производитель}
-                </IonItem>
-              </IonCol>
-              <IonCol>
-                <IonItemDivider>
-                  <IonLabel>Импортер</IonLabel>
-                </IonItemDivider>
-                <IonItem lines="none">
-                  {good.ИмпортерКонтрагент === ""
-                    ? "~"
-                    : good.ИмпортерКонтрагент}
-                </IonItem>
-              </IonCol>
-            </IonRow>
-            <IonRow>
-              <IonCol>
-                <IonItemDivider>
-                  <IonLabel>Остаток</IonLabel>
-                </IonItemDivider>
-                <IonItem lines="none">{good.Остаток} шт</IonItem>
-              </IonCol>
-              <IonCol>
-                <IonItemDivider>
-                  <IonLabel>Вес</IonLabel>
-                </IonItemDivider>
-                <IonItem lines="none">
-                  {good.Вес === 0 ? "~" : good.Вес} кг
-                </IonItem>
-              </IonCol>
-              <IonCol>
-                <IonItemDivider>
-                  <IonLabel>Объем</IonLabel>
-                </IonItemDivider>
-                <IonItem lines="none">
-                  {good.Объем === 0 ? "~" : good.Объем} м³{" "}
-                </IonItem>
-              </IonCol>
-            </IonRow>
-            <IonCol>
-              <IonItemDivider>
-                <IonLabel>Дополнительные реквизиты</IonLabel>
-              </IonItemDivider>
-              {Object.keys(good.ДопРеквизиты).map((e) => {
-                return (
-                  <IonItem lines="none" key={e}>
-                    {e.replace(/_/g, " ")}:{" "}
-                    {String(good.ДопРеквизиты[e]) === "true"
-                      ? "Да"
-                      : good.ДопРеквизиты[e] === "false"
-                      ? "Нет"
-                      : good.ДопРеквизиты[e]}
-                  </IonItem>
-                );
-              })}
-            </IonCol>
-          </IonGrid>
+        <IonContent className="ion-padding">
+          <IonRow class="ion-justify-content-center">
+            <IonImg src={item.Картинка} />
+          </IonRow>
+          <IonItem>
+            <IonGrid class="i-item-modal">
+              <IonRow>
+                <IonCol>
+                  <IonLabel color="medium" className="text_12">
+                    Наименование
+                  </IonLabel>
+                  <IonText className="text_14">{item.Наименование}</IonText>
+                </IonCol>
+              </IonRow>
+              <IonRow>
+                <IonCol>
+                  <IonLabel color="medium" className="text_12">
+                    Группа товара
+                  </IonLabel>
+                  <IonText className="text_14">{item.Группа}</IonText>
+                </IonCol>
+                <IonCol>
+                  <IonLabel color="medium" className="text_12">
+                    Артикул
+                  </IonLabel>
+                  <IonText className="text_14">{item.Артикул}</IonText>
+                </IonCol>
+              </IonRow>
+              <IonRow>
+                <IonCol>
+                  <IonLabel color="medium" className="text_12">
+                    Склад
+                  </IonLabel>
+                  <IonText className="text_14">{item.Склад}</IonText>
+                </IonCol>
+                <IonCol>
+                  <IonLabel color="medium" className="text_12">
+                    Цена
+                  </IonLabel>
+                  <IonText className="text_14">{item.Цена}</IonText>
+                </IonCol>
+              </IonRow>
+              <IonRow>
+                <IonCol>
+                  <IonLabel color="medium" className="text_12">
+                    Производитель
+                  </IonLabel>
+                  <IonText className="text_14">{item.Производитель}</IonText>
+                </IonCol>
+                <IonCol>
+                  <IonLabel color="medium" className="text_12">
+                    Импортер
+                  </IonLabel>
+                  <IonText className="text_14">
+                    {item.ИмпортерКонтрагент === ""
+                      ? "~"
+                      : item.ИмпортерКонтрагент}
+                  </IonText>
+                </IonCol>
+              </IonRow>
+              <IonRow>
+                <IonCol>
+                  <IonLabel color="medium" className="text_12">
+                    Остаток
+                  </IonLabel>
+                  <IonText className="text_14">{item.Остаток}</IonText>
+                </IonCol>
+                <IonCol>
+                  <IonLabel color="medium" className="text_12">
+                    Вес
+                  </IonLabel>
+                  <IonText className="text_14">
+                    {item.Вес === 0 ? "~" : item.Вес + " кг"}
+                  </IonText>
+                </IonCol>
+                <IonCol>
+                  <IonLabel color="medium" className="text_12">
+                    Объем
+                  </IonLabel>
+                  <IonText className="text_14">
+                    {item.Объем === 0 ? "~" : item.Объем + " м³"}
+                  </IonText>
+                </IonCol>
+              </IonRow>
+              <IonRow>
+                <IonCol>
+                  <IonLabel color="medium" className="text_12">
+                    Дополнительные реквизиты
+                  </IonLabel>
+                  {Object.keys(item.ДопРеквизиты).map((e) => {
+                    return (
+                      <IonText className="text_14" key={e}>
+                        {e.replace(/_/g, " ")}:{" "}
+                        {String(item.ДопРеквизиты[e]) === "true"
+                          ? "Да"
+                          : item.ДопРеквизиты[e] === "false"
+                          ? "Нет"
+                          : item.ДопРеквизиты[e]}
+                      </IonText>
+                    );
+                  })}
+                </IonCol>
+              </IonRow>
+            </IonGrid>
+          </IonItem>
         </IonContent>
 
-        <IonFooter>
-          <IonToolbar>
-            <IonButton
-              fill="clear"
-              slot="end"
-              onClick={() => {
-                setShowToast1(true);
-                addBasket(1);
-              }}
-            >
-              {" "}
-              Добавить в корзину
-            </IonButton>
-          </IonToolbar>
+        <IonFooter className="ion-no-border ion-justify-content-center ion-flex">
+          <IonButton
+            fill="solid"
+            className="height-standard ion-text-center ion-margin "
+            onClick={() => {
+              setShowToast1(true);
+              addBasket(1);
+            }}
+            color="secondary"
+          >
+            Добавить в корзину
+          </IonButton>
         </IonFooter>
+        <IonToast
+          isOpen={showToast1}
+          onDidDismiss={() => setShowToast1(false)}
+          message="Товар добавлен в корзину"
+          position="bottom"
+          duration={200}
+        />
       </IonPage>
-      <IonToast
-        isOpen={showToast1}
-        onDidDismiss={() => setShowToast1(false)}
-        message="Товар добавлен в корзину"
-        position="middle"
-        duration={200}
-      />
     </>
   );
 };

@@ -18,12 +18,12 @@ import {
 } from "@ionic/react";
 import { listOutline } from "ionicons/icons";
 import { useState } from "react";
-import { getImg, o_type, Store, t_good, t_image } from "../pages/Store";
+import { item_type, Store } from "../pages/Store";
 import ItemCard from "./ItemCard";
 import ItemElement from "./ItemElement";
 
 interface ContainerProps {
-  good: o_type;
+  good: item_type;
 }
 
 const CategoryElement: React.FC<ContainerProps> = ({ good }) => {

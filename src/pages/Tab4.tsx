@@ -22,7 +22,7 @@ import {
   IonLabel,
   IonDatetime,
 } from "@ionic/react";
-import "./Tab3.css";
+//import "./Tab3.css";
 import { Store, SERV, d_type, getDist } from "./Store";
 import { ellipsisHorizontalOutline, searchOutline } from "ionicons/icons";
 
@@ -74,7 +74,7 @@ const Tab4: React.FC = () => {
         setLoading(false);
         return true;
       })
-      .catch((error) => {
+      .catch((error) => { 
         console.log(error);
         setLoading(false);
         return false;

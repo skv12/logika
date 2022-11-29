@@ -1,0 +1,63 @@
+.f-1 {
+  font-size: small;
+}
+
+.f-2 {
+  font-size: medium;
+}
+
+#t-line {
+  border-top: 3x solid black;
+}
+
+.b-1 {
+  border: 1px solid black;
+}
+
+.a-margin {
+  margin: auto;
+}
+
+.red-2 {
+  color: red;
+}
+.ionIcon{
+    padding-right: 5px;
+    font-size: 18px;
+}
+.custom-modal{
+  --width: fit-content;
+  --min-width: 250px;
+  --height: fit-content;
+  --border-radius: 6px;
+  --box-shadow: 0 11px 15px -7px rgb(0 0 0 / 20%), 0 24px 38px 3px rgb(0 0 0 / 14%), 0 9px 46px 8px rgb(0 0 0 / 12%)
+}
+.custom-modal-header{
+  padding-left: 23px;
+  padding-right: 23px;
+  padding-top: 20px;
+  padding-bottom: 15px;
+  text-align: start;
+}
+.custom-modal-footer{
+  padding-left: 8px;
+  padding-right: 8px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  -ms-flex-wrap: wrap-reverse;
+  flex-wrap: wrap-reverse;
+  -ms-flex-pack: end;
+  justify-content: flex-end;
+  display: flex;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  width: 100%;
+}
+.custom-modal-content::part(scroll){
+  height: 100%;
+}
+.histroy-card-header{
+  --min-height: 36px;
+}

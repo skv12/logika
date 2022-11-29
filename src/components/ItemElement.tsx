@@ -1,58 +1,58 @@
 import { OverlayEventDetail } from "@ionic/core/components";
 import {
-  IonButton,
-  IonCardSubtitle,
-  IonCardTitle,
   IonCol,
   IonGrid,
-  IonHeader,
-  IonIcon,
   IonItem,
   IonLabel,
   IonRow,
   IonText,
-  IonTitle,
-  IonToolbar,
+  useIonLoading,
   useIonModal,
 } from "@ionic/react";
-import { listOutline } from "ionicons/icons";
-import { useState } from "react";
-import { getImg, o_type, Store, t_good, t_image } from "../pages/Store";
+import { getElement } from "../data/DataApi";
+import { item_type, Store } from "../pages/Store";
 import ItemCard from "./ItemCard";
 
 interface ContainerProps {
-  goods: o_type;
+  goods: item_type;
 }
 
 const ItemElement: React.FC<ContainerProps> = ({ goods }) => {
+  const [showLoading, closeLoading] = useIonLoading();
   const [present, dismiss] = useIonModal(ItemCard, {
-    item: goods,
+    item: Store.getState().element,
     onDismiss: () => dismiss(),
   });
 
-  function openModal(goods: o_type) {
+  const openModal = () => {
     present({
       onWillDismiss: (ev: CustomEvent<OverlayEventDetail>) => {},
     });
-  }
+  };
   return (
     <IonItem
       lines="none"
       className="ion-no-padding"
-      onClick={() => {
-        openModal(goods);
+      onClick={async () => {
+        showLoading({
+          message: "Получение данных",
+        });
+        if (await getElement(goods.ГУИД, goods.Склад)) {
+          closeLoading();
+          openModal();
+        }
       }}
     >
       <IonGrid>
         <IonRow className="ion-justify-content-between">
-          <IonCol size="9">
+          <IonCol size="8">
             <IonText color="medium">
               Склад: {goods.Склад} <br />
             </IonText>
             <IonLabel class="ion-text-wrap">{goods.Номенклатура}</IonLabel>
           </IonCol>
-          <IonCol size="3">
-            <IonText>
+          <IonCol size="4">
+            <IonText color="medium">
               {" "}
               {goods.Артикул} <br />
             </IonText>
