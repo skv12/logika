@@ -1,200 +1,34 @@
 import { combineReducers } from "redux";
-import axios from "axios";
+import { endOfDay, format } from "date-fns";
+import { getGoods } from "../data/DataApi";
 
-function i_data() {
-  var date = new Date();
-  let str = date.toISOString().substr(0, 10);
-  return str.substr(0, 4) + "-" + str.substr(5, 2) + "-" + str.substr(8, 2);
-}
-
-export async function getData(url, params) {
-  let user = Store.getState().user;
-  console.log(user);
-  let res = await axios
-    .post(SERV() + url, params, {
-      headers: {
-        Authorization: "Basic " + localStorage.getItem("app_data_token"),
-      },
-    })
-    .then((response) => response.data)
-    .then((data) => {
-      return data;
-    })
-    .catch((error) => {
-      console.log(error);
-      return { Код: 200, Описание: error };
-    });
-
-  return res;
-}
-
-export async function getImg(params) {
-  let user = Store.getState().user;
-  console.log(params);
-
-  let res = await axios
-    .post(
-      SERV() + "МП_Фото",
-      { ГУИД: params },
-      {
-        headers: {
-          Authorization: "Basic " + localStorage.getItem("app_data_token"),
-        },
-      }
-    )
-    .then((response) => response.data)
-    .then((data) => {
-      Store.dispatch({ type: "img", data: data });
-      return true;
-    })
-    .catch((error) => {
-      console.log(error);
-      return false;
-    });
-
-  return res;
-}
-export async function getGoods(params) {
-  let user = Store.getState().user;
-  console.log(user);
-
-  let res = await axios
-    .post(SERV() + "Остатки", params, {
-      headers: {
-        Authorization: "Basic " + localStorage.getItem("app_data_token"),
-      },
-    })
-    .then((response) => response.data)
-    .then((data) => {
-      Store.dispatch({ type: "gd", data: data });
-      return true;
-    })
-    .catch((error) => {
-      console.log(error);
-      return false;
-    });
-
-  return res;
-}
-
-export async function getDocs(params) {
-  let user = Store.getState().user;
-  console.log(user);
-
-  let res = await axios
-    .get(SERV() + "История", {
-      headers: {
-        Authorization: "Basic " + localStorage.getItem("app_data_token"),
-      },
-      params,
-    })
-    .then((response) => response.data)
-    .then((data) => {
-      Store.dispatch({ type: "docs", data: data });
-      return true;
-    })
-    .catch((error) => {
-      console.log(error);
-      return false;
-    });
-
-  return res;
-}
-
-export async function getDist(params) {
-  let user = Store.getState().user;
-  console.log(user);
-
-  let res = await axios
-    .get(SERV() + "Доставки", {
-      headers: {
-        Authorization: "Basic " + localStorage.getItem("app_data_token"),
-      },
-      params,
-    })
-    .then((response) => response.data)
-    .then((data) => {
-      Store.dispatch({ type: "dist", data: data });
-      return true;
-    })
-    .catch((error) => {
-      console.log(error);
-      return false;
-    });
-
-  return res;
-}
-
-export async function getStores() {
-  let user = Store.getState().user;
-  console.log(user);
-  let res = false;
-  res = await axios
-    .get(SERV() + "Склады", {
-      headers: {
-        Authorization: "Basic " + localStorage.getItem("app_data_token"),
-      },
-    })
-    .then((response) => response.data)
-    .then((data) => {
-      Store.dispatch({ type: "stock", data: data });
-      Store.dispatch({ type: "p1", Склады: StoreToString() });
-      return true;
-    })
-    .catch((error) => {
-      console.log(error);
-      return false;
-    });
-
-  return res;
-}
-
-export async function getCategory() {
-  let user = Store.getState().user;
-  console.log(user);
-  let res = false;
-  res = await axios
-    .get(SERV() + "Категории", {
-      headers: {
-        Authorization: "Basic " + localStorage.getItem("app_data_token"),
-      },
-    })
-    .then((response) => response.data)
-    .then((data) => {
-      Store.dispatch({ type: "cate", data: data });
-      return true;
-    })
-    .catch((error) => {
-      console.log(error);
-      return false;
-    });
-
-  return res;
-}
-
-export function StoreToString(): Array<string> {
-  let stor = Store.getState().stores;
-  return stor.map(function (st) {
-    if (st.checked) return st.value;
-    return "";
-  });
-}
-
-export interface o_type {
+export interface item_type {
   ГУИД: string;
+  Номенклатура: string;
   Склад: string;
   Группа: string;
   Код: string;
-  Номенклатура: string;
   Артикул: string;
   Цена: number;
   Остаток: number;
-  ЭтоГруппа: boolean;
+}
+
+export interface element_type {
+  ГУИД: string;
+  Артикул: string;
+  Наименование: string;
+  Количество: number;
+  Цена: number;
+  Сумма: number;
+  Склад: string;
+  Остаток: number;
+  Группа: string;
   Вес: number;
   Объем: number;
   Производитель: string;
   ИмпортерКонтрагент: string;
   ДопРеквизиты: Array<dr_type>;
+  Картинка: string;
 }
 
 export interface h_type {
@@ -241,28 +75,6 @@ export interface t_param1 {
   Группа: string;
 }
 
-export interface t_image {
-  ГУИД: string;
-  Картинка: string;
-}
-
-export interface t_good {
-  ГУИД: string;
-  Артикул: string;
-  Наименование: string;
-  Количество: number;
-  Цена: number;
-  Сумма: number;
-  Склад: string;
-  Остаток: number;
-  Группа: string;
-  Вес: number;
-  Объем: number;
-  Производитель: string;
-  ИмпортерКонтрагент: string;
-  ДопРеквизиты: Array<dr_type>;
-}
-
 interface t_search {
   Дата: string;
   Номенклатура: string;
@@ -283,7 +95,7 @@ interface s_type {
     role: string;
   };
 
-  goods: Array<o_type>;
+  goods: Array<item_type>;
 
   docs: Array<h_type>;
 
@@ -293,18 +105,19 @@ interface s_type {
 
   param1: Array<t_param1>;
 
-  basket: Array<t_good>;
+  basket: Array<element_type>;
 
   search: t_search;
 
-  gimages: t_image;
+  element: element_type;
 
   categories: Array<t_categories>;
 }
 
 const i_state: s_type | any = {
   user: {
-    auth: true,
+    auth:
+      JSON.parse(localStorage.getItem("app_remember")!) === true ? true : false,
     user: "",
     password: "",
     role: "",
@@ -326,10 +139,27 @@ const i_state: s_type | any = {
 
   basket: [],
 
-  search: { Дата: i_data(), Номенклатура: "", Пользователь: false },
+  search: {
+    Дата: format(endOfDay(new Date()), "yyyy-MM-dd"),
+    Номенклатура: "",
+    Пользователь: false,
+  },
 
-  gimages: {
+  element: {
     ГУИД: "",
+    Артикул: "",
+    Наименование: "",
+    Цена: 0,
+    Количество: 0,
+    Сумма: 0,
+    Склад: "",
+    Остаток: 0,
+    Группа: "",
+    Вес: 0,
+    Объем: 0,
+    Производитель: "",
+    ИмпортерКонтрагент: "",
+    ДопРеквизиты: [],
     Картинка: "",
   },
 
@@ -339,6 +169,7 @@ const i_state: s_type | any = {
 function usReducer(state = i_state.user, action) {
   switch (action.type) {
     case "us": {
+      console.log(action);
       return {
         auth: action.auth === undefined ? state.auth : action.auth,
         user: action.user === undefined ? state.user : action.user,
@@ -350,8 +181,6 @@ function usReducer(state = i_state.user, action) {
     default:
       return state;
   }
-
-  console.log(state);
 }
 
 function gdReducer(state = i_state.goods, action) {
@@ -366,13 +195,29 @@ function gdReducer(state = i_state.goods, action) {
   }
 }
 
-function imgReducer(state = i_state.gimages, action) {
+function elementReducer(state = i_state.element, action) {
   switch (action.type) {
-    case "img": {
+    case "add_element": {
       return action.data;
     }
-    case "del_img":
-      return {};
+    case "del_element":
+      return {
+        ГУИД: "",
+        Артикул: "",
+        Наименование: "",
+        Цена: 0,
+        Количество: 0,
+        Сумма: 0,
+        Склад: "",
+        Остаток: 0,
+        Группа: "",
+        Вес: 0,
+        Объем: 0,
+        Производитель: "",
+        ИмпортерКонтрагент: "",
+        ДопРеквизиты: [],
+        Картинка: "",
+      };
     default:
       return state;
   }
@@ -537,7 +382,7 @@ function srReducer(state = i_state.search, action) {
 const rootReducer = combineReducers({
   user: usReducer,
   goods: gdReducer,
-  gimages: imgReducer,
+  element: elementReducer,
   docs: dcReducer,
   dist: dsReducer,
   stores: stReducer,
@@ -564,9 +409,7 @@ function create_Store(reducer, initialState) {
           store_list();
           break;
         case "us":
-          {
-            auth_list();
-          }
+          auth_list();
           break;
       }
       if (action.type.indexOf("basket") > -1) l_basket();
@@ -584,33 +427,4 @@ function create_Store(reducer, initialState) {
   };
 }
 
-export async function get_Store() {
-  let res = await getStores();
-  if (res) {
-    Store.dispatch({ type: "list_stock" });
-    getGoods(Store.getState().param1);
-    getDocs({ params: {} });
-    getDist({ params: {} });
-  }
-}
-
-export function SERV() {
-  let ip = localStorage.getItem("StokHolm_SERV");
-  let port = localStorage.getItem("StokHolm_PORT");
-
-  if (ip === null || ip === undefined) ip = "";
-  if (port === null || port === undefined) port = "";
-
-  if ((ip as string).length < 13) ip = "91.185.236.216";
-  if ((port as string).length < 5) port = "29080";
-
-  let url = " http://" + ip + ":" + port + "/trade_test/hs/API/V1/";
-
-  return url;
-}
-
 export const Store = create_Store(rootReducer, i_state);
-
-export async function getDatas() {}
-
-getDatas();
