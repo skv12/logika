@@ -168,16 +168,20 @@ export async function get_Store() {
 }
 
 export function SERV() {
-  let ip = localStorage.getItem("StokHolm_SERV");
-  let port = localStorage.getItem("StokHolm_PORT");
+  let ip = localStorage.getItem("serv");
+  let port = localStorage.getItem("port");
+  let base = localStorage.getItem("base");
 
   if (ip === null || ip === undefined) ip = "";
   if (port === null || port === undefined) port = "";
+  if (base === null || base === undefined) base = "";
 
-  if ((ip as string).length < 13) ip = "91.185.236.216";
-  if ((port as string).length < 5) port = "29080";
+  // if ((ip as string).length < 13) ip = "91.185.236.216";
+  // if ((port as string).length < 5) port = "29080";
+  // if ((base as string).length < 5) base = "trade_test";
 
-  let url = " http://" + ip + ":" + port + "/trade_test/hs/api/v1/";
+
+  let url = " http://" + ip + ":" + port + "/" + base +"/hs/api/v1/";
 
   return url;
 }

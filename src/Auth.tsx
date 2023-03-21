@@ -36,6 +36,7 @@ export const AuthProvider: React.FC<ContainerProps> = ({ children }) => {
         },
       })
       .then((response) => {
+        console.log(response);
         Store.dispatch({
           type: "us",
           auth: true,

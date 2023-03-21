@@ -28,6 +28,7 @@ const Login: React.FC = () => {
   const [options, setOptions] = useState(false);
   const [serv, setServ] = useState("");
   const [port, setPort] = useState("");
+  const [base, setBase] = useState("");
   const [remember, setRemember] = useState(false);
   const { Auth } = React.useContext(AuthContext);
   let history = useHistory();
@@ -49,21 +50,21 @@ const Login: React.FC = () => {
       }
     }
   };
-  useEffect(() => {
-    if (localStorage.getItem("app_data_login") === undefined) setLogin("");
-    else setLogin(localStorage.getItem("app_data_login")!);
-    if (
-      localStorage.getItem("app_remember") === undefined ||
-      localStorage.getItem("app_remember") === "false"
-    )
-      setRemember(false);
-    else {
-      setRemember(true);
-      Auth(true);
-      console.log(Store.getState().user.auth);
-      history.push("/tabs");
-    }
-  }, [Auth, history]);
+  // useEffect(() => {
+  //   if (localStorage.getItem("app_data_login") === undefined) setLogin("");
+  //   else setLogin(localStorage.getItem("app_data_login")!);
+  //   if (
+  //     localStorage.getItem("app_remember") === undefined ||
+  //     localStorage.getItem("app_remember") === "false"
+  //   )
+  //     setRemember(false);
+  //   else {
+  //     setRemember(true);
+  //     Auth(true);
+  //     console.log(Store.getState().user.auth);
+  //     history.push("/tabs");
+  //   }
+  // }, [Auth, history]);
 
   return (
     <IonPage className="loginPage">
@@ -80,13 +81,16 @@ const Login: React.FC = () => {
             slot="end"
             fill="clear"
             onClick={() => {
-              let serv = localStorage.getItem("StokHolm_SERV");
-              if (serv === null) serv = "91.185.236.216";
-              let port = localStorage.getItem("StokHolm_PORT");
-              if (port === null) port = "29080";
+              let serv = localStorage.getItem("serv");
+              if (serv === null) serv = "";
+              let port = localStorage.getItem("port");
+              if (port === null) port = "";
+              let base = localStorage.getItem("base");
+              if (base === null) base = "";
               setOptions(true);
               setServ(serv);
               setPort(port);
+              setBase(base);
             }}
           >
             <IonIcon icon={optionsOutline} slot="icon-only"></IonIcon>
@@ -148,16 +152,22 @@ const Login: React.FC = () => {
           message={""}
           inputs={[
             {
-              name: "Сервер",
+              name: "serv",
               type: "text",
               placeholder: "Сервер",
               value: serv,
             },
             {
-              name: "Порт",
+              name: "port",
               type: "text",
               placeholder: "Порт",
               value: port,
+            },
+            {
+              name: "base",
+              type: "text",
+              placeholder: "База",
+              value: base,
             },
           ]}
           buttons={[
@@ -168,44 +178,9 @@ const Login: React.FC = () => {
             {
               text: "Ok",
               handler: (data) => {
-                localStorage.setItem("StokHolm_SERV", data.Сервер);
-                localStorage.setItem("StokHolm_PORT", data.Порт);
-              },
-            },
-          ]}
-        />
-
-        {/* Оптионс */}
-        <IonAlert
-          isOpen={options}
-          onDidDismiss={() => setOptions(false)}
-          header={"Настройки"}
-          message={""}
-          inputs={[
-            {
-              name: "Сервер",
-              type: "text",
-              placeholder: "Сервер",
-              value: serv,
-            },
-            {
-              name: "Порт",
-              type: "text",
-              placeholder: "Порт",
-              value: port,
-            },
-          ]}
-          buttons={[
-            {
-              text: "Cancel",
-              role: "cancel",
-              handler: () => {},
-            },
-            {
-              text: "Ok",
-              handler: (data) => {
-                localStorage.setItem("StokHolm_SERV", data.Сервер);
-                localStorage.setItem("StokHolm_PORT", data.Порт);
+                localStorage.setItem("serv", data.serv);
+                localStorage.setItem("port", data.port);
+                localStorage.setItem("base", data.base);
               },
             },
           ]}
