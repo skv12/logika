@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   IonPage,
   IonLoading,
@@ -15,7 +15,6 @@ import {
   IonRow,
   IonCol,
 } from "@ionic/react";
-import { Store } from "./Store";
 import { useHistory } from "react-router-dom";
 import { optionsOutline } from "ionicons/icons";
 import "./Login.scss";
