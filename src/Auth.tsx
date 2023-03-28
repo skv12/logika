@@ -30,7 +30,7 @@ export const AuthProvider: React.FC<ContainerProps> = ({ children }) => {
       password = t[1];
     } else authcode = Buffer.from(login + ":" + password).toString("base64");
     var res = await axios
-      .post(SERV() + "login", {
+      .post(SERV() + "login", {}, {
         headers: {
           Authorization: "Basic " + authcode,
         },
